@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   ArrowRight,
   BriefcaseBusiness,
-  Calculator,
   CalendarDays,
   Check,
   ChevronRight,
@@ -19,7 +18,7 @@ import {
   Sparkles,
   WalletCards,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -274,14 +273,15 @@ function WizardView({
             const active = index === step;
             const done = index < step;
             return (
-              <button
+              <Button
                 key={item.title}
                 className={cn(
-                  "grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-md px-3 py-3 text-left transition-colors",
+                  "grid h-auto w-full grid-cols-[auto_minmax(0,1fr)] items-center justify-start gap-3 px-3 py-3 text-left",
                   active ? "bg-primary text-primary-foreground" : "bg-surface text-foreground hover:bg-surface-strong",
                 )}
                 onClick={() => setStep(index)}
                 type="button"
+                variant="ghost"
               >
                 <span className={cn("grid size-9 shrink-0 place-items-center rounded-md", done ? "bg-micro text-micro-foreground" : "bg-panel text-foreground")}>
                   {done ? <Check className="size-4" aria-hidden="true" /> : <Icon className="size-4" aria-hidden="true" />}
@@ -290,7 +290,7 @@ function WizardView({
                   <span className="block truncate text-sm font-semibold">{item.title}</span>
                   <span className={cn("block truncate text-xs", active ? "text-primary-foreground" : "text-muted-foreground")}>{item.detail}</span>
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -402,7 +402,7 @@ function MicroStep({
           </Select>
         </Field>
         <Field label="Méthode de saisie du chiffre d’affaires" help="Le CA peut être saisi directement ou estimé depuis un TJM.">
-          <Select value={state.micro.entryMode} onValueChange={(value: EntryMode) => update("micro", "entryMode", value)}>
+          <Select value={state.micro.entryMode} onValueChange={(value) => update("micro", "entryMode", value as EntryMode)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="tjm">Calcul depuis TJM × jours facturés</SelectItem>
@@ -837,7 +837,7 @@ function StepFrame({
   eyebrow: string;
   title: string;
   text: string;
-  children: React.ReactNode;
+  children: ReactNode;
   tone?: "micro" | "salary";
 }) {
   return (
@@ -850,10 +850,10 @@ function StepFrame({
   );
 }
 
-function Field({ label, help, children }: { label: string; help: string; children: React.ReactNode }) {
+function Field({ label, help, children, htmlFor }: { label: string; help: string; children: ReactNode; htmlFor?: string }) {
   return (
     <div className="grid gap-2">
-      <Label className="text-base font-semibold">{label}</Label>
+      <Label htmlFor={htmlFor} className="text-base font-semibold">{label}</Label>
       <div>{children}</div>
       <p className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 text-sm text-muted-foreground">
         <CircleHelp className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -878,10 +878,12 @@ function NumberField({
   suffix?: string;
   step?: number;
 }) {
+  const inputId = useId();
   return (
-    <Field label={label} help={help}>
+    <Field label={label} help={help} htmlFor={inputId}>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-md border border-input bg-panel px-3 focus-within:shadow-focus">
         <Input
+          id={inputId}
           className="h-11 border-0 px-0 shadow-none focus-visible:ring-0"
           type="number"
           step={step}
