@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
   useRouter,
   HeadContent,
@@ -24,7 +23,7 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Button asChild>
-            <Link to="/">Go home</Link>
+            <a href="/">Go home</a>
           </Button>
         </div>
       </div>
@@ -58,7 +57,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </Button>
           <Button asChild variant="outline">
-            <Link to="/">Go home</Link>
+            <a href="/">Go home</a>
           </Button>
         </div>
       </div>
