@@ -928,12 +928,13 @@ function MetricLine({ label, tone, value, unit }: { label: string; tone: "micro"
 }
 
 function Bar({ label, tone, value, max }: { label: string; tone: "micro" | "salary"; value: number; max: number }) {
+  const width = Math.max(4, Math.min(100, (value / max) * 100));
   return (
     <div className="grid grid-cols-[112px_minmax(0,1fr)] items-center gap-3 text-sm">
       <span className="truncate text-muted-foreground">{label}</span>
-      <div className="h-4 overflow-hidden rounded-sm bg-surface-strong" aria-label={`${label} ${eur.format(value)}`}>
-        <div className={cn("h-full rounded-sm", tone === "micro" ? "bg-micro" : "bg-salary")} style={{ width: `${Math.max(4, (value / max) * 100)}%` }} />
-      </div>
+      <svg className="h-4 w-full overflow-hidden rounded-sm bg-surface-strong" role="img" aria-label={`${label} ${eur.format(value)}`} viewBox="0 0 100 16" preserveAspectRatio="none">
+        <rect className={tone === "micro" ? "text-micro" : "text-salary"} x="0" y="0" width={width} height="16" rx="2" fill="currentColor" />
+      </svg>
     </div>
   );
 }
