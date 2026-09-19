@@ -106,12 +106,12 @@ function Index() {
         {showReset ? <p role="status" className="mt-3 text-sm text-muted-foreground">Les données fictives ont été réinitialisées.</p> : null}
         <p className="sr-only" aria-live="polite" aria-atomic="true">{revision > 0 ? `Estimation mise à jour. ${summary.primary}` : ""}</p>
 
-        <section aria-labelledby="decision-title" className="py-8 sm:py-10">
+        <section aria-labelledby="decision-title" className="py-6 sm:py-10">
           <p className="text-sm font-semibold text-muted-foreground">Votre comparaison en un regard</p>
-          <h2 id="decision-title" className="mt-2 max-w-5xl font-display text-3xl font-bold leading-tight text-balance sm:text-5xl">
+          <h2 id="decision-title" className="mt-2 max-w-5xl font-display text-2xl font-bold leading-tight text-balance sm:text-5xl">
             {summary.primary}
           </h2>
-          <p className="mt-3 max-w-4xl text-base leading-7 text-muted-foreground sm:text-lg">{summary.secondary}</p>
+          <p className="mt-3 max-w-4xl text-sm leading-6 text-muted-foreground sm:text-lg sm:leading-7">{summary.secondary}</p>
           <p className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-attention-foreground">
             <AlertTriangle className="size-4 shrink-0 text-attention" aria-hidden="true" />
             Estimation simplifiée pour tester l’expérience, pas un calcul fiscal.
@@ -119,6 +119,9 @@ function Index() {
         </section>
 
         <section aria-label="Cockpit de comparaison" className="border-y border-border py-6 lg:grid lg:grid-cols-[minmax(250px,0.78fr)_minmax(390px,1.35fr)_minmax(250px,0.78fr)] lg:items-start lg:gap-7">
+          <div className="mb-6 md:hidden">
+            <PrimaryResult results={results} displayFactor={displayFactor} periodLabel={periodLabel} revision={revision} compact />
+          </div>
           <div className="md:hidden">
             <Tabs value={mobileScenario} onValueChange={(value) => setMobileScenario(value as ScenarioTone)}>
               <TabsList className="grid h-12 w-full grid-cols-2" aria-label="Scénario à modifier">
@@ -135,7 +138,7 @@ function Index() {
             <SalaryPanel state={state} update={update} className="lg:col-start-3" />
           </div>
 
-          <div className="mt-6 md:mt-7 lg:col-start-2 lg:row-start-1 lg:mt-0">
+          <div className="mt-6 hidden md:block md:mt-7 lg:col-start-2 lg:row-start-1 lg:mt-0">
             <PrimaryResult results={results} displayFactor={displayFactor} periodLabel={periodLabel} revision={revision} />
           </div>
         </section>
@@ -189,22 +192,22 @@ function buildSummary(results: { micro: Result; salary: Result }) {
   };
 }
 
-function PrimaryResult({ results, displayFactor, periodLabel, revision }: { results: { micro: Result; salary: Result }; displayFactor: number; periodLabel: string; revision: number }) {
+function PrimaryResult({ results, displayFactor, periodLabel, revision, compact = false }: { results: { micro: Result; salary: Result }; displayFactor: number; periodLabel: string; revision: number; compact?: boolean }) {
   const netGap = results.micro.netAvailable - results.salary.netAvailable;
   const relative = results.salary.netAvailable === 0 ? 0 : netGap / results.salary.netAvailable;
   return (
-    <section aria-labelledby="main-result" className="bg-foreground p-5 text-background sm:p-7">
+    <section aria-labelledby={compact ? "main-result-mobile" : "main-result"} className="bg-foreground p-4 text-background sm:p-7">
       <p className="text-xs font-bold uppercase text-background/70">Résultat principal · estimé</p>
-      <h2 id="main-result" className="mt-2 font-display text-2xl font-bold">Argent réellement disponible</h2>
-      <div key={revision} className="result-update mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <h2 id={compact ? "main-result-mobile" : "main-result"} className="mt-1 font-display text-xl font-bold sm:mt-2 sm:text-2xl">Argent réellement disponible</h2>
+      <div key={revision} className="result-update mt-4 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-5 lg:grid-cols-1 xl:grid-cols-2">
         <ScenarioValue tone="micro" label="Micro-entreprise" value={eur.format(results.micro.netAvailable / displayFactor)} unit={periodLabel} />
         <ScenarioValue tone="salary" label="Salariat" value={eur.format(results.salary.netAvailable / displayFactor)} unit={periodLabel} />
       </div>
-      <p className="mt-6 border-t border-background/20 pt-4 text-sm leading-6 text-background/80">
+      <p className="mt-4 border-t border-background/20 pt-3 text-xs leading-5 text-background/80 sm:mt-6 sm:pt-4 sm:text-sm sm:leading-6">
         <strong className="text-background">Écart : {eur.format(Math.abs(netGap) / displayFactor)} ({pct.format(Math.abs(relative))})</strong><br />
         {netGap >= 0 ? "en faveur de la micro-entreprise" : "en faveur du salariat"}, selon les hypothèses affichées.
       </p>
-      <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-background/20 pt-5">
+      <div className={cn("mt-6 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-background/20 pt-5", compact && "hidden")}>
         <SupportingMetric icon={Coins} label="Valeur annuelle" micro={eur.format(results.micro.economicValue)} salary={eur.format(results.salary.economicValue)} />
         <SupportingMetric icon={CalendarDays} label="Jours travaillés" micro={`${Math.round(results.micro.workedDays)} j`} salary={`${Math.round(results.salary.workedDays)} j`} />
         <SupportingMetric icon={Scale} label="Valeur / jour" micro={eur.format(results.micro.valuePerDay)} salary={eur.format(results.salary.valuePerDay)} className="col-span-2" />
@@ -217,7 +220,7 @@ function ScenarioValue({ tone, label, value, unit }: { tone: ScenarioTone; label
   return (
     <div className={cn("border-l-4 pl-3", tone === "micro" ? "border-micro-muted" : "border-salary-muted")}>
       <p className="text-sm font-semibold text-background/70">{label}</p>
-      <p className="mt-1 break-words text-3xl font-bold tabular-nums text-background">{value}</p>
+      <p className="mt-1 break-words text-2xl font-bold tabular-nums text-background sm:text-3xl">{value}</p>
       <p className="text-xs text-background/70">{unit}</p>
     </div>
   );
