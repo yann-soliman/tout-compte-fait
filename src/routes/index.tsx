@@ -47,7 +47,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Tout compte fait — Comparateur micro-entreprise et salariat" },
-      { name: "description", content: "Comparez ce que vous gagnez vraiment, le temps que vous y consacrez et les avantages associés." },
+      { name: "description", content: "Comparer le revenu net, le temps travaillé et les avantages associés." },
       { property: "og:title", content: "Tout compte fait — Comparateur micro-entreprise et salariat" },
       { property: "og:description", content: "Un prototype interactif pour comparer revenu disponible, valeur annuelle et temps travaillé." },
       { property: "og:type", content: "website" },
@@ -95,7 +95,7 @@ function Index() {
             <p className="text-xs font-bold uppercase text-primary">Prototype · données fictives</p>
             <h1 className="mt-1 font-display text-2xl font-bold text-foreground sm:text-3xl">Tout compte fait</h1>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Comparez ce que vous gagnez vraiment, le temps que vous y consacrez et les avantages associés.
+              Comparer le revenu net, le temps travaillé et les avantages associés.
             </p>
           </div>
           <Button variant="ghost" size="icon" onClick={reset} title="Réinitialiser les données fictives" aria-label="Réinitialiser les données fictives">
@@ -103,18 +103,17 @@ function Index() {
           </Button>
         </header>
 
-        {showReset ? <p role="status" className="mt-3 text-sm text-muted-foreground">Les données fictives ont été réinitialisées.</p> : null}
+        {showReset ? <p role="status" className="mt-3 text-sm text-muted-foreground">Données fictives réinitialisées.</p> : null}
         <p className="sr-only" aria-live="polite" aria-atomic="true">{revision > 0 ? `Estimation mise à jour. ${summary.primary}` : ""}</p>
 
         <section aria-labelledby="decision-title" className="py-6 sm:py-10">
-          <p className="text-sm font-semibold text-muted-foreground">Votre comparaison en un regard</p>
+          <p className="text-sm font-semibold text-muted-foreground">Synthèse</p>
           <h2 id="decision-title" className="mt-2 max-w-5xl font-display text-2xl font-bold leading-tight text-balance sm:text-5xl">
             {summary.primary}
           </h2>
-          <p className="mt-3 max-w-4xl text-sm leading-6 text-muted-foreground sm:text-lg sm:leading-7">{summary.secondary}</p>
           <p className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-attention-foreground">
             <AlertTriangle className="size-4 shrink-0 text-attention" aria-hidden="true" />
-            Estimation simplifiée pour tester l’expérience, pas un calcul fiscal.
+            Estimation simplifiée · données fictives.
           </p>
         </section>
 
@@ -147,8 +146,8 @@ function Index() {
 
         <section aria-label="Comprendre les résultats" className="border-t border-border py-8 sm:py-10">
           <div className="mb-6 max-w-3xl">
-            <p className="text-sm font-semibold text-muted-foreground">Comprendre les écarts</p>
-            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">Du montant de départ à ce qui compte vraiment</h2>
+            <p className="text-sm font-semibold text-muted-foreground">Détail du calcul</p>
+            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">Décomposition annuelle</h2>
           </div>
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
             <BreakdownPanel title="Micro-entreprise" tone="micro" result={results.micro} lines={[
@@ -182,13 +181,11 @@ function Index() {
 function buildSummary(results: { micro: Result; salary: Result }) {
   const netGap = results.micro.netAvailable - results.salary.netAvailable;
   const dayGap = results.micro.workedDays - results.salary.workedDays;
-  const valueGap = results.micro.economicValue - results.salary.economicValue;
-  const moneyLeader = netGap >= 0 ? "La micro-entreprise" : "Le salariat";
-  const timeText = dayGap === 0 ? "avec autant de jours travaillés" : `pour ${Math.abs(Math.round(dayGap))} jours travaillés ${dayGap > 0 ? "de plus" : "de moins"} par an`;
-  const valueLeader = valueGap >= 0 ? "La micro-entreprise" : "Le salariat";
+  const moneyLeader = netGap >= 0 ? "Micro-entreprise" : "Salariat";
+  const leaderDayGap = netGap >= 0 ? dayGap : -dayGap;
+  const daySign = leaderDayGap > 0 ? "+" : leaderDayGap < 0 ? "−" : "";
   return {
-    primary: `${moneyLeader} laisse environ ${eur.format(Math.abs(netGap))} de plus, ${timeText}.`,
-    secondary: `${valueLeader} présente aussi la valeur économique annuelle la plus élevée dans cette estimation. Les critères restent distincts : aucun statut n’est meilleur dans toutes les situations.`,
+    primary: `${moneyLeader} : +${eur.format(Math.abs(netGap))} nets · ${daySign}${Math.abs(Math.round(leaderDayGap))} jours travaillés/an`,
   };
 }
 
@@ -204,8 +201,7 @@ function PrimaryResult({ results, displayFactor, periodLabel, revision, compact 
         <ScenarioValue tone="salary" label="Salariat" value={eur.format(results.salary.netAvailable / displayFactor)} unit={periodLabel} />
       </div>
       <p className="mt-4 border-t border-background/20 pt-3 text-xs leading-5 text-background/80 sm:mt-6 sm:pt-4 sm:text-sm sm:leading-6">
-        <strong className="text-background">Écart : {eur.format(Math.abs(netGap) / displayFactor)} ({pct.format(Math.abs(relative))})</strong><br />
-        {netGap >= 0 ? "en faveur de la micro-entreprise" : "en faveur du salariat"}, selon les hypothèses affichées.
+        <strong className="text-background">Micro vs salariat : {netGap >= 0 ? "+" : "−"}{eur.format(Math.abs(netGap) / displayFactor)} · {netGap >= 0 ? "+" : "−"}{pct.format(Math.abs(relative))}</strong>
       </p>
       <div className={cn("mt-6 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-background/20 pt-5", compact && "hidden")}>
         <SupportingMetric icon={Coins} label="Valeur annuelle" micro={eur.format(results.micro.economicValue)} salary={eur.format(results.salary.economicValue)} />
@@ -273,7 +269,7 @@ function SalaryPanel({ state, update, className }: { state: ScenarioState; updat
   const effectiveGross = state.salary.grossFullTime * (state.salary.workTimePercent / 100);
   return (
     <ScenarioPanel tone="salary" title="Salariat" icon={WalletCards} className={className}>
-      <NumberField label="Brut annuel équivalent temps plein" suffix="€ / an ETP" value={state.salary.grossFullTime} help="Référence à 100 %, distincte du salaire versé." onChange={(value) => update("salary", "grossFullTime", value)} />
+      <NumberField label="Brut annuel équivalent temps plein" suffix="€ / an ETP" value={state.salary.grossFullTime} help="Base : 100 % ETP." onChange={(value) => update("salary", "grossFullTime", value)} />
       <NumberField label="Temps de travail" suffix="%" value={state.salary.workTimePercent} onChange={(value) => update("salary", "workTimePercent", value)} />
       <NumberField label="Participation" suffix="€ / an" value={state.salary.participation} onChange={(value) => update("salary", "participation", value)} />
       <p className="border-l-2 border-salary-muted pl-3 text-sm text-muted-foreground"><strong className="text-foreground">{eur.format(effectiveGross)}</strong> brut réellement versé avant primes</p>
@@ -285,7 +281,7 @@ function SalaryPanel({ state, update, className }: { state: ScenarioState; updat
           <NumberField label="Jours offerts" suffix="jours / an" value={state.salary.extraDaysOff} onChange={(value) => update("salary", "extraDaysOff", value)} />
           <NumberField label="Tickets-restaurant" suffix="tickets / an" value={state.salary.mealTicketCount} onChange={(value) => update("salary", "mealTicketCount", value)} />
           <NumberField label="Valeur d’un ticket" suffix="€" value={state.salary.mealTicketValue} onChange={(value) => update("salary", "mealTicketValue", value)} />
-          <NumberField label="Part employeur" suffix="%" value={state.salary.mealEmployerShare} help="Part de la valeur du ticket prise en charge." onChange={(value) => update("salary", "mealEmployerShare", value)} />
+          <NumberField label="Part employeur" suffix="%" value={state.salary.mealEmployerShare} help="Prise en charge employeur." onChange={(value) => update("salary", "mealEmployerShare", value)} />
           <NumberField label="Autres avantages" suffix="€ / an" value={state.salary.otherBenefits} onChange={(value) => update("salary", "otherBenefits", value)} />
         </div></AccordionContent></AccordionItem>
       </Accordion>
@@ -295,16 +291,16 @@ function SalaryPanel({ state, update, className }: { state: ScenarioState; updat
 
 function EquivalentsPanel({ equivalents }: { equivalents: ReturnType<typeof calculateEquivalents> }) {
   const rows = [
-    ["Même argent disponible", equivalents.sameNet, "Ce qui reste après cotisations, dépenses et impôt."],
-    ["Même valeur économique annuelle", equivalents.sameEconomic, "Le net et les avantages identifiés, hors protection sociale."],
-    ["Même valeur par jour travaillé", equivalents.samePerDay, "Le montant rapporté au nombre de jours réellement travaillés."],
+    ["Même revenu net", equivalents.sameNet],
+    ["Même valeur économique annuelle", equivalents.sameEconomic],
+    ["Même valeur par jour travaillé", equivalents.samePerDay],
   ] as const;
   return (
     <section aria-labelledby="equivalents-title" className="py-9 sm:py-12">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-10">
-        <div><p className="text-sm font-semibold text-muted-foreground">Le point de bascule</p><h2 id="equivalents-title" className="mt-1 font-display text-3xl font-bold text-balance sm:text-4xl">Trois salaires équivalents, trois décisions différentes.</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Montants bruts annuels équivalent temps plein. Aucun ne constitue une réponse universelle.</p></div>
+        <div><p className="text-sm font-semibold text-muted-foreground">Équivalences</p><h2 id="equivalents-title" className="mt-1 font-display text-3xl font-bold text-balance sm:text-4xl">Salaires bruts équivalents</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Montants annuels · équivalent temps plein</p></div>
         <ol className="divide-y divide-border border-y border-border">
-          {rows.map(([label, value, help], index) => <li key={label} className="grid gap-2 py-5 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-4"><span className="text-sm font-bold text-muted-foreground">0{index + 1}</span><div><h3 className="font-bold">{label}</h3><p className="mt-1 text-sm text-muted-foreground">{help}</p></div><p className="break-words text-2xl font-bold tabular-nums sm:text-right">{eur.format(value)}<span className="block text-xs font-medium text-muted-foreground">brut ETP / an</span></p></li>)}
+          {rows.map(([label, value], index) => <li key={label} className="grid gap-2 py-5 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-4"><span className="text-sm font-bold text-muted-foreground">0{index + 1}</span><h3 className="font-bold">{label}</h3><p className="break-words text-2xl font-bold tabular-nums sm:text-right">{eur.format(value)}<span className="block text-xs font-medium text-muted-foreground">brut ETP / an</span></p></li>)}
         </ol>
       </div>
     </section>
@@ -324,11 +320,11 @@ function BreakdownPanel({ title, tone, result, lines }: { title: string; tone: S
 }
 
 function ProtectionContent() {
-  return <div className="grid gap-5 py-3 md:grid-cols-2"><div className="border-l-4 border-micro pl-4"><h3 className="font-bold">Micro-entreprise</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">Plus d’autonomie, mais droits et continuité de revenu à vérifier selon la situation.</p></div><div className="border-l-4 border-salary pl-4"><h3 className="font-bold">Salariat</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">Protection plus structurée, congés intégrés et avantages dépendants de l’employeur.</p></div><p className="md:col-span-2 text-sm leading-6 text-muted-foreground">Assurance chômage, arrêts maladie, retraite, prévoyance et mutuelle restent séparés du revenu : aucune valeur monétaire arbitraire ne leur est attribuée.</p></div>;
+  return <div className="py-3"><p className="text-sm leading-6 text-muted-foreground"><strong className="text-foreground">Non valorisés :</strong> assurance chômage · arrêts maladie · retraite · prévoyance · mutuelle</p></div>;
 }
 
 function CommonSettings({ state, update, results }: { state: ScenarioState; update: Update; results: { micro: Result; salary: Result } }) {
-  return <div className="grid gap-6 py-3 md:grid-cols-2"><div className="grid gap-4"><NumberField label="Année de référence" value={state.common.year} onChange={(value) => update("common", "year", value)} /><Field label="Situation fiscale simplifiée"><Select value={state.common.taxSituation} onValueChange={(value) => update("common", "taxSituation", value)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Célibataire, sans enfant">Célibataire, sans enfant</SelectItem><SelectItem value="Couple, imposition commune">Couple, imposition commune</SelectItem><SelectItem value="Parent isolé">Parent isolé</SelectItem></SelectContent></Select></Field><NumberField label="Nombre de parts" value={state.common.taxParts} step={0.5} onChange={(value) => update("common", "taxParts", value)} /><NumberField label="Taux d’imposition personnalisé" suffix="%" value={state.common.customTaxRate} help="Taux fictif appliqué aux deux scénarios." onChange={(value) => update("common", "customTaxRate", value)} /></div><div><fieldset><legend className="font-semibold">Affichage des montants</legend><div className="mt-3 grid grid-cols-2 gap-2"><ChoiceButton active={state.common.displayMode === "annual"} onClick={() => update("common", "displayMode", "annual")}>Annuel</ChoiceButton><ChoiceButton active={state.common.displayMode === "monthly"} onClick={() => update("common", "displayMode", "monthly")}>Mensuel</ChoiceButton></div></fieldset><div className="mt-6 border-l-4 border-attention pl-4 text-sm leading-6 text-muted-foreground"><p className="font-bold text-foreground">Méthode simplifiée</p><p className="mt-1">Cotisations, impôt, abattements et avantages sont simulés localement avec des coefficients fictifs. Micro : {Math.round(results.micro.workedDays)} jours travaillés. Salariat : {Math.round(results.salary.workedDays)} jours travaillés.</p></div></div></div>;
+  return <div className="grid gap-6 py-3 md:grid-cols-2"><div className="grid gap-4"><NumberField label="Année de référence" value={state.common.year} onChange={(value) => update("common", "year", value)} /><Field label="Situation fiscale simplifiée"><Select value={state.common.taxSituation} onValueChange={(value) => update("common", "taxSituation", value)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Célibataire, sans enfant">Célibataire, sans enfant</SelectItem><SelectItem value="Couple, imposition commune">Couple, imposition commune</SelectItem><SelectItem value="Parent isolé">Parent isolé</SelectItem></SelectContent></Select></Field><NumberField label="Nombre de parts" value={state.common.taxParts} step={0.5} onChange={(value) => update("common", "taxParts", value)} /><NumberField label="Taux d’imposition personnalisé" suffix="%" value={state.common.customTaxRate} help="Taux fictif appliqué aux deux scénarios." onChange={(value) => update("common", "customTaxRate", value)} /></div><div><fieldset><legend className="font-semibold">Affichage des montants</legend><div className="mt-3 grid grid-cols-2 gap-2"><ChoiceButton active={state.common.displayMode === "annual"} onClick={() => update("common", "displayMode", "annual")}>Annuel</ChoiceButton><ChoiceButton active={state.common.displayMode === "monthly"} onClick={() => update("common", "displayMode", "monthly")}>Mensuel</ChoiceButton></div></fieldset><div className="mt-6 border-l-4 border-attention pl-4 text-sm leading-6 text-muted-foreground"><p className="font-bold text-foreground">Méthode simplifiée</p><p className="mt-1">Coefficients fictifs : cotisations · impôt · abattements · avantages</p><p className="mt-1">Jours travaillés : micro {Math.round(results.micro.workedDays)} · salariat {Math.round(results.salary.workedDays)}</p></div></div></div>;
 }
 
 function MobileSummary({ results, displayFactor, periodLabel }: { results: { micro: Result; salary: Result }; displayFactor: number; periodLabel: string }) {
