@@ -3,7 +3,6 @@ import {
   AlertTriangle,
   BriefcaseBusiness,
   CalendarDays,
-  ChevronDown,
   CircleHelp,
   Coins,
   Euro,
