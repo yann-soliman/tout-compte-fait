@@ -232,7 +232,7 @@ function SupportingMetric({ icon: Icon, label, micro, salary, className }: { ico
   );
 }
 
-function ScenarioPanel({ tone, title, icon: Icon, children, className }: { tone: ScenarioTone; title: string; icon: typeof Euro; children: ReactNode; className?: string }) {
+function ScenarioPanel({ tone, title, icon: Icon, children, className }: { tone: ScenarioTone; title: string; icon: typeof Euro; children: ReactNode; className?: string | undefined }) {
   return (
     <section className={cn("min-w-0 py-5 md:py-0", tone === "micro" ? "border-t-4 border-micro lg:border-t-0 lg:border-l-4 lg:pl-5" : "border-t-4 border-salary lg:border-t-0 lg:border-l-4 lg:pl-5", className)}>
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
@@ -334,11 +334,11 @@ function MobileSummary({ results, displayFactor, periodLabel }: { results: { mic
   return <aside aria-label="Synthèse persistante" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-panel px-4 py-3 shadow-soft sm:hidden"><div className="mx-auto grid max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><div className="min-w-0"><p className="truncate text-sm font-bold">{gap >= 0 ? "Micro" : "Salariat"} +{eur.format(Math.abs(gap) / displayFactor)} {periodLabel}</p><p className="truncate text-xs text-muted-foreground">Micro {dayGap >= 0 ? "+" : "−"}{Math.abs(Math.round(dayGap))} jours vs salariat</p></div><a href="#equivalents-title" className="shrink-0 text-sm font-bold text-primary underline underline-offset-4">Équivalences</a></div></aside>;
 }
 
-function Field({ label, help, children, htmlFor }: { label: string; help?: string; children: ReactNode; htmlFor?: string }) {
+function Field({ label, help, children, htmlFor }: { label: string; help?: string | undefined; children: ReactNode; htmlFor?: string | undefined }) {
   return <div className="grid min-w-0 gap-2"><Label htmlFor={htmlFor} className="text-sm font-semibold">{label}</Label>{children}{help ? <p className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 text-xs leading-5 text-muted-foreground"><CircleHelp className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" /><span>{help}</span></p> : null}</div>;
 }
 
-function NumberField({ label, help, value, onChange, suffix, step = 1 }: { label: string; help?: string; value: number; onChange: (value: number) => void; suffix?: string; step?: number }) {
+function NumberField({ label, help, value, onChange, suffix, step = 1 }: { label: string; help?: string | undefined; value: number; onChange: (value: number) => void; suffix?: string | undefined; step?: number | undefined }) {
   const inputId = useId();
   return <Field label={label} help={help} htmlFor={inputId}><div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-input bg-panel px-2 focus-within:shadow-focus"><Input id={inputId} className="h-11 min-w-0 border-0 px-0 text-base font-semibold shadow-none focus-visible:ring-0" type="number" step={step} value={Number.isFinite(value) ? value : 0} onChange={(event) => onChange(Number(event.target.value))} />{suffix ? <span className="max-w-28 shrink-0 text-right text-xs font-medium text-muted-foreground">{suffix}</span> : null}</div></Field>;
 }
