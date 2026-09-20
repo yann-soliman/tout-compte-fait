@@ -16,6 +16,7 @@ export function CompositionChart({ result }: { result: StatusResult }) {
               innerRadius={50}
               outerRadius={72}
               paddingAngle={2}
+              isAnimationActive={false}
               stroke="none"
             >
               {result.composition.map((part) => (

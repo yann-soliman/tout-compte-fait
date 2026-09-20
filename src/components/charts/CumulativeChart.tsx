@@ -38,6 +38,7 @@ export function CumulativeChart({ points }: { points: ProjectionPoint[] }) {
             dataKey="microCumulative"
             stroke="#7868e8"
             strokeWidth={3}
+            isAnimationActive={false}
             dot={false}
             activeDot={{ r: 5 }}
           />
@@ -46,6 +47,7 @@ export function CumulativeChart({ points }: { points: ProjectionPoint[] }) {
             dataKey="employeeCumulative"
             stroke="#16a77e"
             strokeWidth={3}
+            isAnimationActive={false}
             dot={false}
             activeDot={{ r: 5 }}
           />
