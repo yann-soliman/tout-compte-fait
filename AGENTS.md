@@ -1,10 +1,9 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+# Project guidance
+
+- Follow `.specify/memory/constitution.md`.
+- Start each functional increment with Spec Kit.
+- Keep statutory rules sourced, dated and covered by boundary tests.
+- Keep calculations independent from React components.
+- Preserve the compact, numeric-first interface and place results after inputs.
+- Do not reintroduce Lovable, TanStack Start, server-side rendering or runtime secrets without an
+  approved architecture change.
