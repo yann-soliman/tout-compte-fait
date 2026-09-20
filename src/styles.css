@@ -12,7 +12,7 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --ink: #202235;
-  --muted: #77798c;
+  --muted: #666879;
   --line: #e5e5ec;
   --surface: #ffffff;
   --soft: #f7f7fa;
@@ -396,7 +396,7 @@ main {
 
 .field__suffix {
   flex: 0 0 auto;
-  color: #9798a7;
+  color: #6d6f80;
   font-size: 0.68rem;
   font-weight: 700;
 }
@@ -427,7 +427,7 @@ main {
   padding: 0 8px;
   border: 0;
   border-radius: 7px;
-  color: #898a99;
+  color: #666879;
   background: transparent;
   font-size: 0.72rem;
   font-weight: 750;
@@ -757,7 +757,7 @@ main {
 .result-summary small {
   grid-column: 3;
   grid-row: 1 / 3;
-  color: #6f7282;
+  color: #a7a9b7;
   font-size: 0.62rem;
 }
 

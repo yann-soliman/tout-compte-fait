@@ -59,10 +59,12 @@ export function App() {
       </header>
 
       <main>
-        <nav className="view-tabs" aria-label="Vues du comparateur">
+        <nav className="view-tabs" aria-label="Vues du comparateur" role="tablist">
           <button
+            id="tab-simulator"
             type="button"
             aria-selected={view === 'simulator'}
+            aria-controls="panel-simulator"
             role="tab"
             className={view === 'simulator' ? 'is-active' : undefined}
             onClick={() => setView('simulator')}
@@ -71,8 +73,10 @@ export function App() {
             Simulateur
           </button>
           <button
+            id="tab-projection"
             type="button"
             aria-selected={view === 'projection'}
+            aria-controls="panel-projection"
             role="tab"
             className={view === 'projection' ? 'is-active' : undefined}
             onClick={() => setView('projection')}
@@ -83,7 +87,12 @@ export function App() {
         </nav>
 
         {view === 'simulator' ? (
-          <div className="simulator" role="tabpanel">
+          <div
+            className="simulator"
+            id="panel-simulator"
+            role="tabpanel"
+            aria-labelledby="tab-simulator"
+          >
             <div className="page-intro">
               <div>
                 <span className="eyebrow">Comparaison rapide</span>
@@ -317,13 +326,15 @@ export function App() {
             <Results result={result} period={scenario.period} />
           </div>
         ) : (
-          <Suspense fallback={<div className="loading-panel">Charger la projection…</div>}>
-            <ProjectionView
-              result={result}
-              retirement={scenario.retirement}
-              onChange={(retirement) => setScenario((current) => ({ ...current, retirement }))}
-            />
-          </Suspense>
+          <div id="panel-projection" role="tabpanel" aria-labelledby="tab-projection">
+            <Suspense fallback={<div className="loading-panel">Charger la projection…</div>}>
+              <ProjectionView
+                result={result}
+                retirement={scenario.retirement}
+                onChange={(retirement) => setScenario((current) => ({ ...current, retirement }))}
+              />
+            </Suspense>
+          </div>
         )}
       </main>
 
