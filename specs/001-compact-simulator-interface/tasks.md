@@ -86,4 +86,3 @@ use the retained simulator scenario.
 Deliver US1 as the first usable compact simulator, add optional detail through US2, then add the
 projection panel through US3. Keep provisional formulas isolated so the business specification can
 replace them as a separate increment.
-
