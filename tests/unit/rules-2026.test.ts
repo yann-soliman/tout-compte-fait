@@ -36,4 +36,10 @@ describe('2026 regulatory catalogue contract', () => {
     }
     expect(() => assertUsableCatalog(provisional, 2026, ['microSocial'])).toThrow(/provisoire/i)
   })
+
+  it('keeps every encoded employee and base-retirement rule directly sourced', () => {
+    assertUsableCatalog(rules2026, 2026, ['employeeContributions', 'baseRetirement'])
+    expect(rules2026.employeeContributions).toHaveLength(12)
+    expect(rules2026.complementaryRetirement).toBeUndefined()
+  })
 })

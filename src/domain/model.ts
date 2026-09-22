@@ -30,6 +30,8 @@ export interface ContributionBand {
   lowerExclusive: MoneyCents
   upperInclusive?: MoneyCents
   rate: RatePpm
+  baseFactor?: RatePpm
+  triggerAbove?: MoneyCents
   category: 'all' | 'cadre'
   source: SourceReference
   rounding: RoundingMode
@@ -38,6 +40,8 @@ export interface ContributionBand {
 export interface RetirementRuleSet {
   affiliation: string
   qualifyingBaseFormula: string
+  baseAllocationRate?: RegulatoryRule<RatePpm>
+  qualifyingBaseRate?: RegulatoryRule<RatePpm>
   quarterThreshold?: RegulatoryRule<MoneyCents>
   annualQuarterCap?: RegulatoryRule<number>
   pointPurchaseValue?: RegulatoryRule<MoneyCents>

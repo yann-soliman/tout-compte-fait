@@ -43,7 +43,7 @@ description: 'Task list for the 2026 status comparison feature'
 - [x] T008 Implement `MoneyCents` and `RatePpm` helpers with safe-integer validation and rule-selected rounding in `src/domain/money.ts`
 - [x] T009 [P] Define `ComparisonScenario`, `MicroScenario`, `EmployeeScenario`, `RegulatoryCatalog`, source metadata, confidence, warning and result types from `data-model.md` in `src/domain/model.ts`
 - [x] T010 [P] Add failing catalogue tests for year mismatch, absent rules, source metadata and rejection of non-`known` rules as established results in `tests/unit/rules-2026.test.ts`
-- [ ] T011 Create the 2026 regulatory catalogue in `src/domain/rules/2026.ts`, including only values verified by T002–T005 and attaching authority, title, URL, effective date, verification date, status, base, bounds and rounding metadata to every rule
+- [x] T011 Create the 2026 regulatory catalogue in `src/domain/rules/2026.ts`, including only values verified by T002–T005 and attaching authority, title, URL, effective date, verification date, status, base, bounds and rounding metadata to every rule
 - [ ] T012 Add shared scenario validation for `referenceYear` literal `2026`, safe integer money, billed days `0–366`, work ratio `1–100`, leave `0–52` in half-week increments, RTT `0–366`, projection years `1–30` and growth `−100%–100%` in `src/domain/validate.ts`
 - [ ] T013 Update default values to satisfy the new validated scenario shape without using any provisional statutory value in `src/domain/defaults.ts`
 - [ ] T014 Refactor the calculation entry point to accept a validated scenario and matching regulatory catalogue, aggregate confidence and source references, and block missing required rules in `src/domain/calculate.ts`
