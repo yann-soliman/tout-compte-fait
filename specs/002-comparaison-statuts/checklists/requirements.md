@@ -39,5 +39,5 @@
 ## Notes
 
 - Validation iteration 1 (2026-09-21): all Spec Kit content and readiness checks pass.
-- Regulatory verification is intentionally incomplete because both the web research service and direct access to the cited institutional sites were unavailable in the execution environment. PR-001 is therefore marked provisional, PR-002 remains estimative, and all other unconfirmed values remain unspecified and provisional.
-- `$speckit-clarify` resolved the product decisions on 2026-09-22. Before statutory implementation, directly confirm the 2026 micro-social/formation rates, micro ceiling, employee contribution tables and retirement parameters, then complete the unchecked institutional-verification item.
+- Regulatory verification remains intentionally incomplete. Service Public Entreprendre directly confirmed the 2026 micro, employee-payroll and base-retirement inputs, while Agirc-Arrco remained behind an antibot response and the official micro-retirement page did not establish SSI complementary-point parameters for the selected liberal scope.
+- The unchecked item is retained without overstating verification. Complementary retirement stays provisional or blocked; only directly verified known rules may enter the 2026 catalogue.

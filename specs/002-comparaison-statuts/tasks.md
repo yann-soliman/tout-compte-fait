@@ -23,11 +23,11 @@ description: 'Task list for the 2026 status comparison feature'
 **Purpose**: Make the existing project and source evidence ready for implementation.
 
 - [x] T001 Record and use the repository-required Node.js 24 runtime for all validation commands in `.nvmrc` and `README.md`
-- [ ] T002 Verify the 2026 micro-social rate, professional-training contribution, turnover ceiling, two-year exit rule, partial-year proration and CFE principles against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
-- [ ] T003 Verify the 2026 PASS, general employee old-age deductions, exact CSG/CRDS base, Agirc-Arrco T1/T2, CEG, CET, Apec and payroll rounding against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
-- [ ] T004 Verify the 2026 base-retirement quarter threshold, annual cap, micro qualifying base and supported SSI affiliation against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
-- [ ] T005 Verify the 2026 Agirc-Arrco and SSI complementary point formulas, purchase values, service values and rounding against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
-- [ ] T006 Reconcile T002–T005 with the parameter table, correct every outdated value, retain unresolved entries as provisional or estimative, and update the institutional-verification checkbox and notes without overstating completeness in `specs/002-comparaison-statuts/spec.md` and `specs/002-comparaison-statuts/checklists/requirements.md`
+- [x] T002 Verify the 2026 micro-social rate, professional-training contribution, turnover ceiling, two-year exit rule, partial-year proration and CFE principles against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
+- [x] T003 Verify the 2026 PASS, general employee old-age deductions, exact CSG/CRDS base, Agirc-Arrco T1/T2, CEG, CET, Apec and payroll rounding against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
+- [x] T004 Verify the 2026 base-retirement quarter threshold, annual cap, micro qualifying base and supported SSI affiliation against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
+- [x] T005 Verify the 2026 Agirc-Arrco and SSI complementary point formulas, purchase values, service values and rounding against direct institutional publications, recording one evidence row per rule in `specs/002-comparaison-statuts/research.md`
+- [x] T006 Reconcile T002–T005 with the parameter table, correct every outdated value, retain unresolved entries as provisional or estimative, and update the institutional-verification checkbox and notes without overstating completeness in `specs/002-comparaison-statuts/spec.md` and `specs/002-comparaison-statuts/checklists/requirements.md`
 
 **Checkpoint**: Do not proceed to statutory implementation unless T002–T005 directly verify every value needed by the chosen MVP and T006 records the checklist's true status.
 
@@ -39,11 +39,11 @@ description: 'Task list for the 2026 status comparison feature'
 
 **⚠️ CRITICAL**: No user-story implementation begins until this phase is complete.
 
-- [ ] T007 [P] Add failing unit tests for integer-cent arithmetic, parts-per-million rates and explicit rounding modes in `tests/unit/money.test.ts`
-- [ ] T008 Implement `MoneyCents` and `RatePpm` helpers with safe-integer validation and rule-selected rounding in `src/domain/money.ts`
-- [ ] T009 [P] Define `ComparisonScenario`, `MicroScenario`, `EmployeeScenario`, `RegulatoryCatalog`, source metadata, confidence, warning and result types from `data-model.md` in `src/domain/model.ts`
-- [ ] T010 [P] Add failing catalogue tests for year mismatch, absent rules, source metadata and rejection of non-`known` rules as established results in `tests/unit/rules-2026.test.ts`
-- [ ] T011 Create the 2026 regulatory catalogue in `src/domain/rules/2026.ts`, including only values verified by T002–T005 and attaching authority, title, URL, effective date, verification date, status, base, bounds and rounding metadata to every rule
+- [x] T007 [P] Add failing unit tests for integer-cent arithmetic, parts-per-million rates and explicit rounding modes in `tests/unit/money.test.ts`
+- [x] T008 Implement `MoneyCents` and `RatePpm` helpers with safe-integer validation and rule-selected rounding in `src/domain/money.ts`
+- [x] T009 [P] Define `ComparisonScenario`, `MicroScenario`, `EmployeeScenario`, `RegulatoryCatalog`, source metadata, confidence, warning and result types from `data-model.md` in `src/domain/model.ts`
+- [x] T010 [P] Add failing catalogue tests for year mismatch, absent rules, source metadata and rejection of non-`known` rules as established results in `tests/unit/rules-2026.test.ts`
+- [x] T011 Create the 2026 regulatory catalogue in `src/domain/rules/2026.ts`, including only values verified by T002–T005 and attaching authority, title, URL, effective date, verification date, status, base, bounds and rounding metadata to every rule
 - [ ] T012 Add shared scenario validation for `referenceYear` literal `2026`, safe integer money, billed days `0–366`, work ratio `1–100`, leave `0–52` in half-week increments, RTT `0–366`, projection years `1–30` and growth `−100%–100%` in `src/domain/validate.ts`
 - [ ] T013 Update default values to satisfy the new validated scenario shape without using any provisional statutory value in `src/domain/defaults.ts`
 - [ ] T014 Refactor the calculation entry point to accept a validated scenario and matching regulatory catalogue, aggregate confidence and source references, and block missing required rules in `src/domain/calculate.ts`
