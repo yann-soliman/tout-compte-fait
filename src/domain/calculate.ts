@@ -1,9 +1,9 @@
-import type { ComparisonResult, ComparisonScenario, StatusResult } from './model'
+import type { ComparisonResult, LegacyComparisonScenario, StatusResult } from './model'
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 const round = (value: number) => Math.round(value)
 
-export function calculateComparison(scenario: ComparisonScenario): ComparisonResult {
+export function calculateComparison(scenario: LegacyComparisonScenario): ComparisonResult {
   const microRevenue =
     Math.max(0, scenario.micro.dailyRate) * clamp(scenario.micro.workedDays, 0, 366)
   const microSocialCharges = microRevenue * 0.229
@@ -79,7 +79,7 @@ function toResult(result: Omit<StatusResult, 'valuePerDay'>): StatusResult {
   }
 }
 
-export function forPeriod(value: number, period: ComparisonScenario['period']): number {
+export function forPeriod(value: number, period: LegacyComparisonScenario['period']): number {
   return period === 'monthly' ? value / 12 : value
 }
 

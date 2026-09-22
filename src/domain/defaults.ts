@@ -1,6 +1,6 @@
-import type { ComparisonScenario } from './model'
+import type { LegacyComparisonScenario } from './model'
 
-export const defaultScenario: ComparisonScenario = {
+export const defaultScenario: LegacyComparisonScenario = {
   referenceYear: 2026,
   period: 'annual',
   householdParts: 1,

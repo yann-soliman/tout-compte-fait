@@ -1,15 +1,15 @@
 import { ChartNoAxesCombined, Clock3, TrendingUp } from 'lucide-react'
 import { euro } from '../domain/calculate'
 import { buildProjection } from '../domain/projection'
-import type { ComparisonResult, RetirementScenario } from '../domain/model'
+import type { ComparisonResult, LegacyRetirementScenario } from '../domain/model'
 import { CompositionChart } from './charts/CompositionChart'
 import { CumulativeChart } from './charts/CumulativeChart'
 import { SegmentedControl } from './ui/SegmentedControl'
 
 interface ProjectionViewProps {
   result: ComparisonResult
-  retirement: RetirementScenario
-  onChange: (next: RetirementScenario) => void
+  retirement: LegacyRetirementScenario
+  onChange: (next: LegacyRetirementScenario) => void
 }
 
 export function ProjectionView({ result, retirement, onChange }: ProjectionViewProps) {
