@@ -16,7 +16,12 @@ import { Section } from './components/ui/Section'
 import { SegmentedControl } from './components/ui/SegmentedControl'
 import { calculateComparison } from './domain/calculate'
 import { defaultScenario } from './domain/defaults'
-import type { AppView, ComparisonScenario, EmployeeScenario, MicroScenario } from './domain/model'
+import type {
+  AppView,
+  LegacyComparisonScenario,
+  LegacyEmployeeScenario,
+  LegacyMicroScenario,
+} from './domain/model'
 
 const ProjectionView = lazy(() =>
   import('./components/ProjectionView').then((module) => ({ default: module.ProjectionView })),
@@ -24,12 +29,12 @@ const ProjectionView = lazy(() =>
 
 export function App() {
   const [view, setView] = useState<AppView>('simulator')
-  const [scenario, setScenario] = useState<ComparisonScenario>(defaultScenario)
+  const [scenario, setScenario] = useState<LegacyComparisonScenario>(defaultScenario)
   const result = useMemo(() => calculateComparison(scenario), [scenario])
 
-  const updateMicro = (patch: Partial<MicroScenario>) =>
+  const updateMicro = (patch: Partial<LegacyMicroScenario>) =>
     setScenario((current) => ({ ...current, micro: { ...current.micro, ...patch } }))
-  const updateEmployee = (patch: Partial<EmployeeScenario>) =>
+  const updateEmployee = (patch: Partial<LegacyEmployeeScenario>) =>
     setScenario((current) => ({ ...current, employee: { ...current.employee, ...patch } }))
 
   return (
