@@ -1142,6 +1142,48 @@ footer {
   }
 }
 
+.deduction-details,
+.rule-disclosure {
+  margin-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+}
+
+.deduction-details summary,
+.rule-disclosure summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.deduction-details dl > div,
+.rule-disclosure li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.rule-disclosure li {
+  flex-direction: column;
+}
+
+.rule-disclosure a {
+  color: inherit;
+}
+
+.result-notice {
+  margin: 12px 0 0;
+  border-left: 3px solid #f4b942;
+  padding: 8px 10px;
+  background: rgba(244, 185, 66, 0.1);
+  font-size: 0.78rem;
+}
+
+.toggle-card--compact {
+  min-height: 42px;
+  padding: 8px 12px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

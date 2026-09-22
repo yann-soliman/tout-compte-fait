@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { compactEuro, euro } from '../../domain/calculate'
+import { compactEuro, formatCents } from '../../domain/calculate'
 import type { ProjectionPoint } from '../../domain/model'
 
 export function CumulativeChart({ points }: { points: ProjectionPoint[] }) {
@@ -19,13 +19,13 @@ export function CumulativeChart({ points }: { points: ProjectionPoint[] }) {
           <CartesianGrid stroke="#e7e6ee" strokeDasharray="4 4" vertical={false} />
           <XAxis dataKey="year" tickFormatter={(value) => `${value} an`} tickLine={false} />
           <YAxis
-            tickFormatter={(value) => compactEuro.format(value)}
+            tickFormatter={(value) => compactEuro.format(Number(value) / 100)}
             tickLine={false}
             axisLine={false}
           />
           <Tooltip
             formatter={(value, name) => [
-              euro.format(Number(value)),
+              formatCents(Number(value)),
               name === 'microCumulative' ? 'Micro-entreprise' : 'Salariat',
             ]}
             labelFormatter={(label) => `Année ${label}`}

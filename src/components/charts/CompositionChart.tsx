@@ -1,5 +1,5 @@
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
-import { euro } from '../../domain/calculate'
+import { formatCents } from '../../domain/calculate'
 import type { StatusResult } from '../../domain/model'
 
 export function CompositionChart({ result }: { result: StatusResult }) {
@@ -26,7 +26,7 @@ export function CompositionChart({ result }: { result: StatusResult }) {
           </PieChart>
         </ResponsiveContainer>
         <span className="composition__center">
-          <strong>{euro.format(result.totalValue)}</strong>
+          <strong>{formatCents(result.totalValue)}</strong>
           <small>valeur / an</small>
         </span>
       </div>
@@ -37,7 +37,7 @@ export function CompositionChart({ result }: { result: StatusResult }) {
             <li key={part.name}>
               <span className="legend-dot" style={{ backgroundColor: part.color }} />
               <span>{part.name}</span>
-              <strong>{euro.format(part.value)}</strong>
+              <strong>{formatCents(part.value)}</strong>
             </li>
           ))}
         </ul>
