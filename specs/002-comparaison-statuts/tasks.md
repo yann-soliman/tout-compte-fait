@@ -44,9 +44,9 @@ description: 'Task list for the 2026 status comparison feature'
 - [x] T009 [P] Define `ComparisonScenario`, `MicroScenario`, `EmployeeScenario`, `RegulatoryCatalog`, source metadata, confidence, warning and result types from `data-model.md` in `src/domain/model.ts`
 - [x] T010 [P] Add failing catalogue tests for year mismatch, absent rules, source metadata and rejection of non-`known` rules as established results in `tests/unit/rules-2026.test.ts`
 - [x] T011 Create the 2026 regulatory catalogue in `src/domain/rules/2026.ts`, including only values verified by T002–T005 and attaching authority, title, URL, effective date, verification date, status, base, bounds and rounding metadata to every rule
-- [ ] T012 Add shared scenario validation for `referenceYear` literal `2026`, safe integer money, billed days `0–366`, work ratio `1–100`, leave `0–52` in half-week increments, RTT `0–366`, projection years `1–30` and growth `−100%–100%` in `src/domain/validate.ts`
-- [ ] T013 Update default values to satisfy the new validated scenario shape without using any provisional statutory value in `src/domain/defaults.ts`
-- [ ] T014 Refactor the calculation entry point to accept a validated scenario and matching regulatory catalogue, aggregate confidence and source references, and block missing required rules in `src/domain/calculate.ts`
+- [x] T012 Add shared scenario validation for `referenceYear` literal `2026`, safe integer money, billed days `0–366`, work ratio `1–100`, leave `0–52` in half-week increments, RTT `0–366`, projection years `1–30` and growth `−100%–100%` in `src/domain/validate.ts`
+- [x] T013 Update default values to satisfy the new validated scenario shape without using any provisional statutory value in `src/domain/defaults.ts`
+- [x] T014 Refactor the calculation entry point to accept a validated scenario and matching regulatory catalogue, aggregate confidence and source references, and block missing required rules in `src/domain/calculate.ts`
 
 **Checkpoint**: Exact arithmetic, typed scenarios, validated inputs, regulatory provenance and confidence propagation work without React.
 
@@ -60,21 +60,21 @@ description: 'Task list for the 2026 status comparison feature'
 
 ### Tests for User Story 1
 
-- [ ] T015 [P] [US1] Add failing micro tests for turnover, social contribution, professional-training contribution, economic expenses, unknown CFE, zero CFE exemption and exact rounding in `tests/unit/micro-income.test.ts`
-- [ ] T016 [P] [US1] Add failing eligibility tests one cent below, at and above the full-year and prorated 2026 ceiling, asserting `not-confirmed`, `ceiling-exceeded` and no `confirmed-eligible` state without history in `tests/unit/eligibility.test.ts`
-- [ ] T017 [P] [US1] Add failing employee tests for every verified general employee contribution, CSG/CRDS base, 1/4/8-PASS boundaries, cadre Apec applicability and excluded payslip variations in `tests/unit/employee-income.test.ts`
-- [ ] T018 [P] [US1] Add failing aggregate tests for annual/monthly display reconciliation, confidence propagation, missing-rule blocking and micro-minus-employee differences in `tests/unit/calculate.test.ts`
-- [ ] T019 [P] [US1] Add a failing end-to-end test that enters a complete 2026 scenario and verifies net income, detailed deductions, eligibility warning, difference and regulatory source disclosure after the inputs in `tests/e2e/simulator.spec.ts`
+- [x] T015 [P] [US1] Add failing micro tests for turnover, social contribution, professional-training contribution, economic expenses, unknown CFE, zero CFE exemption and exact rounding in `tests/unit/micro-income.test.ts`
+- [x] T016 [P] [US1] Add failing eligibility tests one cent below, at and above the full-year and prorated 2026 ceiling, asserting `not-confirmed`, `ceiling-exceeded` and no `confirmed-eligible` state without history in `tests/unit/eligibility.test.ts`
+- [x] T017 [P] [US1] Add failing employee tests for every verified general employee contribution, CSG/CRDS base, 1/4/8-PASS boundaries, cadre Apec applicability and excluded payslip variations in `tests/unit/employee-income.test.ts`
+- [x] T018 [P] [US1] Add failing aggregate tests for annual/monthly display reconciliation, confidence propagation, missing-rule blocking and micro-minus-employee differences in `tests/unit/calculate.test.ts`
+- [x] T019 [P] [US1] Add a failing end-to-end test that enters a complete 2026 scenario and verifies net income, detailed deductions, eligibility warning, difference and regulatory source disclosure after the inputs in `tests/e2e/simulator.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T020 [P] [US1] Implement turnover-ceiling comparison, activity-start proration and `not-confirmed | ceiling-exceeded | out-of-scope` transitions without a `confirmed-eligible` transition in `src/domain/eligibility.ts`
-- [ ] T021 [P] [US1] Implement micro turnover, verified micro-social/formation deductions, entered economic costs and CFE confidence handling without deducting real expenses from the statutory base in `src/domain/micro.ts`
-- [ ] T022 [P] [US1] Implement the verified mainland private-employee deduction bands for `cadre | non-cadre`, excluding collective and local variations and never applying work ratio to gross salary a second time, in `src/domain/employee.ts`
-- [ ] T023 [US1] Replace demonstration percentages with the micro and employee calculators, preserve annual reference values, derive monthly display values by division by 12 and produce separate net/economic differences in `src/domain/calculate.ts`
-- [ ] T024 [US1] Update common, micro and employee input controls for fixed year 2026, activity start date, actual gross salary, required cadre/non-cadre choice, CFE amount/exemption and inline validation in `src/App.tsx`
-- [ ] T025 [US1] Render net income first, the traceable contribution/cost breakdown, confidence, eligibility warnings and annual/monthly differences without presenting a provisional rule as established in `src/components/Results.tsx`
-- [ ] T026 [US1] Add reusable source/status disclosure and announced validation/eligibility notice presentation in `src/components/ui/RuleDisclosure.tsx` and `src/components/ui/ResultNotice.tsx`
+- [x] T020 [P] [US1] Implement turnover-ceiling comparison, activity-start proration and `not-confirmed | ceiling-exceeded | out-of-scope` transitions without a `confirmed-eligible` transition in `src/domain/eligibility.ts`
+- [x] T021 [P] [US1] Implement micro turnover, verified micro-social/formation deductions, entered economic costs and CFE confidence handling without deducting real expenses from the statutory base in `src/domain/micro.ts`
+- [x] T022 [P] [US1] Implement the verified mainland private-employee deduction bands for `cadre | non-cadre`, excluding collective and local variations and never applying work ratio to gross salary a second time, in `src/domain/employee.ts`
+- [x] T023 [US1] Replace demonstration percentages with the micro and employee calculators, preserve annual reference values, derive monthly display values by division by 12 and produce separate net/economic differences in `src/domain/calculate.ts`
+- [x] T024 [US1] Update common, micro and employee input controls for fixed year 2026, activity start date, actual gross salary, required cadre/non-cadre choice, CFE amount/exemption and inline validation in `src/App.tsx`
+- [x] T025 [US1] Render net income first, the traceable contribution/cost breakdown, confidence, eligibility warnings and annual/monthly differences without presenting a provisional rule as established in `src/components/Results.tsx`
+- [x] T026 [US1] Add reusable source/status disclosure and announced validation/eligibility notice presentation in `src/components/ui/RuleDisclosure.tsx` and `src/components/ui/ResultNotice.tsx`
 
 **Checkpoint**: User Story 1 independently delivers the MVP comparison and every displayed statutory number is a verified, dated 2026 rule or visibly blocked/estimated.
 
@@ -88,16 +88,16 @@ description: 'Task list for the 2026 status comparison feature'
 
 ### Tests for User Story 2
 
-- [ ] T027 [P] [US2] Add failing tests for leap-year weekdays, work ratio, half-week leave, RTT, billed days, zero-day indeterminate value and calendar maxima in `tests/unit/worked-time.test.ts`
-- [ ] T028 [P] [US2] Add failing tests proving micro expenses are deducted once, employee benefits are added once, neither changes a statutory base, and per-day value uses the correct status-specific days in `tests/unit/economic-value.test.ts`
-- [ ] T029 [P] [US2] Add a failing end-to-end journey for expenses, benefits, time-at-work and zero-day behavior at desktop, tablet and mobile widths in `tests/e2e/simulator.spec.ts`
+- [x] T027 [P] [US2] Add failing tests for leap-year weekdays, work ratio, half-week leave, RTT, billed days, zero-day indeterminate value and calendar maxima in `tests/unit/worked-time.test.ts`
+- [x] T028 [P] [US2] Add failing tests proving micro expenses are deducted once, employee benefits are added once, neither changes a statutory base, and per-day value uses the correct status-specific days in `tests/unit/economic-value.test.ts`
+- [x] T029 [P] [US2] Add a failing end-to-end journey for expenses, benefits, time-at-work and zero-day behavior at desktop, tablet and mobile widths in `tests/e2e/simulator.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T030 [P] [US2] Implement 2026 weekday counting and employee worked days from work ratio, leave and RTT without double subtraction in `src/domain/worked-time.ts`
-- [ ] T031 [US2] Extend status results with economic costs, benefits, worked days and `MoneyCents | indeterminate` value per day in `src/domain/calculate.ts`
-- [ ] T032 [US2] Update time, expenses and benefits inputs with the exact constraints `billedDays 0–366`, `workRatioPercent 1–100`, `paidLeaveWeeks 0–52` in half-week increments and `rttDays 0–366` in `src/App.tsx`
-- [ ] T033 [US2] Present economic value, worked days and per-day value after net income, using `Indéterminée` for zero days and preventing benefits from appearing as salary net, in `src/components/Results.tsx`
+- [x] T030 [P] [US2] Implement 2026 weekday counting and employee worked days from work ratio, leave and RTT without double subtraction in `src/domain/worked-time.ts`
+- [x] T031 [US2] Extend status results with economic costs, benefits, worked days and `MoneyCents | indeterminate` value per day in `src/domain/calculate.ts`
+- [x] T032 [US2] Update time, expenses and benefits inputs with the exact constraints `billedDays 0–366`, `workRatioPercent 1–100`, `paidLeaveWeeks 0–52` in half-week increments and `rttDays 0–366` in `src/App.tsx`
+- [x] T033 [US2] Present economic value, worked days and per-day value after net income, using `Indéterminée` for zero days and preventing benefits from appearing as salary net, in `src/components/Results.tsx`
 
 **Checkpoint**: User Stories 1 and 2 both remain independently testable; economic comparison explains every included cost and benefit.
 

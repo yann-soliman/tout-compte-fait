@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { calculateComparison } from '../../src/domain/calculate'
 import { defaultScenario } from '../../src/domain/defaults'
 import { buildProjection } from '../../src/domain/projection'
+import { rules2026 } from '../../src/domain/rules/2026'
 
 describe('buildProjection', () => {
-  const result = calculateComparison(defaultScenario)
+  const result = calculateComparison(defaultScenario, rules2026)
 
   it('creates one cumulative point per selected year', () => {
     const points = buildProjection(result, 10, 0)

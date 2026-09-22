@@ -1,19 +1,19 @@
 import { ChartNoAxesCombined, Clock3, TrendingUp } from 'lucide-react'
-import { euro } from '../domain/calculate'
+import { formatCents } from '../domain/calculate'
 import { buildProjection } from '../domain/projection'
-import type { ComparisonResult, LegacyRetirementScenario } from '../domain/model'
+import type { ComparisonResult, ProjectionOptions } from '../domain/model'
 import { CompositionChart } from './charts/CompositionChart'
 import { CumulativeChart } from './charts/CumulativeChart'
 import { SegmentedControl } from './ui/SegmentedControl'
 
 interface ProjectionViewProps {
   result: ComparisonResult
-  retirement: LegacyRetirementScenario
-  onChange: (next: LegacyRetirementScenario) => void
+  projection: ProjectionOptions
+  onChange: (next: ProjectionOptions) => void
 }
 
-export function ProjectionView({ result, retirement, onChange }: ProjectionViewProps) {
-  const points = buildProjection(result, retirement.comparisonYears, retirement.annualGrowth)
+export function ProjectionView({ result, projection, onChange }: ProjectionViewProps) {
+  const points = buildProjection(result, projection.years, projection.annualGrowthRate)
   const last = points.at(-1)
 
   return (
@@ -25,14 +25,14 @@ export function ProjectionView({ result, retirement, onChange }: ProjectionViewP
         </div>
         <SegmentedControl
           label="Durée"
-          value={retirement.comparisonYears}
+          value={projection.years}
           options={[
             { label: '5 ans', value: 5 },
             { label: '10 ans', value: 10 },
             { label: '20 ans', value: 20 },
             { label: '30 ans', value: 30 },
           ]}
-          onChange={(comparisonYears) => onChange({ ...retirement, comparisonYears })}
+          onChange={(years) => onChange({ ...projection, years })}
           compact
         />
       </section>
@@ -43,21 +43,21 @@ export function ProjectionView({ result, retirement, onChange }: ProjectionViewP
             <TrendingUp size={17} />
           </span>
           <span>Micro-entreprise</span>
-          <strong>{euro.format(last?.microCumulative ?? 0)}</strong>
+          <strong>{formatCents(last?.microCumulative ?? 0)}</strong>
         </article>
         <article>
           <span className="kpi-icon kpi-icon--employee">
             <ChartNoAxesCombined size={17} />
           </span>
           <span>Salariat</span>
-          <strong>{euro.format(last?.employeeCumulative ?? 0)}</strong>
+          <strong>{formatCents(last?.employeeCumulative ?? 0)}</strong>
         </article>
         <article>
           <span className="kpi-icon">
             <Clock3 size={17} />
           </span>
           <span>Durée</span>
-          <strong>{retirement.comparisonYears} ans</strong>
+          <strong>{projection.years} ans</strong>
         </article>
       </div>
 

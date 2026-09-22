@@ -106,37 +106,21 @@ export interface ResultWarning {
   affectedStatus?: StatusKind
 }
 
-// Temporary adapter contract for the existing UI. T013/T024 migrate it to ComparisonScenario.
-export interface LegacyMicroScenario {
-  dailyRate: number
-  workedDays: number
-  annualExpenses: number
-  healthInsuranceMonthly: number
-  cfeAnnual: number
+export interface DeductionLine {
+  id: string
+  label: string
+  base: MoneyCents
+  amount: MoneyCents
+  source: SourceReference
 }
 
-export interface LegacyEmployeeScenario {
-  grossAnnualSalary: number
-  workRatio: number
-  paidLeaveWeeks: number
-  rttDays: number
-  annualBenefits: number
-}
+export type EligibilityState = 'not-confirmed' | 'ceiling-exceeded' | 'out-of-scope'
 
-export interface LegacyRetirementScenario {
-  includeContributions: boolean
-  comparisonYears: number
-  annualGrowth: number
-}
-
-export interface LegacyComparisonScenario {
-  referenceYear: number
-  period: DisplayPeriod
-  householdParts: number
-  otherTaxableIncome: number
-  micro: LegacyMicroScenario
-  employee: LegacyEmployeeScenario
-  retirement: LegacyRetirementScenario
+export interface EligibilityAssessment {
+  state: EligibilityState
+  turnover: MoneyCents
+  applicableCeiling: MoneyCents
+  source: SourceReference
 }
 
 export interface CompositionPart {
@@ -149,13 +133,18 @@ export interface StatusResult {
   netIncome: number
   totalValue: number
   workedDays: number
-  valuePerDay: number
+  valuePerDay: MoneyCents | 'indeterminate'
   retirementContribution: number
   charges: number
   composition: CompositionPart[]
   confidence?: Confidence
   warnings?: ResultWarning[]
   ruleReferences?: SourceReference[]
+  grossIncome?: MoneyCents
+  statutoryDeductions?: DeductionLine[]
+  economicCosts?: MoneyCents
+  annualBenefits?: MoneyCents
+  eligibility?: EligibilityAssessment
 }
 export interface ComparisonResult {
   micro: StatusResult
@@ -163,6 +152,8 @@ export interface ComparisonResult {
   difference: number
   confidence?: Confidence
   warnings?: ResultWarning[]
+  netIncomeDifference?: number
+  economicValueDifference?: number
 }
 export interface ProjectionPoint {
   year: number

@@ -11,17 +11,15 @@ import {
 } from 'lucide-react'
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { Results } from './components/Results'
+import { ResultNotice } from './components/ui/ResultNotice'
 import { NumberField } from './components/ui/NumberField'
 import { Section } from './components/ui/Section'
 import { SegmentedControl } from './components/ui/SegmentedControl'
 import { calculateComparison } from './domain/calculate'
 import { defaultScenario } from './domain/defaults'
-import type {
-  AppView,
-  LegacyComparisonScenario,
-  LegacyEmployeeScenario,
-  LegacyMicroScenario,
-} from './domain/model'
+import type { AppView, ComparisonScenario, EmployeeScenario, MicroScenario } from './domain/model'
+import { assertMoneyCents } from './domain/money'
+import { rules2026 } from './domain/rules/2026'
 
 const ProjectionView = lazy(() =>
   import('./components/ProjectionView').then((module) => ({ default: module.ProjectionView })),
@@ -29,12 +27,21 @@ const ProjectionView = lazy(() =>
 
 export function App() {
   const [view, setView] = useState<AppView>('simulator')
-  const [scenario, setScenario] = useState<LegacyComparisonScenario>(defaultScenario)
-  const result = useMemo(() => calculateComparison(scenario), [scenario])
+  const [scenario, setScenario] = useState<ComparisonScenario>(defaultScenario)
+  const calculation = useMemo(() => {
+    try {
+      return { result: calculateComparison(scenario, rules2026), error: undefined }
+    } catch (error) {
+      return {
+        result: undefined,
+        error: error instanceof Error ? error.message : 'Scénario invalide.',
+      }
+    }
+  }, [scenario])
 
-  const updateMicro = (patch: Partial<LegacyMicroScenario>) =>
+  const updateMicro = (patch: Partial<MicroScenario>) =>
     setScenario((current) => ({ ...current, micro: { ...current.micro, ...patch } }))
-  const updateEmployee = (patch: Partial<LegacyEmployeeScenario>) =>
+  const updateEmployee = (patch: Partial<EmployeeScenario>) =>
     setScenario((current) => ({ ...current, employee: { ...current.employee, ...patch } }))
 
   return (
@@ -52,12 +59,12 @@ export function App() {
         <div className="header-controls">
           <SegmentedControl
             label="Période d’affichage"
-            value={scenario.period}
+            value={scenario.displayPeriod}
             options={[
               { label: 'Annuel', value: 'annual' },
               { label: 'Mensuel', value: 'monthly' },
             ]}
-            onChange={(period) => setScenario((current) => ({ ...current, period }))}
+            onChange={(displayPeriod) => setScenario((current) => ({ ...current, displayPeriod }))}
             compact
           />
         </div>
@@ -105,7 +112,7 @@ export function App() {
               </div>
               <span className="demo-badge">
                 <Sparkles size={14} aria-hidden="true" />
-                Démonstration
+                Règles 2026
               </span>
             </div>
 
@@ -119,40 +126,27 @@ export function App() {
                 <SegmentedControl
                   label="Année de référence"
                   value={scenario.referenceYear}
-                  options={[
-                    { label: '2025', value: 2025 },
-                    { label: '2026', value: 2026 },
-                    { label: '2027', value: 2027 },
-                  ]}
-                  onChange={(referenceYear) =>
-                    setScenario((current) => ({ ...current, referenceYear }))
-                  }
+                  options={[{ label: '2026', value: 2026 }]}
+                  onChange={() => undefined}
                   compact
                 />
-                <SegmentedControl
-                  label="Parts fiscales"
-                  value={scenario.householdParts}
-                  options={[
-                    { label: '1', value: 1 },
-                    { label: '1,5', value: 1.5 },
-                    { label: '2', value: 2 },
-                    { label: '2,5', value: 2.5 },
-                  ]}
-                  onChange={(householdParts) =>
-                    setScenario((current) => ({ ...current, householdParts }))
-                  }
-                  compact
-                />
-                <NumberField
-                  label="Autres revenus imposables"
-                  value={scenario.otherTaxableIncome}
-                  onChange={(otherTaxableIncome) =>
-                    setScenario((current) => ({ ...current, otherTaxableIncome }))
-                  }
-                  suffix="€/an"
-                  compact
-                  info="Montant annuel hors revenus comparés. Utiliser plus tard dans le calcul fiscal sourcé."
-                />
+                <label className="field">
+                  <span className="field__label">Début d’activité micro</span>
+                  <span className="field__control">
+                    <input
+                      type="date"
+                      min="2026-01-01"
+                      max="2026-12-31"
+                      value={scenario.activityStartDate ?? ''}
+                      onChange={(event) =>
+                        setScenario((current) => ({
+                          ...current,
+                          activityStartDate: event.target.value || undefined,
+                        }))
+                      }
+                    />
+                  </span>
+                </label>
               </div>
             </Section>
 
@@ -170,43 +164,66 @@ export function App() {
                     </span>
                     <span>
                       <h3>Micro-entreprise</h3>
-                      <small>Activité BNC · estimation</small>
+                      <small>Activité libérale BNC hors Cipav</small>
                     </span>
                   </header>
                   <div className="fields-grid">
                     <NumberField
                       label="Taux journalier"
-                      value={scenario.micro.dailyRate}
-                      onChange={(dailyRate) => updateMicro({ dailyRate })}
+                      value={scenario.micro.dailyRate / 100}
+                      onChange={(dailyRate) =>
+                        updateMicro({ dailyRate: assertMoneyCents(dailyRate * 100) })
+                      }
                       suffix="€/j"
                       info="Montant facturé hors taxes pour une journée travaillée."
                     />
                     <NumberField
                       label="Jours facturés"
-                      value={scenario.micro.workedDays}
-                      onChange={(workedDays) => updateMicro({ workedDays })}
+                      value={scenario.micro.billedDays}
+                      onChange={(billedDays) => updateMicro({ billedDays })}
                       suffix="j/an"
                       max={366}
                     />
                     <NumberField
                       label="Frais professionnels"
-                      value={scenario.micro.annualExpenses}
-                      onChange={(annualExpenses) => updateMicro({ annualExpenses })}
+                      value={scenario.micro.professionalExpenses / 100}
+                      onChange={(professionalExpenses) =>
+                        updateMicro({
+                          professionalExpenses: assertMoneyCents(professionalExpenses * 100),
+                        })
+                      }
                       suffix="€/an"
                     />
                     <NumberField
                       label="Mutuelle"
-                      value={scenario.micro.healthInsuranceMonthly}
-                      onChange={(healthInsuranceMonthly) => updateMicro({ healthInsuranceMonthly })}
+                      value={scenario.micro.healthInsuranceMonthly / 100}
+                      onChange={(healthInsuranceMonthly) =>
+                        updateMicro({
+                          healthInsuranceMonthly: assertMoneyCents(healthInsuranceMonthly * 100),
+                        })
+                      }
                       suffix="€/mois"
                     />
                     <NumberField
                       label="CFE"
-                      value={scenario.micro.cfeAnnual}
-                      onChange={(cfeAnnual) => updateMicro({ cfeAnnual })}
+                      value={(scenario.micro.cfeAnnual ?? 0) / 100}
+                      onChange={(cfeAnnual) =>
+                        updateMicro({ cfeAnnual: assertMoneyCents(cfeAnnual * 100) })
+                      }
                       suffix="€/an"
                       info="Cotisation foncière des entreprises. Renseigner le montant annuel réel."
                     />
+                    <label className="toggle-card toggle-card--compact">
+                      <span>Exonération de CFE confirmée</span>
+                      <input
+                        type="checkbox"
+                        checked={scenario.micro.cfeExemptionConfirmed}
+                        onChange={(event) =>
+                          updateMicro({ cfeExemptionConfirmed: event.target.checked })
+                        }
+                      />
+                      <span className="switch" aria-hidden="true" />
+                    </label>
                   </div>
                 </article>
 
@@ -217,25 +234,36 @@ export function App() {
                     </span>
                     <span>
                       <h3>Salariat</h3>
-                      <small>CDI · estimation</small>
+                      <small>Salarié privé · régime général</small>
                     </span>
                   </header>
                   <div className="fields-grid">
                     <NumberField
                       label="Salaire brut"
-                      value={scenario.employee.grossAnnualSalary}
-                      onChange={(grossAnnualSalary) => updateEmployee({ grossAnnualSalary })}
+                      value={scenario.employee.grossAnnualSalary / 100}
+                      onChange={(grossAnnualSalary) =>
+                        updateEmployee({
+                          grossAnnualSalary: assertMoneyCents(grossAnnualSalary * 100),
+                        })
+                      }
                       suffix="€/an"
                     />
                     <SegmentedControl
-                      label="Temps de travail"
-                      value={scenario.employee.workRatio}
+                      label="Catégorie"
+                      value={scenario.employee.category}
                       options={[
-                        { label: '100 %', value: 100 },
-                        { label: '90 %', value: 90 },
-                        { label: '80 %', value: 80 },
+                        { label: 'Non-cadre', value: 'non-cadre' },
+                        { label: 'Cadre', value: 'cadre' },
                       ]}
-                      onChange={(workRatio) => updateEmployee({ workRatio })}
+                      onChange={(category) => updateEmployee({ category })}
+                    />
+                    <NumberField
+                      label="Quotité de travail"
+                      value={scenario.employee.workRatioPercent}
+                      onChange={(workRatioPercent) => updateEmployee({ workRatioPercent })}
+                      suffix="%"
+                      min={1}
+                      max={100}
                     />
                     <NumberField
                       label="Congés payés"
@@ -254,8 +282,10 @@ export function App() {
                     />
                     <NumberField
                       label="Avantages"
-                      value={scenario.employee.annualBenefits}
-                      onChange={(annualBenefits) => updateEmployee({ annualBenefits })}
+                      value={scenario.employee.annualBenefits / 100}
+                      onChange={(annualBenefits) =>
+                        updateEmployee({ annualBenefits: assertMoneyCents(annualBenefits * 100) })
+                      }
                       suffix="€/an"
                       info="Participation, abondement et autres montants valorisables."
                     />
@@ -281,13 +311,13 @@ export function App() {
                   </span>
                   <input
                     type="checkbox"
-                    checked={scenario.retirement.includeContributions}
+                    checked={scenario.retirement.includeRights}
                     onChange={(event) =>
                       setScenario((current) => ({
                         ...current,
                         retirement: {
                           ...current.retirement,
-                          includeContributions: event.target.checked,
+                          includeRights: event.target.checked,
                         },
                       }))
                     }
@@ -296,27 +326,27 @@ export function App() {
                 </label>
                 <SegmentedControl
                   label="Projection"
-                  value={scenario.retirement.comparisonYears}
+                  value={scenario.projection.years}
                   options={[
                     { label: '5 ans', value: 5 },
                     { label: '10 ans', value: 10 },
                     { label: '20 ans', value: 20 },
                   ]}
-                  onChange={(comparisonYears) =>
+                  onChange={(years) =>
                     setScenario((current) => ({
                       ...current,
-                      retirement: { ...current.retirement, comparisonYears },
+                      projection: { ...current.projection, years },
                     }))
                   }
                   compact
                 />
                 <NumberField
                   label="Évolution annuelle"
-                  value={scenario.retirement.annualGrowth}
-                  onChange={(annualGrowth) =>
+                  value={scenario.projection.annualGrowthRate}
+                  onChange={(annualGrowthRate) =>
                     setScenario((current) => ({
                       ...current,
-                      retirement: { ...current.retirement, annualGrowth },
+                      projection: { ...current.projection, annualGrowthRate },
                     }))
                   }
                   suffix="%"
@@ -328,15 +358,20 @@ export function App() {
               </div>
             </Section>
 
-            <Results result={result} period={scenario.period} />
+            {calculation.error && (
+              <ResultNotice warning={{ code: 'invalid-scenario', message: calculation.error }} />
+            )}
+            {calculation.result && (
+              <Results result={calculation.result} period={scenario.displayPeriod} />
+            )}
           </div>
         ) : (
           <div id="panel-projection" role="tabpanel" aria-labelledby="tab-projection">
             <Suspense fallback={<div className="loading-panel">Charger la projection…</div>}>
               <ProjectionView
-                result={result}
-                retirement={scenario.retirement}
-                onChange={(retirement) => setScenario((current) => ({ ...current, retirement }))}
+                result={calculation.result ?? calculateComparison(defaultScenario, rules2026)}
+                projection={scenario.projection}
+                onChange={(projection) => setScenario((current) => ({ ...current, projection }))}
               />
             </Suspense>
           </div>
