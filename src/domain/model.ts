@@ -145,6 +145,7 @@ export interface StatusResult {
   economicCosts?: MoneyCents
   annualBenefits?: MoneyCents
   eligibility?: EligibilityAssessment
+  retirement?: RetirementResult
 }
 export interface ComparisonResult {
   micro: StatusResult
@@ -159,4 +160,24 @@ export interface ProjectionPoint {
   year: number
   microCumulative: number
   employeeCumulative: number
+}
+
+export interface RetirementRegimeResult {
+  regime: string
+  qualifyingIncome: MoneyCents
+  quarters: number
+  quarterCap: number
+  points: number | 'unavailable'
+  indicativeAnnualPension: MoneyCents | 'unavailable'
+  basePension: 'not-calculable-from-2026-alone'
+  confidence: Confidence
+  sources: SourceReference[]
+  limitation?: string
+}
+
+export interface RetirementResult {
+  referenceYear: 2026
+  base: RetirementRegimeResult
+  complementary: RetirementRegimeResult
+  warning: string
 }

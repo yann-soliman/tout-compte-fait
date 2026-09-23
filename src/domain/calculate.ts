@@ -12,6 +12,7 @@ import type { MoneyCents } from './money'
 import { assertUsableCatalog } from './rules/2026'
 import { validateScenario } from './validate'
 import { employeeWorkedDays } from './worked-time'
+import { calculateEmployeeRetirement, calculateMicroRetirement } from './retirement'
 
 function uniqueSources(sources: SourceReference[]): SourceReference[] {
   return [...new Map(sources.map((source) => [source.canonicalUrl, source])).values()]
@@ -27,6 +28,12 @@ export function calculateComparison(
   const eligibility = assessMicroEligibility(validated.micro, validated.activityStartDate, catalog)
   const microIncome = calculateMicroIncome(validated.micro, catalog, eligibility)
   const employeeIncome = calculateEmployeeIncome(validated.employee, catalog)
+  const microRetirement = validated.retirement.includeRights
+    ? calculateMicroRetirement(validated.micro, catalog)
+    : undefined
+  const employeeRetirement = validated.retirement.includeRights
+    ? calculateEmployeeRetirement(validated.employee, catalog)
+    : undefined
 
   const micro: StatusResult = {
     kind: 'micro',
@@ -43,6 +50,7 @@ export function calculateComparison(
     statutoryDeductions: microIncome.deductions,
     economicCosts: microIncome.economicCosts,
     eligibility,
+    retirement: microRetirement,
     confidence: microIncome.confidence,
     warnings: microIncome.warnings,
     ruleReferences: uniqueSources([...microIncome.sources, eligibility.source]),
@@ -72,6 +80,7 @@ export function calculateComparison(
     charges: employeeIncome.statutoryDeductions,
     statutoryDeductions: employeeIncome.deductions,
     annualBenefits: validated.employee.annualBenefits,
+    retirement: employeeRetirement,
     confidence: employeeIncome.confidence,
     ruleReferences: employeeIncome.sources,
     composition: [
