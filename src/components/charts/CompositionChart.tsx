@@ -5,10 +5,13 @@ import type { StatusResult } from '../../domain/model'
 export function CompositionChart({ result }: { result: StatusResult }) {
   const title = result.kind === 'micro' ? 'Micro-entreprise' : 'Salariat'
   return (
-    <article className={`composition composition--${result.kind}`}>
-      <div className="composition__chart" role="img" aria-label={`Composition ${title}`}>
+    <article
+      className={`composition composition--${result.kind}`}
+      aria-labelledby={`composition-${result.kind}`}
+    >
+      <div className="composition__chart" aria-hidden="true">
         <ResponsiveContainer width="100%" height={170}>
-          <PieChart>
+          <PieChart accessibilityLayer={false}>
             <Pie
               data={result.composition}
               dataKey="value"
@@ -18,6 +21,7 @@ export function CompositionChart({ result }: { result: StatusResult }) {
               paddingAngle={2}
               isAnimationActive={false}
               stroke="none"
+              rootTabIndex={-1}
             >
               {result.composition.map((part) => (
                 <Cell key={part.name} fill={part.color} />
@@ -31,7 +35,7 @@ export function CompositionChart({ result }: { result: StatusResult }) {
         </span>
       </div>
       <div className="composition__details">
-        <h3>{title}</h3>
+        <h3 id={`composition-${result.kind}`}>{title}</h3>
         <ul>
           {result.composition.map((part) => (
             <li key={part.name}>
@@ -41,6 +45,13 @@ export function CompositionChart({ result }: { result: StatusResult }) {
             </li>
           ))}
         </ul>
+        <p className="chart-summary">
+          Valeur annuelle totale {formatCents(result.totalValue)}.{' '}
+          {result.composition
+            .map((part) => `${part.name} : ${formatCents(part.value)}`)
+            .join(' ; ')}
+          .
+        </p>
       </div>
     </article>
   )

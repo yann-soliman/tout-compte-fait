@@ -1,16 +1,24 @@
 # Tout compte fait
 
-Comparer une activité en micro-entreprise avec un emploi salarié dans une interface compacte, puis
-projeter les résultats sur plusieurs années.
+Comparer en 2026 une activité libérale BNC non réglementée en micro-entreprise avec un emploi
+salarié privé de droit commun, dans une interface compacte, puis projeter leur valeur économique.
 
 ## État du projet
 
-Cette branche remplace le prototype Lovable par une application statique indépendante. Les calculs
-actuels servent uniquement à valider l’interface : ils sont signalés comme démonstration et ne
-constituent pas une simulation fiscale ou sociale fiable.
+L’application statique calcule localement les cotisations, le revenu net avant impôt, la valeur
+économique, le temps travaillé et les droits retraite que les sources institutionnelles permettent
+d’établir pour 2026. Chaque résultat réglementaire expose sa source, sa date et son statut.
 
-Les règles métier définitives feront l’objet d’une spécification Spec Kit séparée, documentée avec
-des sources officielles et des tests de limites.
+### Limites réglementaires
+
+- Le revenu salarié couvre les cotisations générales de France métropolitaine, hors régime local
+  d’Alsace-Moselle, conventions collectives, prévoyance et variations individuelles de fiche de paie.
+- L’éligibilité micro ne peut pas être confirmée sans les chiffres d’affaires 2024 et 2025.
+- La CFE dépend de la commune et de la situation saisie.
+- Les paramètres 2026 de retraite complémentaire non vérifiés restent bloqués : aucune valeur
+  provisoire n’est présentée comme établie.
+- La retraite de base ne peut pas être transformée en pension autonome à partir de la seule année 2026. L’application ne simule ni carrière complète, ni âge de départ, décote, surcote ou réversion.
+- La projection repose sur une hypothèse économique saisie ; elle ne prédit pas les futurs barèmes.
 
 ## Développer
 
@@ -45,7 +53,8 @@ $speckit-tasks
 $speckit-implement
 ```
 
-La première spécification se trouve dans `specs/001-compact-simulator-interface/`.
+Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dans
+`specs/002-comparaison-statuts/`.
 
 ## Déploiement
 

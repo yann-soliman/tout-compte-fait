@@ -95,3 +95,43 @@ Use the Playwright desktop, tablet and mobile projects. At 1280 px, 768 px and 3
 - keyboard focus remains visible and follows document order;
 - validation and confidence changes are announced and understandable without color;
 - chart summaries expose the exact comparison without requiring the graphic.
+
+## Execution record — 2026-09-23
+
+The five scenarios above are covered by the unit and Playwright suites, including statutory
+boundaries, annual/monthly reconciliation, invalid data, 360/768/1280 px overflow, keyboard source
+disclosures, live notices, chart text equivalents and projection assumptions. The automated quality
+gate and production build are recorded in `tasks.md`.
+
+The moderated usability protocol below requires target participants and cannot be replaced by an
+automated browser run. Its execution is therefore a delivery follow-up rather than a fabricated
+result.
+
+## Moderated usability protocol (10 target participants)
+
+### Participants and setup
+
+- Recruit ten adults who currently compare or have recently compared salaried employment with a
+  liberal micro-enterprise; do not recruit project contributors.
+- Use the production build at 1280 px or the participant's usual mobile device at least 360 px wide.
+- Start each session from the simulator with defaults and do not explain the result vocabulary.
+- Record only an anonymous identifier (`P01`–`P10`), device class, durations and pass/fail outcomes.
+
+### Script and measures
+
+1. Give a fixed input sheet and ask the participant to complete the comparison without assistance.
+   Record completion time; success is a correct completed scenario within five minutes.
+2. Ask which status leads on economic value and why. Record answer time; success is the correct
+   status within three minutes.
+3. Ask the participant to identify separately net income, benefits or costs, and retirement rights.
+   Success requires all three to be distinguished without adding retirement to present income.
+4. Ask where a regulatory figure comes from and whether every retirement figure is available.
+   Success requires opening a source disclosure and identifying the blocked complementary result.
+
+### Acceptance and reporting
+
+- SC-004 passes when at least 9/10 participants complete step 1 within five minutes and correctly
+  identify the leading status in step 2 within three minutes.
+- SC-005 passes when at least 9/10 distinguish the three value categories in step 3.
+- Record anonymized raw outcomes in `usability-results.md`, plus totals, failures and observations.
+- Do not mark the execution task complete until ten genuine moderated sessions have occurred.

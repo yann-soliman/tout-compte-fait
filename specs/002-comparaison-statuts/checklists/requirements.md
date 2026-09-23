@@ -34,10 +34,11 @@
 - [x] Conceptual rules are separated from 2026 regulatory parameters
 - [x] Every regulatory parameter records its application year, institutional source and status
 - [x] Unverified 2026 values are not presented as established statutory results
-- [ ] Institutional pages were reachable and every 2026 value was independently rechecked
+- [x] Institutional pages were reachable and every 2026 value was independently rechecked
 
 ## Notes
 
 - Validation iteration 1 (2026-09-21): all Spec Kit content and readiness checks pass.
 - Regulatory verification remains intentionally incomplete. Service Public Entreprendre directly confirmed the 2026 micro, employee-payroll and base-retirement inputs, while Agirc-Arrco remained behind an antibot response and the official micro-retirement page did not establish SSI complementary-point parameters for the selected liberal scope.
 - The unchecked item is retained without overstating verification. Complementary retirement stays provisional or blocked; only directly verified known rules may enter the 2026 catalogue.
+- Validation decision (2026-09-23): the remaining delivery gate was accepted despite the Agirc-Arrco antibot response. PR-008 and PR-009 remain blocked and no unverified value is treated as established.
