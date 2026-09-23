@@ -132,15 +132,15 @@ description: 'Task list for the 2026 status comparison feature'
 
 **Purpose**: Reconcile the complete experience, provenance and quality gates.
 
-- [ ] T043 [P] Add accessible text equivalents for every comparison/projection chart and verify source disclosures, warnings and changed result status are keyboard reachable and announced in `src/components/charts/CompositionChart.tsx` and `src/components/charts/CumulativeChart.tsx`
-- [ ] T044 Reconcile the compact input-before-result layout and prevent clipping at 360 px, 768 px and 1280 px in `src/styles.css`
-- [ ] T045 [P] Add cross-story accessibility, no-horizontal-overflow and source-traceability assertions for desktop, tablet and mobile projects in `tests/e2e/visual.spec.ts`
-- [ ] T046 [P] Update the project description and regulatory limitations, including reference year 2026 and excluded payslip/pension cases, in `README.md`
-- [ ] T047 Run every scenario and boundary sequence from `specs/002-comparaison-statuts/quickstart.md` and record any environment-limited check in `specs/002-comparaison-statuts/quickstart.md`
-- [ ] T048 Add an automated interaction-performance assertion that a valid input change updates all affected results within 100 ms in target-browser conditions in `tests/e2e/simulator.spec.ts`
-- [ ] T049 Define a moderated ten-person validation protocol measuring completion within five minutes, identification of the leading status within three minutes, and distinction between income, benefits and retirement in `specs/002-comparaison-statuts/quickstart.md`
+- [x] T043 [P] Add accessible text equivalents for every comparison/projection chart and verify source disclosures, warnings and changed result status are keyboard reachable and announced in `src/components/charts/CompositionChart.tsx` and `src/components/charts/CumulativeChart.tsx`
+- [x] T044 Reconcile the compact input-before-result layout and prevent clipping at 360 px, 768 px and 1280 px in `src/styles.css`
+- [x] T045 [P] Add cross-story accessibility, no-horizontal-overflow and source-traceability assertions for desktop, tablet and mobile projects in `tests/e2e/visual.spec.ts`
+- [x] T046 [P] Update the project description and regulatory limitations, including reference year 2026 and excluded payslip/pension cases, in `README.md`
+- [x] T047 Run every scenario and boundary sequence from `specs/002-comparaison-statuts/quickstart.md` and record any environment-limited check in `specs/002-comparaison-statuts/quickstart.md`
+- [x] T048 Add an automated interaction-performance assertion that a valid input change updates all affected results within 100 ms in target-browser conditions in `tests/e2e/simulator.spec.ts`
+- [x] T049 Define a moderated ten-person validation protocol measuring completion within five minutes, identification of the leading status within three minutes, and distinction between income, benefits and retirement in `specs/002-comparaison-statuts/quickstart.md`
 - [ ] T050 Execute the T049 protocol with ten target users, require at least nine successful participants for SC-004 and SC-005, and record anonymized durations and outcomes in `specs/002-comparaison-statuts/usability-results.md`
-- [ ] T051 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e` and `npm run build`, fix all failures, and record the completed gate in `specs/002-comparaison-statuts/tasks.md`
+- [x] T051 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e` and `npm run build`, fix all failures, and record the completed gate in `specs/002-comparaison-statuts/tasks.md`
 
 ---
 

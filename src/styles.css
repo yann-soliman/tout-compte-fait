@@ -169,7 +169,7 @@ main {
 .eyebrow {
   display: block;
   margin-bottom: 4px;
-  color: var(--micro);
+  color: #6253c9;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -887,6 +887,55 @@ main {
   min-height: 310px;
   color: var(--muted);
   font-size: 0.7rem;
+}
+
+.chart-summary {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.chart-data {
+  margin-top: 8px;
+  font-size: 0.75rem;
+}
+
+.chart-data summary {
+  width: fit-content;
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chart-table-scroll {
+  max-width: 100%;
+  margin-top: 8px;
+  overflow-x: auto;
+}
+
+.chart-data table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-data caption {
+  padding-bottom: 6px;
+  text-align: left;
+}
+
+.chart-data th,
+.chart-data td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.chart-data th:first-child,
+.chart-data td:first-child {
+  text-align: left;
 }
 
 .composition-grid {
