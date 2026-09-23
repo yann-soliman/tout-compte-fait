@@ -70,6 +70,11 @@ export function ProjectionView({ result, projection, onChange }: ProjectionViewP
           <span className="demo-badge">Démonstration</span>
         </div>
         <CumulativeChart points={points} />
+        <p className="projection-caveat">
+          Hypothèse économique choisie : {projection.annualGrowthRate} % par an. Les règles 2026 ne
+          sont pas projetées comme des paramètres réglementaires futurs et les droits retraite ne
+          sont pas ajoutés à cette valeur cumulée.
+        </p>
       </section>
 
       <section className="projection-panel">

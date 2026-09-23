@@ -14,3 +14,17 @@ test('retain the scenario and update the projection duration', async ({ page }) 
   await page.getByRole('tab', { name: 'Simulateur' }).click()
   await expect(page.getByRole('spinbutton', { name: 'Taux journalier' })).toHaveValue('650')
 })
+
+test('exposes limited 2026 retirement rights without claiming a full pension', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Droits retraite 2026' })).toHaveCount(2)
+  await expect(page.getByText('Non calculable sur la seule année 2026')).toHaveCount(2)
+  await expect(
+    page.getByText(/ne constitue pas une estimation de la pension totale future/),
+  ).toHaveCount(2)
+  await expect(page.getByText('Indisponibles — paramètres 2026 non vérifiés')).toHaveCount(2)
+
+  await page.getByRole('tab', { name: 'Projection' }).click()
+  await expect(page.getByText(/Hypothèse économique choisie/)).toBeVisible()
+  await expect(page.getByText(/droits retraite ne sont pas ajoutés/)).toBeVisible()
+})

@@ -68,6 +68,51 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
           </dd>
         </div>
       </dl>
+      {result.retirement && (
+        <section
+          className="retirement-result"
+          aria-label={`Droits retraite 2026 — ${employee ? 'salariat' : 'micro-entreprise'}`}
+        >
+          <h3>Droits retraite 2026</h3>
+          <dl>
+            <div>
+              <dt>Revenu cotisé de base</dt>
+              <dd>{formatCents(result.retirement.base.qualifyingIncome)}</dd>
+            </div>
+            <div>
+              <dt>Trimestres validés</dt>
+              <dd>
+                {result.retirement.base.quarters} / {result.retirement.base.quarterCap}
+              </dd>
+            </div>
+            <div>
+              <dt>Montant retraite de base</dt>
+              <dd>Non calculable sur la seule année 2026</dd>
+            </div>
+            <div>
+              <dt>Points complémentaires</dt>
+              <dd>
+                {result.retirement.complementary.points === 'unavailable'
+                  ? 'Indisponibles — paramètres 2026 non vérifiés'
+                  : result.retirement.complementary.points}
+              </dd>
+            </div>
+            <div>
+              <dt>Pension annuelle indicative liée aux points 2026</dt>
+              <dd>
+                {result.retirement.complementary.indicativeAnnualPension === 'unavailable'
+                  ? 'Non calculable'
+                  : formatCents(result.retirement.complementary.indicativeAnnualPension)}
+              </dd>
+            </div>
+          </dl>
+          <p className="retirement-warning">{result.retirement.warning}</p>
+          {result.retirement.complementary.limitation && (
+            <p className="retirement-limitation">{result.retirement.complementary.limitation}</p>
+          )}
+          <RuleDisclosure sources={result.retirement.base.sources} />
+        </section>
+      )}
       <details className="deduction-details">
         <summary>Détail des prélèvements</summary>
         <dl>

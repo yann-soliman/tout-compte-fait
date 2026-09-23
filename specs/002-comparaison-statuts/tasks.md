@@ -111,18 +111,18 @@ description: 'Task list for the 2026 status comparison feature'
 
 ### Tests for User Story 3
 
-- [ ] T034 [P] [US3] Add failing employee-retirement tests for 0–4 base quarters, annual cap, complementary point bands, purchase value, service value and point rounding in `tests/unit/employee-retirement.test.ts`
-- [ ] T035 [P] [US3] Add failing micro-retirement tests for verified SSI affiliation, official micro-social allocation, qualifying base, 0–4 quarters, complementary points and unsupported Cipav cases in `tests/unit/micro-retirement.test.ts`
-- [ ] T036 [P] [US3] Add failing tests that monetise only point-based 2026 rights, return `not-calculable-from-2026-alone` for base pension and never add retirement to current net/economic totals in `tests/unit/retirement.test.ts`
-- [ ] T037 [P] [US3] Add a failing end-to-end journey that exposes base/complementary rights, sources, confidence and the limited monetary indication without claiming a complete future pension in `tests/e2e/projection.spec.ts`
+- [x] T034 [P] [US3] Add failing employee-retirement tests for 0–4 base quarters, annual cap, complementary point bands, purchase value, service value and point rounding in `tests/unit/employee-retirement.test.ts`
+- [x] T035 [P] [US3] Add failing micro-retirement tests for verified SSI affiliation, official micro-social allocation, qualifying base, 0–4 quarters, complementary points and unsupported Cipav cases in `tests/unit/micro-retirement.test.ts`
+- [x] T036 [P] [US3] Add failing tests that monetise only point-based 2026 rights, return `not-calculable-from-2026-alone` for base pension and never add retirement to current net/economic totals in `tests/unit/retirement.test.ts`
+- [x] T037 [P] [US3] Add a failing end-to-end journey that exposes base/complementary rights, sources, confidence and the limited monetary indication without claiming a complete future pension in `tests/e2e/projection.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T038 [P] [US3] Implement employee base-quarter and Agirc-Arrco point acquisition from verified 2026 rules in `src/domain/retirement.ts`
-- [ ] T039 [US3] Extend retirement calculation with verified micro SSI qualifying-base, quarter and point rules while returning out-of-scope for unsupported affiliations in `src/domain/retirement.ts`
-- [ ] T040 [US3] Add point-service-value monetisation, base-pension `not-calculable-from-2026-alone`, confidence and source references while keeping retirement outside status totals in `src/domain/retirement.ts`
-- [ ] T041 [US3] Render base and complementary retirement rights, the point-based indicative annual amount and the base-pension limitation in `src/components/Results.tsx`
-- [ ] T042 [US3] Update cumulative projection to use only declared economic-growth assumptions, never infer future statutory parameters, and retain retirement/source caveats in `src/domain/projection.ts` and `src/components/ProjectionView.tsx`
+- [x] T038 [P] [US3] Implement employee base-quarter and Agirc-Arrco point acquisition from verified 2026 rules in `src/domain/retirement.ts`
+- [x] T039 [US3] Extend retirement calculation with verified micro SSI qualifying-base, quarter and point rules while returning out-of-scope for unsupported affiliations in `src/domain/retirement.ts`
+- [x] T040 [US3] Add point-service-value monetisation, base-pension `not-calculable-from-2026-alone`, confidence and source references while keeping retirement outside status totals in `src/domain/retirement.ts`
+- [x] T041 [US3] Render base and complementary retirement rights, the point-based indicative annual amount and the base-pension limitation in `src/components/Results.tsx`
+- [x] T042 [US3] Update cumulative projection to use only declared economic-growth assumptions, never infer future statutory parameters, and retain retirement/source caveats in `src/domain/projection.ts` and `src/components/ProjectionView.tsx`
 
 **Checkpoint**: All three user stories are functional, separately testable and explicit about the limits of a single-year retirement estimate.
 

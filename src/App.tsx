@@ -297,7 +297,7 @@ export function App() {
             <Section
               number={3}
               title="Retraite et projection"
-              subtitle="Inclure la valeur des cotisations"
+              subtitle="Afficher les droits acquis séparément"
               icon={<Landmark size={20} />}
             >
               <div className="retirement-grid">
@@ -306,8 +306,8 @@ export function App() {
                     <PiggyBank size={19} />
                   </span>
                   <span>
-                    <strong>Inclure les cotisations retraite</strong>
-                    <small>Afficher la valeur estimée dans le résultat</small>
+                    <strong>Afficher les droits retraite 2026</strong>
+                    <small>Sans les ajouter au revenu ni à la valeur économique</small>
                   </span>
                   <input
                     type="checkbox"

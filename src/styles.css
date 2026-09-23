@@ -719,6 +719,42 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
+.retirement-result {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.retirement-result h3 {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+}
+.retirement-result dl {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+.retirement-result dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.retirement-result dt {
+  color: var(--muted);
+}
+.retirement-result dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 650;
+}
+.retirement-warning,
+.retirement-limitation,
+.projection-caveat {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .result-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
