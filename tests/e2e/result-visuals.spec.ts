@@ -49,7 +49,7 @@ test('pointer selection recalculates exactly and never silently applies', async 
   await expect(page.getByRole('slider', { name: 'Jours à explorer' })).toHaveValue('100')
   await expect(page.getByRole('spinbutton', { name: 'TJM à explorer' })).toHaveValue('333.33')
   await expect(page.getByRole('spinbutton', { name: 'Taux journalier', exact: true })).toHaveValue(
-    '600',
+    '500',
   )
   await expect(page.getByRole('button', { name: 'Appliquer cette hypothèse' })).toBeEnabled()
   await page.getByRole('button', { name: 'Appliquer cette hypothèse' }).click()
@@ -82,7 +82,7 @@ test('touch selection works on a narrow screen while offline', async ({ browser 
     await expect(page.getByRole('slider', { name: 'Jours à explorer' })).toHaveValue('100')
     await expect(page.getByRole('spinbutton', { name: 'TJM à explorer' })).toHaveValue('333.33')
     await expect(page.getByRole('spinbutton', { name: 'Jours facturés', exact: true })).toHaveValue(
-      '160',
+      '200',
     )
     await expect(page.getByRole('button', { name: 'Appliquer cette hypothèse' })).toBeEnabled()
   } finally {

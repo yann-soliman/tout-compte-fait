@@ -60,6 +60,25 @@ L'impôt sur le revenu, une comparaison après impôt et les règles de SASU/EUR
 tant que des règles 2026 officielles et validées ne sont pas intégrées. Aucun modèle fiscal
 fictif n'est appliqué.
 
+## Robustesse, offres et rapport
+
+Les trois marges indiquent séparément les jours perdables, la baisse de TJM possible et les
+frais professionnels supplémentaires absorbables avant de rejoindre la valeur économique
+du salariat. Une micro derrière affiche l’effort nécessaire ou l’impossibilité par ce facteur
+seul. Les seuils annuels sont recalculés exactement; ils ne s’additionnent pas. CFE inconnue,
+plafond et absence d’historique restent explicités.
+
+Cocher des scénarios enregistrés affiche une comparaison visuelle avec le scénario courant,
+sur une échelle annuelle commune et signée, en revenu net ou valeur économique. Les
+instantanés restent inchangés. Prévisualiser le rapport puis choisir « Imprimer / Enregistrer
+en PDF » conserve hypothèses, résultats, seuils, limites et sources datées, sans envoyer les
+données. Le rapport reste annuel même si le simulateur affiche des montants mensuels.
+
+L’exemple initial et la réinitialisation utilisent 500 €/jour, 200 jours et 50 000 € brut/an.
+Le chiffre d’affaires de cet exemple dépasse le plafond micro 2026: l’avertissement est
+conservé et ne constitue pas une recommandation d’éligibilité. Les sauvegardes antérieures
+conservent leurs propres valeurs.
+
 ## Développer
 
 Prérequis : Node.js 24 et npm.
@@ -97,6 +116,7 @@ Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dan
 `specs/002-comparaison-statuts/`. La finalisation complémentaire et ses conventions figurent
 dans `specs/003-retraite-complementaire/`. Les outils de décision et leurs contrats sont documentés
 dans `specs/004-decision-tools/`. Les visuels figurent dans `specs/005-result-visuals/`.
+La robustesse, les offres et le rapport figurent dans `specs/006-decision-report/`.
 
 ## Déploiement
 

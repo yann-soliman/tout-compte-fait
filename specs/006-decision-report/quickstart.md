@@ -1,0 +1,3 @@
+# Validation
+
+Use Node24, installed npm deps and Playwright Chromium. Sequential format lint typecheck unit (2 workers), E2E (2 workers), build and diff check. Inspect360/768/1280 screenshots. Test new defaults/reset versus untouched saved scenarios. Select saved offers (including duplicate names/HTML-looking name), change comparison metric, inspect warnings and negative bar axis. Open report, toggle monthly (report annual), print to real PDF and extract text to check amounts/assumptions/source dates/no controls. Test offline and keyboard. Verify thresholds with independent linear-day scan/engine and preceding cent; include equality, current ahead/behind, zero days, unknown/exempt CFE, prorated ceiling and expense cap.

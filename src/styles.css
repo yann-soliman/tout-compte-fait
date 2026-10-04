@@ -1,3 +1,347 @@
+/* Decision indicators and a self-contained browser-print report. */
+.robustness-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.robustness-factor {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e9e6f2;
+  border-radius: 12px;
+  background: #faf9fd;
+}
+.robustness-state {
+  color: #5f6176;
+  font-size: 11px;
+  font-weight: 650;
+}
+.robustness-factor h4 {
+  margin: 10px 0 14px;
+  font-size: 13px;
+  line-height: 1.4;
+  min-height: 36px;
+}
+.robustness-factor strong {
+  display: block;
+  font-size: 23px;
+  color: #4d3eb5;
+  letter-spacing: -0.5px;
+  overflow-wrap: anywhere;
+}
+.robustness-factor p {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.robustness-factor--effort strong {
+  color: #a43939;
+}
+.robustness-track {
+  height: 7px;
+  background: #e7e3f3;
+  border-radius: 8px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+.robustness-track span {
+  display: block;
+  height: 100%;
+  background: #7868e8;
+}
+.robustness-factor--effort .robustness-track span {
+  background: #b84c4c;
+}
+.offer-metric {
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+}
+.offer-metric select {
+  max-width: 100%;
+  padding: 9px;
+  border: 1px solid #d9d5e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #303248;
+}
+.offer-chart-group {
+  padding: 18px 0;
+  border-top: 1px solid #e9e6f2;
+}
+.offer-chart-group h4 {
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+}
+.offer-chart-group dl {
+  margin: 0;
+}
+.offer-chart-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  margin: 10px 0;
+}
+.offer-chart-row dt {
+  font-size: 12px;
+}
+.offer-chart-row dt small {
+  display: inline-block;
+  margin-left: 8px;
+  color: #5f6176;
+}
+.offer-chart-row dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.offer-chart-track {
+  grid-column: 1/-1;
+  height: 13px;
+  position: relative;
+  background: #f0eef5;
+  border-radius: 3px;
+}
+.offer-zero {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: #303248;
+  z-index: 2;
+}
+.offer-bar {
+  display: block;
+  position: absolute;
+  height: 100%;
+  background: #7868e8;
+  border-radius: 3px;
+}
+.offer-chart-row--employee .offer-bar {
+  background: #16a77e;
+}
+.offer-chart-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  color: #5f6176;
+  margin: 12px 0;
+}
+.report-launch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.report-launch > span {
+  font-size: 11px;
+  color: #5f6176;
+}
+.decision-report {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: auto;
+  background: #29283c99;
+  padding: 28px 16px;
+  color: #202235;
+}
+.report-paper {
+  max-width: 950px;
+  margin: auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 60px #14132933;
+}
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.report-actions button {
+  padding: 10px 14px;
+  border: 1px solid #d9d5e8;
+  border-radius: 8px;
+  background: #f7f5ff;
+  color: #392b91;
+  cursor: pointer;
+}
+.report-header {
+  padding-bottom: 22px;
+  border-bottom: 2px solid #7868e8;
+}
+.report-header h2 {
+  font-size: 25px;
+  margin: 10px 0;
+}
+.report-header p,
+.report-offer p,
+.report-offer li {
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.report-offer {
+  padding-top: 28px;
+}
+.report-offer > h3 {
+  font-size: 21px;
+  margin: 0 0 18px;
+  overflow-wrap: anywhere;
+}
+.report-offer h4 {
+  font-size: 14px;
+}
+.report-offer h5 {
+  font-size: 12px;
+  margin: 10px 0;
+}
+.report-assumptions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.report-assumptions ul {
+  padding-left: 18px;
+}
+.report-results table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+.report-results th,
+.report-results td {
+  text-align: left;
+  padding: 9px 6px;
+  border-bottom: 1px solid #e9e6f2;
+  overflow-wrap: anywhere;
+}
+.report-results td {
+  font-variant-numeric: tabular-nums;
+}
+.report-alerts {
+  padding: 12px 16px;
+  background: #fff9ed;
+  border: 1px solid #efe2c4;
+  border-radius: 8px;
+  margin: 18px 0;
+}
+.report-sources ul {
+  list-style: none;
+  padding: 0;
+}
+.report-sources li {
+  margin: 14px 0;
+}
+.report-sources li span,
+.report-sources li a {
+  display: block;
+}
+.report-sources a {
+  color: #4637a0;
+  overflow-wrap: anywhere;
+}
+.report-footer {
+  margin-top: 30px;
+  border-top: 1px solid #e9e6f2;
+  padding-top: 16px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .robustness-grid,
+  .report-assumptions-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .robustness-factor h4 {
+    min-height: 0;
+  }
+  .offer-chart-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .offer-chart-row dd {
+    text-align: right;
+  }
+  .report-paper {
+    padding: 20px 14px;
+  }
+  .report-results table {
+    font-size: 11px;
+  }
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  body:has(.decision-report) > :not(.decision-report) {
+    display: none !important;
+  }
+  .decision-report {
+    position: static;
+    overflow: visible;
+    padding: 0;
+    background: #fff;
+  }
+  .report-paper {
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .report-actions {
+    display: none !important;
+  }
+  .report-offer {
+    break-before: page;
+  }
+  .report-offer:first-of-type {
+    break-before: auto;
+  }
+  .report-assumptions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .report-offer section:not(.report-sources),
+  .report-sources li {
+    break-inside: avoid;
+  }
+  .robustness-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .robustness-factor {
+    padding: 10px;
+  }
+  .robustness-factor strong {
+    font-size: 17px;
+  }
+  .robustness-track {
+    display: none;
+  }
+  .report-sources li {
+    font-size: 11px;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+  .report-footer {
+    font-size: 10px;
+    margin-top: 12px;
+    padding-top: 8px;
+    break-inside: avoid;
+  }
+  .report-offer h3,
+  .report-offer h4 {
+    break-after: avoid;
+  }
+}
+
 /* Financial visuals: a common monetary scale, never normalized to percentages. */
 .result-visuals {
   display: grid;

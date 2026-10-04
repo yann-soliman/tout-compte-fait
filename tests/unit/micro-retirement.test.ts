@@ -10,7 +10,10 @@ describe('calculateMicroRetirement', () => {
       { ...defaultScenario.micro, dailyRate: assertMoneyCents(0), billedDays: 0 },
       rules2026,
     )
-    const defaultResult = calculateMicroRetirement(defaultScenario.micro, rules2026)
+    const defaultResult = calculateMicroRetirement(
+      { ...defaultScenario.micro, dailyRate: assertMoneyCents(60_000), billedDays: 160 },
+      rules2026,
+    )
     expect(zero.base.quarters).toBe(0)
     expect(defaultResult.base.qualifyingIncome).toBe(6_381_233)
     expect(defaultResult.base.quarters).toBe(4)

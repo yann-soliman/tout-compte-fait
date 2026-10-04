@@ -66,7 +66,7 @@ describe('decision tools', () => {
         },
       },
       'netIncome',
-      160,
+      200,
       rules2026,
     )
     expect(expected.dailyRateCents).toBeDefined()
@@ -83,7 +83,7 @@ describe('decision tools', () => {
     )
     await user.click(within(balance).getByRole('button', { name: 'Appliquer ce taux' }))
     expect(rate).toHaveValue(expected.dailyRateCents! / 100)
-    expect(days).toHaveValue(160)
+    expect(days).toHaveValue(200)
   })
 
   it('rejects sub-cent additional expenses visibly and accepts cent-precise amounts', async () => {
@@ -123,7 +123,7 @@ describe('decision tools', () => {
     await user.type(decrease, '0.29')
     const panel = screen.getByRole('group', { name: 'Sensibilité et aléas' })
     const liveResult = panel.querySelector('[aria-live="polite"]')
-    expect(liveResult?.textContent?.replaceAll('\u00a0', ' ')).toContain('598,26 €/j')
+    expect(liveResult?.textContent?.replaceAll('\u00a0', ' ')).toContain('498,55 €/j')
   })
 
   it('computes stress presets and updates custom fields without monthly scaling', async () => {
@@ -244,7 +244,7 @@ describe('decision tools', () => {
     expect(rate).toHaveValue(700)
     confirmMock.mockReturnValueOnce(true)
     await user.click(screen.getByRole('button', { name: 'Réinitialiser les entrées' }))
-    expect(rate).toHaveValue(600)
+    expect(rate).toHaveValue(500)
     expect(window.localStorage.length).toBe(1)
   })
 })

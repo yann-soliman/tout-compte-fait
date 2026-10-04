@@ -76,7 +76,7 @@ describe('visual results', () => {
     expect(screen.getAllByText('Valeur économique')).toHaveLength(2)
     expect(screen.getByText(/Même échelle/)).toBeVisible()
     expect(screen.getByText(/avant impôt/)).toBeVisible()
-    expect(screen.getByText(/96.*000,00/, { selector: 'dd' })).toBeVisible()
+    expect(screen.getByText(/100.*000,00/, { selector: 'dd' })).toBeVisible()
     expect(screen.getByText('Frais économiques')).toBeVisible()
     expect(screen.getByText('Avantages')).toBeVisible()
   })
@@ -87,7 +87,7 @@ describe('visual results', () => {
       bar.getAttribute('style'),
     )
     rerender(<MoneyFlowChart result={result} period="monthly" />)
-    expect(screen.getByText(/8.*000,00/, { selector: 'dd' })).toBeVisible()
+    expect(screen.getByText(/8.*333,33/, { selector: 'dd' })).toBeVisible()
     expect(screen.getByText('Montants mensuels')).toBeVisible()
     expect(
       Array.from(container.querySelectorAll('.flow-bar'), (bar) => bar.getAttribute('style')),

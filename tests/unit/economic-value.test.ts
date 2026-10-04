@@ -47,7 +47,9 @@ describe('economic value', () => {
     const result = calculateComparison(defaultScenario, rules2026)
     expect(result.micro.workedDays).toBe(defaultScenario.micro.billedDays)
     expect(result.employee.workedDays).toBe(230)
-    expect(result.micro.valuePerDay).toBe(Math.round(result.micro.totalValue / 160))
+    expect(result.micro.valuePerDay).toBe(
+      Math.round(result.micro.totalValue / defaultScenario.micro.billedDays),
+    )
     expect(result.employee.valuePerDay).toBe(Math.round(result.employee.totalValue / 230))
 
     const zero = calculateComparison(

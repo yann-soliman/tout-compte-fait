@@ -87,7 +87,7 @@ describe('App', () => {
       expect(screen.getByRole('alert')).toBeVisible()
       await user.click(screen.getByRole('button', { name: 'Réinitialiser les entrées' }))
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-      expect(screen.getByLabelText('Taux journalier')).toHaveValue(600)
+      expect(screen.getByLabelText('Taux journalier')).toHaveValue(500)
     } finally {
       confirmation.mockRestore()
     }
@@ -101,7 +101,7 @@ describe('App', () => {
     await user.click(screen.getByText('Taux d’équilibre'))
     await user.click(screen.getByRole('button', { name: 'Appliquer ce taux' }))
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    expect(screen.getByLabelText('Taux journalier')).toHaveValue(386.93)
+    expect(screen.getByLabelText('Taux journalier')).toHaveValue(266.32)
   })
 
   it('opens contextual information and the projection view', async () => {

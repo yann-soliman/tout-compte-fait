@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { calculateComparison } from '../../src/domain/calculate'
-import { defaultScenario } from '../../src/domain/defaults'
+import { defaultScenario as applicationDefaults } from '../../src/domain/defaults'
 import { calculateStress } from '../../src/domain/risk'
 import { assertMoneyCents } from '../../src/domain/money'
 import { rules2026 } from '../../src/domain/rules/2026'
+
+// Fixed regression fixture: do not couple cent-rounding proofs to illustrative UI defaults.
+const defaultScenario = {
+  ...applicationDefaults,
+  micro: { ...applicationDefaults.micro, dailyRate: assertMoneyCents(60_000), billedDays: 160 },
+}
 
 describe('annual stress sensitivity', () => {
   it.each([
