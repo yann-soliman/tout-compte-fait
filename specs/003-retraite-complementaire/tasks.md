@@ -37,7 +37,7 @@
 
 ## Phase 6: Validation et livraison
 
-- [x] T009 Réconcilier les paramètres et historique de recherche dans `specs/002-comparaison-statuts/{spec,research,tasks}.md` et sa checklist, sans fermer T050; mettre à jour `README.md`.
+- [x] T009 Réconcilier les paramètres et historique de recherche dans `specs/002-comparaison-statuts/{spec,research,tasks}.md` et sa checklist; mettre à jour `README.md`.
 - [x] T010 Exécuter les six portes de qualité et les scénarios de `specs/003-retraite-complementaire/quickstart.md`; consigner les résultats réels dans ce fichier.
 - [x] T011 Effectuer revue de cohérence analyse/convergence de `specs/003-retraite-complementaire/{spec,plan,tasks}.md` contre les fichiers d'application et tests; enregistrer toute limite restante dans `specs/003-retraite-complementaire/quickstart.md`.
 
@@ -51,4 +51,4 @@ Lecture des sources et vérification environnement peuvent se faire ensemble. Ap
 
 ## Implementation Strategy
 
-Livrer un premier exemple Agirc exact avant bornes/gardes, puis un exemple RCI avant bornes/gardes; intégrer l'UI une fois ces tranches validées. T050 de002 est une validation humaine externe non incluse dans les tâches techniques003.
+Livrer un premier exemple Agirc exact avant bornes/gardes, puis un exemple RCI avant bornes/gardes; intégrer l'UI une fois ces tranches validées. Aucune étude de panel humain n’est requise: cette exigence a été retirée par Yann.

@@ -146,9 +146,7 @@ Aucun nombre ci-dessous n'est déduit d'un taux de démonstration existant. Les 
 - **SC-001**: 100 % des scénarios de référence 2026 validés manuellement reproduisent chaque montant réglementaire au centime avant arrondi d'affichage et à un euro près après affichage.
 - **SC-002**: 100 % des taux, seuils, plafonds et barèmes utilisés affichent une année, une source institutionnelle, une date de vérification et un statut; aucun paramètre non confirmé n'apparaît comme établi.
 - **SC-003**: Pour chaque borne réglementaire, les trois cas « un centime en dessous », « à la borne » et « un centime au-dessus » donnent le régime, la tranche ou le droit attendu.
-- **SC-004**: Au moins 90 % d'un panel de 10 utilisateurs cibles identifient en moins de 3 minutes le statut offrant le revenu disponible le plus élevé et l'écart annuel correspondant.
-- **SC-005**: Au moins 90 % du même panel distinguent correctement, sans aide, revenu disponible, valeur des avantages et droits à la retraite.
-- **SC-006**: Un scénario complet peut être saisi et comparé en moins de 5 minutes; un changement de montant valide met à jour tous les résultats concernés sans action supplémentaire et en moins de 100 ms dans les navigateurs cibles.
+- **SC-006**: Un scénario complet peut être saisi et comparé dans les parcours de validation; un changement de montant valide met à jour tous les résultats concernés sans action supplémentaire et en moins de 100 ms dans les navigateurs cibles.
 - **SC-007**: Dans 100 % des scénarios incomplets, hors périmètre ou fondés sur un paramètre provisoire, le résultat concerné est bloqué ou explicitement qualifié d'estimation avec sa cause.
 - **SC-008**: Les totaux annuel et mensuel concordent dans 100 % des cas à l'arrondi d'affichage près, et la somme des composantes affichées explique l'écart entre statuts.
 
@@ -172,3 +170,7 @@ Aucun nombre ci-dessous n'est déduit d'un taux de démonstration existant. Les 
 - Coût total employeur, négociation d'un tarif commercial équivalent et sociétés commerciales.
 - Professions libérales réglementées, rattachements retraite particuliers, salariés publics, expatriation et territoires dotés de règles distinctes.
 - Liquidation de la pension totale future, prise en compte des autres années de carrière, âge de départ, décote, surcote, réversion et rendement financier garanti.
+
+## Révision du périmètre de validation — 2026-10-04
+
+À la demande de Yann, les critères de panel humain (anciens SC-004 et SC-005) et le protocole associé sont retirés. Les validations réglementaires, fonctionnelles, d'accessibilité et de performance restent exigées; aucune étude humaine n'est présentée comme exécutée.

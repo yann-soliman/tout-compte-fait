@@ -138,8 +138,6 @@ description: 'Task list for the 2026 status comparison feature'
 - [x] T046 [P] Update the project description and regulatory limitations, including reference year 2026 and excluded payslip/pension cases, in `README.md`
 - [x] T047 Run every scenario and boundary sequence from `specs/002-comparaison-statuts/quickstart.md` and record any environment-limited check in `specs/002-comparaison-statuts/quickstart.md`
 - [x] T048 Add an automated interaction-performance assertion that a valid input change updates all affected results within 100 ms in target-browser conditions in `tests/e2e/simulator.spec.ts`
-- [x] T049 Define a moderated ten-person validation protocol measuring completion within five minutes, identification of the leading status within three minutes, and distinction between income, benefits and retirement in `specs/002-comparaison-statuts/quickstart.md`
-- [ ] T050 Execute the T049 protocol with ten target users, require at least nine successful participants for SC-004 and SC-005, and record anonymized durations and outcomes in `specs/002-comparaison-statuts/usability-results.md`
 - [x] T051 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e` and `npm run build`, fix all failures, and record the completed gate in `specs/002-comparaison-statuts/tasks.md`
 
 ---
@@ -153,7 +151,7 @@ description: 'Task list for the 2026 status comparison feature'
 - **Phase 3 — US1**: Depends on Phase 2. Tests T015–T019 are written first and must fail for the intended reason; domain implementations T020–T023 precede UI T024–T026.
 - **Phase 4 — US2**: Depends on Phase 2 and reuses the aggregate result contract established by T014. T027–T029 precede T030–T033. It can be developed alongside US1 if changes to `src/App.tsx`, `src/domain/calculate.ts`, `src/components/Results.tsx` and `tests/e2e/simulator.spec.ts` are coordinated.
 - **Phase 5 — US3**: Depends on Phase 2 and verified retirement sources from Phase 1. T034–T037 precede T038–T042. It can run alongside US1/US2 except for final integration in shared result/projection files.
-- **Phase 6 — Polish**: Depends on every user story selected for the release. T049 precedes T050; T051 follows T043–T050.
+- **Phase 6 — Polish**: Depends on every user story selected for the release. T051 follows T043–T048.
 
 ### User-story dependencies
 
@@ -167,7 +165,7 @@ description: 'Task list for the 2026 status comparison feature'
 - US1 test tasks T015–T019 can be written in parallel; T020–T022 implement separate domain files in parallel.
 - US2 test tasks T027–T029 can be written in parallel; T030 can proceed separately from presentation work after tests exist.
 - US3 test tasks T034–T037 can be written in parallel; T038 can proceed separately from the UI until T039/T040 extend the same retirement file.
-- T043, T045, T046, T048 and T049 affect independent files and can run in parallel during polish; T050 follows T049.
+- T043, T045, T046 and T048 affect independent files and can run in parallel during polish.
 
 ---
 
@@ -243,7 +241,7 @@ For every rate, threshold, ceiling, band, annual cap and rounding rule:
 
 ## Completion addendum — 2026-10-04
 
-The original T005, T034–T041 checkmarks included the safe blocked-results MVP, not complete point acquisition. Feature [003](../003-retraite-complementaire/spec.md) now supplies the missing complementary point acquisition and monetary indication as explicitly annual estimates, backed by directly consulted circulars and new boundary/guard/UI tests. T050 remains unchecked: no ten-person human study was executed. Full source evidence and technical gates live in003 research/quickstart. No old checkbox is used as evidence of a passed test.
+The original T005, T034–T041 checkmarks included the safe blocked-results MVP, not complete point acquisition. Feature [003](../003-retraite-complementaire/spec.md) now supplies the missing complementary point acquisition and monetary indication as explicitly annual estimates, backed by directly consulted circulars and new boundary/guard/UI tests. The former panel-study tasks were withdrawn at Yann’s request, not marked as executed. Full source evidence and technical gates live in003 research/quickstart. No old checkbox is used as evidence of a passed test.
 
 ## Notes
 

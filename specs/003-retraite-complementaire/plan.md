@@ -37,7 +37,7 @@ Post-design: aucun écart constitutionnel requis.
 - `tests/unit/{employee-retirement,micro-retirement,retirement,rules-2026,App}.test.*`: préserver les anciennes garanties, remplacer les attentes de blocage devenu résolu.
 - `tests/e2e/projection.spec.ts`: chiffres, sources, labels estimatifs et invariance des revenus.
 - `specs/003-retraite-complementaire/`: spec, recherche, modèle, contrat, guide et tâches.
-- `specs/002-comparaison-statuts/`: ajouter résolution historique traçable; T050 reste ouvert.
+- `specs/002-comparaison-statuts/`: ajouter résolution historique traçable; exigence de panel humain retirée à la demande de Yann.
 
 ## Design
 

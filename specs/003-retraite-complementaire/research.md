@@ -33,4 +33,4 @@
 
 ## Verification boundaries
 
-Old Urssaf HTTP failures do not invalidate directly consulted Agirc-Arrco/CNAV sources. No live data fetch during calculation. T050 actual ten-person usability study remains unperformed.
+Old Urssaf HTTP failures do not invalidate directly consulted Agirc-Arrco/CNAV sources. No live data fetch during calculation. The human-panel validation requirement was withdrawn by Yann; no human-study results are claimed.

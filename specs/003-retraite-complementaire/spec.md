@@ -59,7 +59,7 @@ Zéro revenu; un centime avant/à/après les seuils; valeur d'achat nulle, absen
 - **FR-006**: Bloquer le régime complémentaire concerné si une règle requise est absente, provisoire, non positive pour le prix, ou dépourvue de provenance. Préserver les revenus et les droits de base indépendants.
 - **FR-007**: Rendre accessibles les sources officielles avec organisme, titre, date d'application et date de vérification; garder les détails facultatifs et les chiffres après les entrées.
 - **FR-008**: Garder les points de retraite de base et sa pension monétaire indisponibles : trimestres et revenu cotisé seulement. Ne jamais ajouter une retraite aux revenus, avantages ou projections économiques.
-- **FR-009**: Conserver l'année 2026, les entrées et le périmètre existants. Réconcilier les anciens statuts de recherche et tâches de retraite avec cette livraison; laisser le test réel à dix utilisateurs T050 non réalisé.
+- **FR-009**: Conserver l'année 2026, les entrées et le périmètre existants. Réconcilier les anciens statuts de recherche et tâches de retraite avec cette livraison.
 - **FR-010**: Vérifier les règles, bornes, arrondis et cas négatifs avec des tests avant implémentation, puis vérifier l'expérience aux largeurs 360, 768 et 1280 px sans débordement horizontal.
 
 ### Key Entities
@@ -81,7 +81,7 @@ Zéro revenu; un centime avant/à/après les seuils; valeur d'achat nulle, absen
 - Finalisation du simulateur annuel existant, pas extension à la saisie des déclarations ou à la carrière complète.
 - Cotisations micro supposées intégralement réglées, hors réduction Acre déjà exclue du périmètre.
 - Paramètres officiels connus, droits annuels estimatifs. La contradiction d'arrondi RCI empêche une garantie de droits attribués par la caisse, pas une simulation annuelle explicitement qualifiée.
-- Les tests avec dix personnes ne peuvent pas être remplacés par des tests automatisés.
+- Les critères de panel humain de la feature 002 sont retirés à la demande de Yann; les validations techniques et réglementaires restent exigées.
 
 ## Clarification review — 2026-10-04
 

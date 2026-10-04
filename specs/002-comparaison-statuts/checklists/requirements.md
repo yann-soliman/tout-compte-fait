@@ -26,7 +26,7 @@
 
 - [x] All functional requirements have clear acceptance criteria
 - [x] User scenarios cover primary flows
-- [ ] Feature meets measurable outcomes defined in Success Criteria
+- [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
 ## Regulatory Verification
@@ -40,4 +40,4 @@
 
 - Initial verification (2026-09-22/23) delivered a safely blocked complementary MVP; the old checkbox and notes overstated completeness.
 - Resolution (2026-10-04): direct Agirc-Arrco and CNAV circulars are recorded in [003 research](../../003-retraite-complementaire/research.md). Encoded complementary parameters are known, while annual rights remain estimative because periodic payments and caisse rounding are not reproduced.
-- Measured human outcomes remain unverified: T050 with ten actual participants is still open. This readiness checkbox is intentionally unchecked and is not a technical build failure of feature003.
+- The human-panel criteria and protocol were withdrawn at Yann’s request on 2026-10-04. Readiness covers the retained automated and regulatory criteria; no human-study outcome is claimed.

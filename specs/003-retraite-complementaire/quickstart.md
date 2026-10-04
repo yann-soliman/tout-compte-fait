@@ -11,7 +11,7 @@ Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `np
 5. Switch annual/monthly and disable retirement; income/economic differences and projections must remain unchanged.
 6. Test360/768/1280 px, keyboard and sources; no horizontal overflow. Block network after loading and change input.
 
-Human usability: previous feature002 T050 remains open. Automated tests do not fulfill it.
+The human-panel requirement was withdrawn by Yann on 2026-10-04; the retained quality gates above remain mandatory.
 
 ## Executed validation — 2026-10-04
 

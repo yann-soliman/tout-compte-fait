@@ -61,8 +61,7 @@ $speckit-implement
 
 Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dans
 `specs/002-comparaison-statuts/`. La finalisation complémentaire et ses conventions figurent
-dans `specs/003-retraite-complementaire/`. Le test d'utilisabilité réel à dix personnes (002 T050)
-reste à réaliser; les tests automatisés ne le remplacent pas.
+dans `specs/003-retraite-complementaire/`.
 
 ## Déploiement
 
