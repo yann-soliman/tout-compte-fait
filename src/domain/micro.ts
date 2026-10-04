@@ -48,7 +48,7 @@ export function calculateMicroIncome(
   const netIncome = assertMoneyCents(turnover - statutoryDeductions)
   const insuranceAnnual = assertMoneyCents(scenario.healthInsuranceMonthly * 12)
   const cfeKnown =
-    scenario.cfeAnnual !== undefined && (scenario.cfeAnnual > 0 || scenario.cfeExemptionConfirmed)
+    scenario.cfeExemptionConfirmed || (scenario.cfeAnnual !== undefined && scenario.cfeAnnual > 0)
   const cfe = scenario.cfeAnnual ?? assertMoneyCents(0)
   const economicCosts = assertMoneyCents(scenario.professionalExpenses + insuranceAnnual + cfe)
   const warnings: ResultWarning[] = []

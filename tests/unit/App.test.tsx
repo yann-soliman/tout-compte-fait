@@ -1,6 +1,6 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { App } from '../../src/App'
 
 describe('App', () => {
@@ -49,6 +49,59 @@ describe('App', () => {
 
     await user.click(screen.getByRole('button', { name: 'Mensuel' }))
     expect(screen.getAllByText('/mois').length).toBeGreaterThan(0)
+  })
+
+  it.each(['600.58', '600.29'])(
+    'accepts the valid daily rate €%s without breaking the calculator',
+    async (value) => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      const dailyRate = screen.getByLabelText('Taux journalier')
+      await user.clear(dailyRate)
+      await user.type(dailyRate, value)
+
+      expect(dailyRate).toHaveValue(Number(value))
+      expect(screen.getByRole('heading', { name: 'Résultat' })).toBeInTheDocument()
+    },
+  )
+
+  it('shows a local error for sub-cent daily rates without breaking the calculator', () => {
+    render(<App />)
+
+    const dailyRate = screen.getByLabelText('Taux journalier')
+    fireEvent.change(dailyRate, { target: { value: '600.581' } })
+
+    expect(dailyRate).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByRole('alert')).toBeVisible()
+    expect(screen.getByRole('alert')).toHaveTextContent('exprimé au centime près')
+    expect(screen.getByRole('heading', { name: 'Résultat' })).toBeInTheDocument()
+  })
+
+  it('clears a stale daily-rate error after confirming reset', async () => {
+    const user = userEvent.setup()
+    const confirmation = vi.spyOn(window, 'confirm').mockReturnValue(true)
+    try {
+      render(<App />)
+      fireEvent.change(screen.getByLabelText('Taux journalier'), { target: { value: '600.581' } })
+      expect(screen.getByRole('alert')).toBeVisible()
+      await user.click(screen.getByRole('button', { name: 'Réinitialiser les entrées' }))
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      expect(screen.getByLabelText('Taux journalier')).toHaveValue(600)
+    } finally {
+      confirmation.mockRestore()
+    }
+  })
+
+  it('clears a stale daily-rate error when applying a valid balance rate', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    fireEvent.change(screen.getByLabelText('Taux journalier'), { target: { value: '600.581' } })
+    expect(screen.getByRole('alert')).toBeVisible()
+    await user.click(screen.getByText('Taux d’équilibre'))
+    await user.click(screen.getByRole('button', { name: 'Appliquer ce taux' }))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Taux journalier')).toHaveValue(386.93)
   })
 
   it('opens contextual information and the projection view', async () => {

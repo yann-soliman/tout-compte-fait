@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { Results } from './components/Results'
+import { DecisionTools } from './components/DecisionTools'
 import { ResultNotice } from './components/ui/ResultNotice'
 import { NumberField } from './components/ui/NumberField'
 import { Section } from './components/ui/Section'
@@ -18,7 +19,7 @@ import { SegmentedControl } from './components/ui/SegmentedControl'
 import { calculateComparison } from './domain/calculate'
 import { defaultScenario } from './domain/defaults'
 import type { AppView, ComparisonScenario, EmployeeScenario, MicroScenario } from './domain/model'
-import { assertMoneyCents } from './domain/money'
+import { assertMoneyCents, eurosToMoneyCents } from './domain/money'
 import { rules2026 } from './domain/rules/2026'
 
 const ProjectionView = lazy(() =>
@@ -28,6 +29,7 @@ const ProjectionView = lazy(() =>
 export function App() {
   const [view, setView] = useState<AppView>('simulator')
   const [scenario, setScenario] = useState<ComparisonScenario>(defaultScenario)
+  const [dailyRateError, setDailyRateError] = useState<string>()
   const calculation = useMemo(() => {
     try {
       return { result: calculateComparison(scenario, rules2026), error: undefined }
@@ -43,6 +45,15 @@ export function App() {
     setScenario((current) => ({ ...current, micro: { ...current.micro, ...patch } }))
   const updateEmployee = (patch: Partial<EmployeeScenario>) =>
     setScenario((current) => ({ ...current, employee: { ...current.employee, ...patch } }))
+  const updateDailyRate = (euros: number) => {
+    try {
+      updateMicro({ dailyRate: eurosToMoneyCents(euros) })
+      setDailyRateError(undefined)
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error
+      setDailyRateError(error.message)
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -171,11 +182,11 @@ export function App() {
                     <NumberField
                       label="Taux journalier"
                       value={scenario.micro.dailyRate / 100}
-                      onChange={(dailyRate) =>
-                        updateMicro({ dailyRate: assertMoneyCents(dailyRate * 100) })
-                      }
+                      onChange={updateDailyRate}
                       suffix="€/j"
+                      step={0.01}
                       info="Montant facturé hors taxes pour une journée travaillée."
+                      error={dailyRateError}
                     />
                     <NumberField
                       label="Jours facturés"
@@ -357,6 +368,21 @@ export function App() {
                 />
               </div>
             </Section>
+
+            <DecisionTools
+              scenario={scenario}
+              onScenarioChange={(next) => {
+                setScenario(next)
+                setDailyRateError(undefined)
+              }}
+              onReset={() => {
+                if (window.confirm('Réinitialiser les entrées du simulateur ?')) {
+                  setScenario(defaultScenario)
+                  setDailyRateError(undefined)
+                }
+              }}
+              catalog={rules2026}
+            />
 
             {calculation.error && (
               <ResultNotice warning={{ code: 'invalid-scenario', message: calculation.error }} />
