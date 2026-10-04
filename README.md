@@ -26,6 +26,26 @@ d’établir pour 2026. Chaque résultat réglementaire expose sa source, sa dat
 - La retraite de base ne peut pas être transformée en pension autonome à partir de la seule année 2026. L’application ne simule ni carrière complète, ni âge de départ, décote, surcote ou réversion.
 - La projection repose sur une hypothèse économique saisie ; elle ne prédit pas les futurs barèmes.
 
+## Outils de décision
+
+Après les entrées du simulateur, trois volets repliables proposent le taux journalier minimum
+pour rejoindre le revenu net salarié annuel avant impôt ou sa valeur économique (avantages
+inclus), une sensibilité hypothétique aux jours perdus/baisse de taux/frais supplémentaires,
+et une bibliothèque de scénarios nommés conservée dans le stockage local du navigateur. Le taux
+est calculé au centime par le moteur 2026 existant; le plafond de première année utilise le
+prorata actuel et le résultat précise que l'éligibilité micro reste à confirmer à partir des
+chiffres d'affaires antérieurs. Un taux hors plafond n'est ni recommandé ni applicable.
+
+Les instantanés complets se chargent uniquement après action explicite. Import JSON versionné
+est validé intégralement avant remplacement; export JSON/CSV est déclenché manuellement.
+Comparaisons et téléchargements sont locaux, avant impôt et hors retraite. Les hypothèses de
+jours ne sont pas des prévisions, et ni mission, emploi ni indemnisation chômage ne sont
+garantis. La remise à zéro des entrées ne supprime pas les scénarios enregistrés.
+
+L'impôt sur le revenu, une comparaison après impôt et les règles de SASU/EURL restent différés
+tant que des règles 2026 officielles et validées ne sont pas intégrées. Aucun modèle fiscal
+fictif n'est appliqué.
+
 ## Développer
 
 Prérequis : Node.js 24 et npm.
@@ -61,7 +81,8 @@ $speckit-implement
 
 Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dans
 `specs/002-comparaison-statuts/`. La finalisation complémentaire et ses conventions figurent
-dans `specs/003-retraite-complementaire/`.
+dans `specs/003-retraite-complementaire/`. Les outils de décision et leurs contrats sont documentés
+dans `specs/004-decision-tools/`.
 
 ## Déploiement
 

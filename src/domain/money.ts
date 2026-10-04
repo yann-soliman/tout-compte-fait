@@ -11,6 +11,28 @@ export function assertMoneyCents(value: number): MoneyCents {
   return value as MoneyCents
 }
 
+export function eurosToMoneyCents(euros: number): MoneyCents {
+  if (!Number.isFinite(euros) || euros < 0 || Object.is(euros, -0))
+    throw new RangeError('Le montant doit être un nombre fini positif ou nul.')
+
+  const [coefficient = '', exponentText] = euros.toString().toLowerCase().split('e')
+  const [whole = '0', fraction = ''] = coefficient.split('.')
+  const digits = `${whole}${fraction}`
+  const decimalShift = Number(exponentText ?? 0) + 2 - fraction.length
+
+  let cents: bigint
+  if (decimalShift >= 0) {
+    cents = BigInt(digits) * 10n ** BigInt(decimalShift)
+  } else {
+    const discardedDigits = -decimalShift
+    if (discardedDigits > digits.length || !digits.endsWith('0'.repeat(discardedDigits)))
+      throw new RangeError('Le montant doit être exprimé au centime près.')
+    cents = BigInt(digits.slice(0, -discardedDigits) || '0')
+  }
+
+  return assertMoneyCents(Number(cents))
+}
+
 export function assertRatePpm(value: number): RatePpm {
   if (!Number.isSafeInteger(value) || value < 0)
     throw new RangeError('Le taux ppm doit être un entier positif ou nul.')

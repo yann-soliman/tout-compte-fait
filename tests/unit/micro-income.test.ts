@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { assessMicroEligibility } from '../../src/domain/eligibility'
 import { calculateMicroIncome } from '../../src/domain/micro'
+import { calculateComparison } from '../../src/domain/calculate'
 import { defaultScenario } from '../../src/domain/defaults'
 import { assertMoneyCents } from '../../src/domain/money'
 import { rules2026 } from '../../src/domain/rules/2026'
@@ -66,5 +67,24 @@ describe('calculateMicroIncome', () => {
       assessMicroEligibility(micro, undefined, rules2026),
     )
     expect(result.confidence).toBe('established')
+  })
+
+  it('treats an omitted CFE with a confirmed exemption as known zero in the comparison engine', () => {
+    const scenario = {
+      ...defaultScenario,
+      micro: {
+        ...defaultScenario.micro,
+        cfeAnnual: undefined,
+        cfeExemptionConfirmed: true,
+      },
+    }
+    const result = calculateComparison(scenario, rules2026)
+    expect(result.micro.confidence).toBe('established')
+    expect(result.micro.warnings).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: 'cfe-unknown' })]),
+    )
+    expect(result.micro.economicCosts).toBe(
+      scenario.micro.professionalExpenses + scenario.micro.healthInsuranceMonthly * 12,
+    )
   })
 })

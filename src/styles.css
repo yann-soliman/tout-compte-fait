@@ -1269,6 +1269,230 @@ footer {
   padding: 8px 12px;
 }
 
+.decision-tools {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.decision-disclosure {
+  min-width: 0;
+  border: 1px solid var(--line, rgba(35, 44, 65, 0.14));
+  border-radius: 14px;
+  background: var(--surface, #fff);
+  box-shadow: 0 4px 18px rgba(36, 48, 78, 0.04);
+}
+
+.decision-disclosure > summary {
+  padding: 14px 16px;
+  color: var(--text, #242b3a);
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 750;
+  list-style-position: inside;
+}
+
+.decision-disclosure > summary:focus-visible,
+.decision-tools button:focus-visible,
+.decision-tools input:focus-visible,
+.decision-tools select:focus-visible {
+  outline: 3px solid #6e63d8;
+  outline-offset: 2px;
+}
+
+.decision-panel {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+.decision-intro,
+.decision-footnote,
+.decision-panel > p {
+  margin: 0;
+  color: var(--muted, #657087);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.decision-field {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: var(--text, #242b3a);
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.decision-field input,
+.decision-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid var(--line, #d9deea);
+  border-radius: 9px;
+  padding: 8px 10px;
+  color: var(--text, #242b3a);
+  background: var(--surface, #fff);
+  font: inherit;
+}
+
+.decision-input-grid,
+.decision-presets,
+.decision-save-row,
+.decision-scenario-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 9px;
+}
+
+.decision-input-grid > *,
+.decision-save-row > .decision-field {
+  flex: 1 1 170px;
+}
+
+.decision-action,
+.decision-scenario-actions button {
+  min-height: 38px;
+  max-width: 100%;
+  border: 1px solid #d9d7f2;
+  border-radius: 9px;
+  padding: 7px 11px;
+  color: #5145b5;
+  background: #f5f4ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.decision-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.decision-action--secondary {
+  color: #7a4545;
+  border-color: #ecd8d8;
+  background: #fff8f7;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 10px;
+}
+
+.balance-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--line, #e2e6ee);
+  border-radius: 11px;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+
+.balance-card h3,
+.balance-card span,
+.balance-card small {
+  margin: 0;
+  color: var(--muted, #657087);
+  font-size: 0.76rem;
+}
+
+.balance-card strong {
+  color: var(--text, #242b3a);
+  font-size: clamp(1.1rem, 2.4vw, 1.45rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance-card small,
+.decision-warning {
+  color: #8c5b18;
+}
+
+.decision-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.decision-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.decision-table caption {
+  padding: 6px 0;
+  color: var(--muted, #657087);
+  text-align: left;
+}
+
+.decision-table th,
+.decision-table td {
+  border-bottom: 1px solid var(--line, #e2e6ee);
+  padding: 9px 8px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.decision-table th:first-child,
+.decision-table td:first-child {
+  text-align: left;
+}
+
+.decision-scenario-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decision-scenario-list > li {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--line, #e2e6ee);
+  padding: 9px 0;
+  overflow-wrap: anywhere;
+}
+
+.decision-scenario-actions {
+  align-items: center;
+}
+
+.decision-scenario-actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+}
+
+.decision-error {
+  margin: 0;
+  border-left: 3px solid #bd4343;
+  padding: 8px 10px;
+  color: #742e2e;
+  background: #fff3f2;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.decision-reset {
+  justify-self: start;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

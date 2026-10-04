@@ -4,10 +4,26 @@ import {
   assertMoneyCents,
   assertRatePpm,
   divideMoney,
+  eurosToMoneyCents,
   type MoneyCents,
 } from '../../src/domain/money'
 
 describe('exact money arithmetic', () => {
+  it.each([
+    [600.58, 60_058],
+    [600.29, 60_029],
+    [0.01, 1],
+  ])('converts €%s to exact integer cents', (euros, cents) => {
+    expect(eurosToMoneyCents(euros)).toBe(cents)
+  })
+
+  it.each([0.001, 1.001, -0.01, Number.NaN, Number.POSITIVE_INFINITY, 90_071_992_547_409.92])(
+    'rejects invalid euro amount %s',
+    (euros) => {
+      expect(() => eurosToMoneyCents(euros)).toThrow(RangeError)
+    },
+  )
+
   it('accepts only non-negative safe integer cents', () => {
     expect(assertMoneyCents(12_345)).toBe(12_345)
     expect(() => assertMoneyCents(1.5)).toThrow(/centimes entiers/)

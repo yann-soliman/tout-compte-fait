@@ -63,7 +63,7 @@ export interface ComplementaryRetirementRules {
 }
 
 export interface RegulatoryCatalog {
-  year: 2026
+  year: number
   microSocial: RegulatoryRule<RatePpm>
   professionalTraining: RegulatoryRule<RatePpm>
   microTurnoverCeiling: RegulatoryRule<MoneyCents>

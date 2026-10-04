@@ -12,6 +12,7 @@ interface NumberFieldProps {
   info?: string
   icon?: ReactNode
   compact?: boolean
+  error?: string
 }
 
 export function NumberField({
@@ -25,6 +26,7 @@ export function NumberField({
   info,
   icon,
   compact = false,
+  error,
 }: NumberFieldProps) {
   const id = useId()
   return (
@@ -44,6 +46,8 @@ export function NumberField({
           min={min}
           max={max}
           step={step}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
           onChange={(event) => {
             const next = event.target.valueAsNumber
             onChange(Number.isFinite(next) ? next : 0)
@@ -51,6 +55,11 @@ export function NumberField({
         />
         {suffix && <span className="field__suffix">{suffix}</span>}
       </span>
+      {error && (
+        <span className="field__error" id={`${id}-error`} role="alert">
+          {error}
+        </span>
+      )}
     </div>
   )
 }
