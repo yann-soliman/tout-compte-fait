@@ -31,8 +31,11 @@ describe('calculateEmployeeRetirement', () => {
     expect(result.base.qualifyingIncome).toBe(pass)
   })
 
-  it('blocks Agirc-Arrco points while the 2026 purchase and service values are unverified', () => {
-    const result = calculateEmployeeRetirement(defaultScenario.employee, rules2026)
+  it('blocks Agirc-Arrco points when complementary parameters are absent', () => {
+    const result = calculateEmployeeRetirement(defaultScenario.employee, {
+      ...rules2026,
+      complementaryRetirement: undefined,
+    })
     expect(result.complementary.points).toBe('unavailable')
     expect(result.complementary.indicativeAnnualPension).toBe('unavailable')
     expect(result.complementary.confidence).toBe('blocked')

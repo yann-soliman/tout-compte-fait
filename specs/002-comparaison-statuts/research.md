@@ -205,7 +205,9 @@ treated as consulted while their sites were unreadable.
   add birth year and career history during planning (rejected as an unapproved scope expansion);
   value paid contributions as pension (rejected because contributions are not rights).
 
-## T005 blocking finding — consulted on 2026-09-22
+## T005 blocking finding — consulted on 2026-09-22 (historical)
+
+**Resolved for annual estimates on 2026-10-04**: see [003 research](../003-retraite-complementaire/research.md). Direct Agirc-Arrco/CNAV circulars establish the employee parameters and BNC hors-Cipav RCI affiliation, allocation21%, purchase21.726 € and service1.347 €. The historical findings below are preserved as the original verification record, not the current implementation status. Statutory periodic rounding remains distinct from the new explicit annual estimate.
 
 The directly readable 2026 version of DILA's “Régime de retraite du micro-entrepreneur” does publish
 a `21.726 €` purchase value, a `19.75%` allocation and whole-point rounding down for some commercial
@@ -246,7 +248,7 @@ retirement results until a future specification resolves the affiliation.
 - **Alternatives considered**: Stop all design work (rejected because entity, interface and test
   design do not depend on the final numbers); treat secondary memory as verification (rejected).
 
-## Implementation verification attempt — 2026-09-22
+## Implementation verification attempt — 2026-09-22 (historical; superseded for complementary annual estimates by spec 003)
 
 The implementation phase retried the primary institutional entry points. The web research service
 returned HTTP 401 before opening any URL. Direct `curl` diagnostics reached a Cloudflare challenge

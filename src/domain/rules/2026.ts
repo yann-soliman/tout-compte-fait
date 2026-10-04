@@ -95,6 +95,45 @@ const annualPass = 4_806_000
 const fourPass = annualPass * 4
 const eightPass = annualPass * 8
 
+const agircSource: SourceReference = {
+  authority: 'Agirc-Arrco',
+  documentTitle: 'Circulaire Agirc-Arrco 2025-16-SG-DRJ — Paramètres 2026',
+  canonicalUrl: 'https://www.agirc-arrco.fr/storage/CirculaireAgircArrco2025-16sg-drj.pdf',
+  effectiveDate: '2026-01-01',
+  verificationDate: '2026-10-04',
+  status: 'known',
+}
+const cnavAllocationSource: SourceReference = {
+  authority: 'CNAV — Assurance retraite',
+  documentTitle: 'Circulaire CNAV 2025-23 — Droits des micro-entrepreneurs en 2026',
+  canonicalUrl:
+    'https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2025_23_10112025.pdf',
+  effectiveDate: '2026-01-01',
+  verificationDate: '2026-10-04',
+  status: 'known',
+}
+const cnavPointSource: SourceReference = {
+  authority: 'CNAV — Assurance retraite',
+  documentTitle: 'Circulaire CNAV 2025-31 — Valeurs du RCI au 1er janvier 2026',
+  canonicalUrl:
+    'https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2025_31_22122025.pdf',
+  effectiveDate: '2026-01-01',
+  verificationDate: '2026-10-04',
+  status: 'known',
+}
+
+const pointValueRule = (
+  id: string,
+  units: number,
+  ruleSource: SourceReference,
+): RegulatoryRule<number> => ({
+  id,
+  value: units,
+  base: 'Valeur du point en unités entières de 0,0001 €',
+  rounding: 'exact',
+  source: ruleSource,
+})
+
 export const rules2026: RegulatoryCatalog = {
   year: 2026,
   microSocial: {
@@ -205,7 +244,45 @@ export const rules2026: RegulatoryCatalog = {
       source: retirementSource,
     },
   },
-  // Deliberately omitted: applicable 2026 complementary-retirement values are not verified.
+  complementaryRetirement: {
+    employee: {
+      affiliation: 'Agirc-Arrco',
+      pointPurchaseValue: pointValueRule('agirc-point-purchase', 201_877, agircSource),
+      pointServiceValue: pointValueRule('agirc-point-service', 14_386, {
+        ...agircSource,
+        effectiveDate: '2025-11-01',
+      }),
+      pointBands: [
+        {
+          ...contribution('agirc-points-t1', 'Points T1', 0, annualPass, 62_000, {
+            category: 'all',
+          }),
+          source: agircSource,
+          rounding: 'exact',
+        },
+        {
+          ...contribution('agirc-points-t2', 'Points T2', annualPass, eightPass, 170_000, {
+            category: 'all',
+          }),
+          source: agircSource,
+          rounding: 'exact',
+        },
+      ],
+    },
+    micro: {
+      affiliation: 'RCI — libéral BNC non réglementé hors Cipav',
+      pointPurchaseValue: pointValueRule('rci-point-purchase', 217_260, cnavPointSource),
+      pointServiceValue: pointValueRule('rci-point-service', 13_470, cnavPointSource),
+      allocationRate: {
+        id: 'rci-bnc-allocation',
+        value: assertRatePpm(210_000),
+        base: 'Cotisations micro-sociales globales réglées',
+        bounds: 'BNC relevant de l’Assurance retraite, hors Cipav; modèle annuel indicatif',
+        rounding: 'exact',
+        source: cnavAllocationSource,
+      },
+    },
+  },
   cfe: {
     id: 'cfe-user-entered-or-exempt',
     value: 'user-entered-or-exempt',

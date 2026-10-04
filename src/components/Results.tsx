@@ -4,6 +4,17 @@ import type { ComparisonResult, DisplayPeriod, StatusResult } from '../domain/mo
 import { ResultNotice } from './ui/ResultNotice'
 import { RuleDisclosure } from './ui/RuleDisclosure'
 
+const pointFormat = new Intl.NumberFormat('fr-FR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+const pensionFormat = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
 interface ResultsProps {
   result: ComparisonResult
   period: DisplayPeriod
@@ -90,11 +101,21 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
               <dd>Non calculable sur la seule année 2026</dd>
             </div>
             <div>
-              <dt>Points complémentaires</dt>
+              <dt>Régime complémentaire</dt>
+              <dd>{result.retirement.complementary.regime}</dd>
+            </div>
+            <div>
+              <dt>Statut complémentaire</dt>
+              <dd>
+                {result.retirement.complementary.confidence === 'blocked' ? 'Bloqué' : 'Estimatif'}
+              </dd>
+            </div>
+            <div>
+              <dt>Points complémentaires estimés</dt>
               <dd>
                 {result.retirement.complementary.points === 'unavailable'
                   ? 'Indisponibles — paramètres 2026 non vérifiés'
-                  : result.retirement.complementary.points}
+                  : pointFormat.format(result.retirement.complementary.points)}
               </dd>
             </div>
             <div>
@@ -102,7 +123,9 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
               <dd>
                 {result.retirement.complementary.indicativeAnnualPension === 'unavailable'
                   ? 'Non calculable'
-                  : formatCents(result.retirement.complementary.indicativeAnnualPension)}
+                  : pensionFormat.format(
+                      result.retirement.complementary.indicativeAnnualPension / 100,
+                    )}
               </dd>
             </div>
           </dl>
@@ -110,7 +133,12 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
           {result.retirement.complementary.limitation && (
             <p className="retirement-limitation">{result.retirement.complementary.limitation}</p>
           )}
-          <RuleDisclosure sources={result.retirement.base.sources} />
+          <RuleDisclosure
+            sources={[
+              ...result.retirement.base.sources,
+              ...result.retirement.complementary.sources,
+            ]}
+          />
         </section>
       )}
       <details className="deduction-details">

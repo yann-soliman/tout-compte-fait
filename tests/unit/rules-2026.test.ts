@@ -40,6 +40,6 @@ describe('2026 regulatory catalogue contract', () => {
   it('keeps every encoded employee and base-retirement rule directly sourced', () => {
     assertUsableCatalog(rules2026, 2026, ['employeeContributions', 'baseRetirement'])
     expect(rules2026.employeeContributions).toHaveLength(12)
-    expect(rules2026.complementaryRetirement).toBeUndefined()
+    assertUsableCatalog(rules2026, 2026, ['complementaryRetirement'])
   })
 })
