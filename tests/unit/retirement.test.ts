@@ -4,11 +4,12 @@ import { defaultScenario } from '../../src/domain/defaults'
 import { rules2026 } from '../../src/domain/rules/2026'
 
 describe('retirement integration', () => {
-  it('keeps base pension non-calculable and complementary valuation unavailable', () => {
+  it('keeps base pension non-calculable and complementary valuation explicitly estimated', () => {
     const result = calculateComparison(defaultScenario, rules2026)
     expect(result.micro.retirement?.base.basePension).toBe('not-calculable-from-2026-alone')
     expect(result.employee.retirement?.base.basePension).toBe('not-calculable-from-2026-alone')
-    expect(result.micro.retirement?.complementary.indicativeAnnualPension).toBe('unavailable')
+    expect(result.micro.retirement?.complementary.confidence).toBe('estimated')
+    expect(result.employee.retirement?.complementary.confidence).toBe('estimated')
   })
 
   it('never adds retirement rights to current net or economic totals', () => {

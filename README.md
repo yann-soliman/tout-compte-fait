@@ -15,8 +15,14 @@ d’établir pour 2026. Chaque résultat réglementaire expose sa source, sa dat
   d’Alsace-Moselle, conventions collectives, prévoyance et variations individuelles de fiche de paie.
 - L’éligibilité micro ne peut pas être confirmée sans les chiffres d’affaires 2024 et 2025.
 - La CFE dépend de la commune et de la situation saisie.
-- Les paramètres 2026 de retraite complémentaire non vérifiés restent bloqués : aucune valeur
-  provisoire n’est présentée comme établie.
+- Les points complémentaires Agirc-Arrco et RCI sont estimés avec les paramètres 2026 officiels.
+  Le modèle annuel suppose les cotisations réglées, sans reproduire les déclarations périodiques,
+  plafonds personnels proratisés et arrondis de caisse. Les points sont affichés au centième et
+  l'indication annuelle au centime, calculée avant arrondi des points. Ce sont des conventions
+  de présentation, pas des garanties de droits attribués. Un paramètre absent/provisoire bloque
+  seulement le régime complémentaire concerné.
+- Les valeurs de service de référence (Agirc-Arrco depuis le 1er novembre 2025, RCI au
+  1er janvier 2026) ne garantissent pas la valeur future à la liquidation.
 - La retraite de base ne peut pas être transformée en pension autonome à partir de la seule année 2026. L’application ne simule ni carrière complète, ni âge de départ, décote, surcote ou réversion.
 - La projection repose sur une hypothèse économique saisie ; elle ne prédit pas les futurs barèmes.
 
@@ -54,7 +60,9 @@ $speckit-implement
 ```
 
 Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dans
-`specs/002-comparaison-statuts/`.
+`specs/002-comparaison-statuts/`. La finalisation complémentaire et ses conventions figurent
+dans `specs/003-retraite-complementaire/`. Le test d'utilisabilité réel à dix personnes (002 T050)
+reste à réaliser; les tests automatisés ne le remplacent pas.
 
 ## Déploiement
 

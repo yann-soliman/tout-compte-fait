@@ -48,6 +48,20 @@ export interface RetirementRuleSet {
   pointServiceValue?: RegulatoryRule<MoneyCents>
 }
 
+/** Integer units of 0.0001 € preserve statutory point values below one cent. */
+export interface ComplementaryRegimeRules {
+  affiliation: string
+  pointPurchaseValue: RegulatoryRule<number>
+  pointServiceValue: RegulatoryRule<number>
+  pointBands?: Array<Omit<ContributionBand, 'rounding'> & { rounding: 'exact' }>
+  allocationRate?: RegulatoryRule<RatePpm>
+}
+
+export interface ComplementaryRetirementRules {
+  employee?: ComplementaryRegimeRules
+  micro?: ComplementaryRegimeRules
+}
+
 export interface RegulatoryCatalog {
   year: 2026
   microSocial: RegulatoryRule<RatePpm>
@@ -57,7 +71,7 @@ export interface RegulatoryCatalog {
   socialSecurityCeilingAnnual: RegulatoryRule<MoneyCents>
   employeeContributions: ContributionBand[]
   baseRetirement: RetirementRuleSet
-  complementaryRetirement?: RetirementRuleSet
+  complementaryRetirement?: ComplementaryRetirementRules
   cfe: RegulatoryRule<'user-entered-or-exempt'>
 }
 

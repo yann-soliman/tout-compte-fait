@@ -1,9 +1,30 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { App } from '../../src/App'
 
 describe('App', () => {
+  it('labels annual complementary estimates and exposes CNAV/Agirc sources without a base pension', () => {
+    render(<App />)
+    const employee = screen.getByRole('region', { name: 'Droits retraite 2026 — salariat' })
+    const micro = screen.getByRole('region', { name: 'Droits retraite 2026 — micro-entreprise' })
+    expect(within(employee).getByText('Agirc-Arrco')).toBeInTheDocument()
+    expect(within(micro).getByText(/RCI — libéral/)).toBeInTheDocument()
+    expect(within(employee).getByText('Points complémentaires estimés')).toBeInTheDocument()
+    expect(within(micro).getByText('Points complémentaires estimés')).toBeInTheDocument()
+    expect(within(employee).getByText(/Estimatif — modèle annuel/)).toBeInTheDocument()
+    expect(within(micro).getByText(/arrondis de caisse non reproduits/)).toBeInTheDocument()
+    expect(within(employee).getByRole('link', { name: /Circulaire Agirc-Arrco/ })).toHaveAttribute(
+      'href',
+      'https://www.agirc-arrco.fr/storage/CirculaireAgircArrco2025-16sg-drj.pdf',
+    )
+    expect(within(micro).getByRole('link', { name: /CNAV 2025-31/ })).toHaveAttribute(
+      'href',
+      'https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2025_31_22122025.pdf',
+    )
+    expect(within(employee).getByText('Non calculable sur la seule année 2026')).toBeInTheDocument()
+  })
+
   it('presents the numbered input sequence before results', () => {
     render(<App />)
 

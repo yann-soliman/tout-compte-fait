@@ -31,7 +31,10 @@ describe('calculateMicroRetirement', () => {
   })
 
   it('blocks non-applicable complementary parameters and rejects unsupported affiliations', () => {
-    const result = calculateMicroRetirement(defaultScenario.micro, rules2026)
+    const result = calculateMicroRetirement(defaultScenario.micro, {
+      ...rules2026,
+      complementaryRetirement: undefined,
+    })
     expect(result.complementary.points).toBe('unavailable')
     expect(result.complementary.confidence).toBe('blocked')
     expect(() =>

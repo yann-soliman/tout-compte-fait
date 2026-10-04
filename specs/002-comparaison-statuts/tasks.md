@@ -241,6 +241,10 @@ For every rate, threshold, ceiling, band, annual cap and rounding rule:
 
 ---
 
+## Completion addendum — 2026-10-04
+
+The original T005, T034–T041 checkmarks included the safe blocked-results MVP, not complete point acquisition. Feature [003](../003-retraite-complementaire/spec.md) now supplies the missing complementary point acquisition and monetary indication as explicitly annual estimates, backed by directly consulted circulars and new boundary/guard/UI tests. T050 remains unchecked: no ten-person human study was executed. Full source evidence and technical gates live in003 research/quickstart. No old checkbox is used as evidence of a passed test.
+
 ## Notes
 
 - `[P]` means different files and no dependency on unfinished work; shared-file edits still require coordination.
