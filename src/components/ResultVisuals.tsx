@@ -1,4 +1,6 @@
-import { memo, useDeferredValue } from 'react'
+import { memo, useDeferredValue, useMemo } from 'react'
+import { Robustness } from './Robustness'
+import { calculateRobustness } from '../domain/robustness'
 import type {
   ComparisonResult,
   ComparisonScenario,
@@ -23,6 +25,16 @@ export function ResultVisuals({
 }) {
   const deferredScenario = useDeferredValue(scenario)
   const pending = deferredScenario !== scenario
+  const robustness = useMemo(() => {
+    try {
+      return { data: calculateRobustness(scenario, catalog), error: undefined }
+    } catch (error) {
+      return {
+        data: undefined,
+        error: error instanceof Error ? error.message : 'Calcul indisponible.',
+      }
+    }
+  }, [scenario, catalog])
   return (
     <div className="result-visuals">
       {result.micro.warnings
@@ -41,6 +53,11 @@ export function ResultVisuals({
       <div inert={pending} aria-busy={pending}>
         <DeferredMap scenario={deferredScenario} catalog={catalog} onApply={onApply} />
       </div>
+      {robustness.data ? (
+        <Robustness scenario={scenario} data={robustness.data} />
+      ) : (
+        <p className="visual-warning">Robustesse indisponible : {robustness.error}</p>
+      )}
     </div>
   )
 }

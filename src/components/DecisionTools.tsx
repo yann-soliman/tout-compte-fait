@@ -1,4 +1,7 @@
 import { useMemo, useState, type ChangeEvent } from 'react'
+import { createReportOffers } from '../domain/decision-report'
+import { OfferComparison } from './OfferComparison'
+import { DecisionReport } from './DecisionReport'
 import { applyBalanceRate, calculateBalance, type BalanceTarget } from '../domain/balance'
 import { formatCents } from '../domain/calculate'
 import type { Confidence } from '../domain/model'
@@ -102,6 +105,7 @@ export function DecisionTools({
   onReset,
   catalog,
 }: DecisionToolsProps) {
+  const [reportOpen, setReportOpen] = useState(false)
   const [target, setTarget] = useState<BalanceTarget>('netIncome')
   const [stress, setStress] = useState<StressInput>(initialStress)
   const [extraExpensesInput, setExtraExpensesInput] = useState('0')
@@ -164,6 +168,14 @@ export function DecisionTools({
       }
     }
   }, [scenario, saved, selectedIds])
+
+  const report = useMemo(() => {
+    try {
+      return { offers: createReportOffers(scenario, saved, selectedIds, catalog), error: '' }
+    } catch (error) {
+      return { offers: [], error: error instanceof Error ? error.message : 'Rapport indisponible.' }
+    }
+  }, [scenario, saved, selectedIds, catalog])
 
   function persist(next: NamedScenario[]): boolean {
     try {
@@ -445,7 +457,12 @@ export function DecisionTools({
                     </p>
                   ),
                 )}
-                <div className="decision-table-wrap">
+                <div
+                  className="decision-table-wrap"
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Tableau de comparaison annuel"
+                >
                   <table className="decision-table">
                     <caption>Valeurs annuelles, retraite exclue</caption>
                     <thead>
@@ -575,8 +592,14 @@ export function DecisionTools({
               {comparison.error}
             </p>
           )}
+          {selectedIds.length > 0 && !report.error && <OfferComparison offers={report.offers} />}
           {selectedIds.length > 0 && !comparison.error && (
-            <div className="decision-table-wrap">
+            <div
+              className="decision-table-wrap"
+              tabIndex={0}
+              role="region"
+              aria-label="Tableau de comparaison annuel"
+            >
               <table className="decision-table">
                 <caption>Comparaison annuelle avant impôt, retraite exclue</caption>
                 <thead>
@@ -592,8 +615,14 @@ export function DecisionTools({
                   </tr>
                 </thead>
                 <tbody>
-                  {comparison.rows.map((row) => (
-                    <tr key={`${row.name}-${row.microWorkedDays}-${row.employeeWorkedDays}`}>
+                  {comparison.rows.map((row, index) => (
+                    <tr
+                      key={
+                        index === 0
+                          ? 'current'
+                          : saved.filter((offer) => selectedIds.includes(offer.id))[index - 1]!.id
+                      }
+                    >
                       <th scope="row">{row.name}</th>
                       <td>{row.referenceYear}</td>
                       <td>{row.microWorkedDays}</td>
@@ -616,6 +645,21 @@ export function DecisionTools({
         </div>
       </details>
 
+      <div className="report-launch">
+        <button
+          className="decision-action"
+          type="button"
+          disabled={!!report.error}
+          onClick={() => setReportOpen(true)}
+        >
+          Prévisualiser le rapport
+        </button>
+        <span>Scénario courant et offres cochées · impression / PDF local</span>
+        {report.error && <p className="decision-error">Rapport indisponible : {report.error}</p>}
+      </div>
+      {reportOpen && !report.error && (
+        <DecisionReport offers={report.offers} onClose={() => setReportOpen(false)} />
+      )}
       <button className="decision-action decision-reset" type="button" onClick={onReset}>
         Réinitialiser les entrées
       </button>

@@ -62,7 +62,7 @@ describe('opportunity hypothesis', () => {
       {
         ...defaultScenario,
         retirement: { ...defaultScenario.retirement, includeRights: false },
-        micro: { ...defaultScenario.micro, dailyRate: assertMoneyCents(38_693) },
+        micro: { ...defaultScenario.micro, dailyRate: assertMoneyCents(38_693), billedDays: 160 },
       },
       rules2026,
     )

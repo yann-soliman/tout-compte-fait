@@ -29,11 +29,11 @@ test('saves locally, downloads a real JSON collection and imports it atomically'
   await page.getByText('Scénarios enregistrés', { exact: true }).click()
   await expect(page.getByText('Offre E2E', { exact: true })).toBeVisible()
   const rate = page.getByRole('spinbutton', { name: 'Taux journalier' })
-  await expect(rate).toHaveValue('600')
+  await expect(rate).toHaveValue('500')
   await rate.fill('700')
   page.once('dialog', (dialog) => dialog.accept())
   await page.getByRole('button', { name: 'Réinitialiser les entrées' }).click()
-  await expect(rate).toHaveValue('600')
+  await expect(rate).toHaveValue('500')
   await expect(page.getByText('Offre E2E', { exact: true })).toBeVisible()
 })
 

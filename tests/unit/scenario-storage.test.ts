@@ -43,7 +43,7 @@ describe('scenario storage boundary', () => {
     expect(loadScenarioStorage(storage).scenarios).toEqual([])
     expect(replaceScenarioStorage(storage, [offer]).ok).toBe(true)
     expect(loadScenarioStorage(storage).scenarios).toEqual([offer])
-    expect(defaultScenario.micro.dailyRate).toBe(60_000)
+    expect(defaultScenario.micro.dailyRate).toBe(50_000)
   })
 
   it('reports persisted corruption and storage read errors instead of crashing', () => {
