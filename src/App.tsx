@@ -9,8 +9,9 @@ import {
   Sparkles,
   WalletCards,
 } from 'lucide-react'
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useCallback, useMemo, useState } from 'react'
 import { Results } from './components/Results'
+import { ResultVisuals } from './components/ResultVisuals'
 import { DecisionTools } from './components/DecisionTools'
 import { ResultNotice } from './components/ui/ResultNotice'
 import { NumberField } from './components/ui/NumberField'
@@ -40,6 +41,11 @@ export function App() {
       }
     }
   }, [scenario])
+
+  const applyHypothesis = useCallback((patch: Pick<MicroScenario, 'dailyRate' | 'billedDays'>) => {
+    setScenario((current) => ({ ...current, micro: { ...current.micro, ...patch } }))
+    setDailyRateError(undefined)
+  }, [])
 
   const updateMicro = (patch: Partial<MicroScenario>) =>
     setScenario((current) => ({ ...current, micro: { ...current.micro, ...patch } }))
@@ -388,7 +394,14 @@ export function App() {
               <ResultNotice warning={{ code: 'invalid-scenario', message: calculation.error }} />
             )}
             {calculation.result && (
-              <Results result={calculation.result} period={scenario.displayPeriod} />
+              <Results result={calculation.result} period={scenario.displayPeriod}>
+                <ResultVisuals
+                  scenario={scenario}
+                  result={calculation.result}
+                  catalog={rules2026}
+                  onApply={applyHypothesis}
+                />
+              </Results>
             )}
           </div>
         ) : (
