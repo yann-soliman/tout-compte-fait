@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { ArrowRight, BadgeEuro, Scale } from 'lucide-react'
 import { formatCents, forPeriod } from '../domain/calculate'
 import type { ComparisonResult, DisplayPeriod, StatusResult } from '../domain/model'
@@ -18,6 +19,7 @@ const pensionFormat = new Intl.NumberFormat('fr-FR', {
 interface ResultsProps {
   result: ComparisonResult
   period: DisplayPeriod
+  children?: ReactNode
 }
 
 function ResultCard({ result, period }: { result: StatusResult; period: DisplayPeriod }) {
@@ -160,7 +162,7 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
   )
 }
 
-export function Results({ result, period }: ResultsProps) {
+export function Results({ result, period, children }: ResultsProps) {
   const difference = result.economicValueDifference ?? result.difference
   const netDifference = result.netIncomeDifference ?? result.difference
   const leading = difference >= 0 ? 'Micro-entreprise' : 'Salariat'
@@ -174,6 +176,7 @@ export function Results({ result, period }: ResultsProps) {
           <p>Règles générales 2026 · avant impôt sur le revenu</p>
         </div>
       </header>
+      {children}
       <div className="result-grid">
         <ResultCard result={result.micro} period={period} />
         <span className="versus" aria-hidden="true">

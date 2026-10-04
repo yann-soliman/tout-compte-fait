@@ -1,0 +1,6 @@
+# Data model
+
+MoneyFlow: kind, five signed steps (gross, deductions, net, expenses-or-benefits, totalValue), amounts/start/end integer cents. Shared domain includes0 and all endpoints; nonzero span for zero-only scenarios. Steps reconcile to existing values; invalid or unsafe aggregates rejected.
+Opportunity: dailyRate integer nonnegative cents, billedDays integer0..366, turnover, annual micro/salary economic values, signed difference, applicable ceiling, warnings, canApply. Calculated with retirement disabled. canApply requires days>0, known CFE, below ceiling and no calculation failure; does NOT assert eligibility confirmed.
+OpportunityGrid: ordered day/rate samples bounded13each, flattened cells, shared maxAbsDifference, current exact coordinate, equilibrium points and ceiling points. Extents include current values and zero. Selected detail recalculated for native controls; no monetary interpolation.
+State: current scenario → selected hypothesis (ephemeral) → explicit application of both values. A day/rate scenario change resets selection to current; other assumptions recalculate the selected hypothesis; period toggle doesn't alter annual hypothesis math. No storage/import change.

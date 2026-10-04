@@ -26,6 +26,20 @@ d’établir pour 2026. Chaque résultat réglementaire expose sa source, sa dat
 - La retraite de base ne peut pas être transformée en pension autonome à partir de la seule année 2026. L’application ne simule ni carrière complète, ni âge de départ, décote, surcote ou réversion.
 - La projection repose sur une hypothèse économique saisie ; elle ne prédit pas les futurs barèmes.
 
+## Visuels de résultats
+
+Deux décompositions à échelle monétaire commune montrent le passage du chiffre d’affaires ou
+du salaire brut à la valeur économique, avec prélèvements, frais ou avantages séparés. Les
+déficits restent visibles; les montants suivent le sélecteur annuel/mensuel.
+
+Une carte annuelle TJM × jours facturés compare la valeur économique au salariat. Les couleurs
+et la ligne d’équilibre sont indicatives entre points échantillonnés; une hypothèse sélectionnée
+est recalculée exactement, au centime. Les hachures signalent les zones hors plafond proratisé.
+Des commandes clavier/tactiles permettent l’exploration; une action explicite applique le TJM
+et les jours ensemble. Zéro jour, CFE inconnue et dépassement du plafond bloquent l’application.
+Le respect du plafond ne confirme pas l’éligibilité sans historique. Aucun impôt ni revenu
+de retraite n’est ajouté à cette comparaison.
+
 ## Outils de décision
 
 Après les entrées du simulateur, trois volets repliables proposent le taux journalier minimum
@@ -82,7 +96,7 @@ $speckit-implement
 Les spécifications se trouvent dans `specs/`, notamment la comparaison 2026 dans
 `specs/002-comparaison-statuts/`. La finalisation complémentaire et ses conventions figurent
 dans `specs/003-retraite-complementaire/`. Les outils de décision et leurs contrats sont documentés
-dans `specs/004-decision-tools/`.
+dans `specs/004-decision-tools/`. Les visuels figurent dans `specs/005-result-visuals/`.
 
 ## Déploiement
 

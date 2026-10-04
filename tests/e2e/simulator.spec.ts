@@ -12,7 +12,9 @@ test('complete the compact simulator without horizontal overflow', async ({ page
   const results = page.locator('.results-section')
   await expect(results.getByText('Revenu net avant impôt')).toHaveCount(2)
   await expect(results.getByText('Écart de revenu net')).toBeVisible()
-  await expect(results.getByText(/Éligibilité non confirmée|dépasse le plafond/)).toBeVisible()
+  await expect(
+    results.locator('.result-card').getByText(/Éligibilité non confirmée|dépasse le plafond/),
+  ).toBeVisible()
   await results
     .getByText(/Sources réglementaires/)
     .first()
@@ -36,8 +38,8 @@ test('compare expenses, benefits and status-specific worked time', async ({ page
   const results = page.locator('.results-section')
   await expect(results.getByText('Indéterminée')).toBeVisible()
   await expect(results.getByText('115 j')).toBeVisible()
-  await expect(results.getByText('Frais économiques')).toBeVisible()
-  await expect(results.getByText('Avantages')).toBeVisible()
+  await expect(results.locator('.result-card--micro').getByText('Frais économiques')).toBeVisible()
+  await expect(results.locator('.result-card--employee').getByText('Avantages')).toBeVisible()
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)
   expect(overflow).toBe(false)
