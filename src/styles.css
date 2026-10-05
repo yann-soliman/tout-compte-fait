@@ -990,6 +990,7 @@ main {
 
 .simulator {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 
@@ -1414,6 +1415,103 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.055);
+}
+
+/* Fiscal inputs stay before results; cash panels use the existing dark theme. */
+.tax-inputs {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #454957;
+  border-radius: 14px;
+  background: #252733;
+  color: #ececf1;
+}
+.tax-inputs h2,
+.income-tax-comparison h2 {
+  font-size: 1rem;
+  margin: 0 0 10px;
+}
+.tax-inputs .projection-caveat {
+  color: #c5c8d5;
+}
+.tax-inputs .toggle-card {
+  color: #252733;
+}
+.tax-input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.tax-input-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #ececf1;
+  font-size: 0.8rem;
+}
+.tax-input-grid input,
+.tax-input-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #676b7b;
+  background: #181a24;
+  color: #ececf1;
+  font: inherit;
+}
+.income-tax-comparison {
+  min-width: 0;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #454957;
+  border-radius: 14px;
+  background: #252733;
+  color: #ececf1;
+  overflow-wrap: anywhere;
+}
+.income-tax-comparison > p,
+.after-tax-card p,
+.income-tax-comparison details p {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #c5c8d5;
+}
+.after-tax-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+.after-tax-card {
+  padding: 16px;
+  border: 1px solid #454957;
+  border-radius: 14px;
+  background: #252733;
+  min-width: 0;
+}
+.after-tax-card h3 {
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+.after-tax-cash {
+  display: block;
+  font-size: 1.8rem;
+  color: #ffd58f;
+  margin-bottom: 16px;
+}
+.after-tax-cash small {
+  font-size: 0.75rem;
+  color: #c5c8d5;
+}
+.after-tax-card .result-metrics {
+  grid-template-columns: 1fr;
+}
+.after-tax-card .result-metrics dt {
+  color: #c5c8d5;
 }
 
 .ei-comparison {
@@ -1908,7 +2006,7 @@ footer {
   .status-grid,
   .composition-grid,
   .projection-kpis {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .projection-kpis {
@@ -2018,7 +2116,7 @@ footer {
   }
 
   .fields-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px 8px;
   }
 
