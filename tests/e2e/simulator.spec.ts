@@ -1,13 +1,15 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { showResults } from './navigation-009-helpers'
 
 test('complete the compact simulator without horizontal overflow', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.getByRole('heading', { name: 'Situation commune' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Résultat' })).toBeVisible()
   await page.getByRole('spinbutton', { name: 'Taux journalier' }).fill('650')
   await expect(page.getByRole('spinbutton', { name: 'Taux journalier' })).toHaveValue('650')
+  await showResults(page)
+  await expect(page.getByRole('heading', { name: 'Résultat' })).toBeVisible()
 
   const results = page.locator('.results-section')
   await expect(results.getByText('Revenu net avant impôt')).toHaveCount(2)
@@ -21,8 +23,9 @@ test('complete the compact simulator without horizontal overflow', async ({ page
     .click()
   await expect(results.getByRole('link', { name: 'Régime micro-social' })).toBeVisible()
 
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)
-  expect(overflow).toBe(false)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    page.viewportSize()!.width,
+  )
 
   const accessibility = await new AxeBuilder({ page }).analyze()
   expect(accessibility.violations).toEqual([])
@@ -34,6 +37,7 @@ test('compare expenses, benefits and status-specific worked time', async ({ page
   await page.getByRole('spinbutton', { name: 'Frais professionnels' }).fill('5000')
   await page.getByRole('spinbutton', { name: 'Avantages' }).fill('4200')
   await page.getByRole('spinbutton', { name: 'Quotité de travail' }).fill('50')
+  await showResults(page)
 
   const results = page.locator('.results-section')
   await expect(results.getByText('Indéterminée')).toBeVisible()
@@ -41,8 +45,9 @@ test('compare expenses, benefits and status-specific worked time', async ({ page
   await expect(results.locator('.result-card--micro').getByText('Frais économiques')).toBeVisible()
   await expect(results.locator('.result-card--employee').getByText('Avantages')).toBeVisible()
 
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)
-  expect(overflow).toBe(false)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    page.viewportSize()!.width,
+  )
 })
 
 test('update affected results within 100 ms in the browser', async ({ page }) => {
@@ -78,4 +83,6 @@ test('update affected results within 100 ms in the browser', async ({ page }) =>
   })
 
   expect(duration).toBeLessThan(100)
+  await showResults(page)
+  await expect(result).toBeVisible()
 })

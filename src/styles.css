@@ -1,4 +1,8 @@
 /* Decision indicators and a self-contained browser-print report. */
+
+[hidden] {
+  display: none !important;
+}
 .robustness-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2439,5 +2443,184 @@ footer {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+/* Four destinations; only the active panel is visible, all session state stays mounted. */
+.view-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+}
+.view-tabs button {
+  min-width: 0;
+  padding: 10px 8px;
+}
+.view-tabs button:focus-visible,
+.view-details > summary:focus-visible,
+[role='tabpanel'] > h1:focus,
+#view-title-hypotheses:focus {
+  outline: 3px solid #7868e8;
+  outline-offset: 3px;
+}
+[role='tabpanel'] {
+  min-width: 0;
+}
+[role='tabpanel'] > h1 {
+  font-size: 1.5rem;
+  margin: 0 0 18px;
+}
+.primary-action {
+  justify-self: start;
+  min-height: 44px;
+  padding: 12px 20px;
+}
+.hypothesis-summary {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  font-size: 0.8rem;
+}
+.hypothesis-summary p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+.comparison-overview {
+  margin-top: 18px;
+  padding: 20px;
+  border-radius: 18px;
+  background: #191d31;
+  color: #ececf1;
+  overflow-wrap: anywhere;
+}
+.comparison-overview h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+.overview-intro {
+  color: #c5c8d5;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.overview-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #454957;
+  border-radius: 12px;
+  background: #252733;
+}
+.overview-card h3 {
+  font-size: 0.9rem;
+  margin: 0 0 18px;
+}
+.overview-card dl {
+  margin: 0;
+}
+.overview-card dl > div {
+  padding: 10px 0;
+  border-top: 1px solid #454957;
+}
+.overview-card dt {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #c5c8d5;
+}
+.overview-card dd {
+  margin: 6px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.overview-cash {
+  font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+.overview-cash small {
+  font-size: 0.68rem;
+  color: #c5c8d5;
+  letter-spacing: normal;
+}
+.overview-cash--after {
+  color: #ffd58f;
+}
+.overview-warning {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #ffd58f;
+}
+.overview-limit {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #c5c8d5;
+}
+.view-details {
+  min-width: 0;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.view-details > summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 0;
+}
+.view-details .retirement-result {
+  margin: 16px 0;
+  color: var(--ink);
+}
+.view-details .retirement-result + .retirement-result {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.view-details .retirement-result dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.view-details .retirement-result dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.view-details .retirement-result dd {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+}
+.view-details .retirement-warning,
+.view-details .retirement-limitation {
+  color: #565969;
+  font-size: 0.76rem;
+}
+@media (max-width: 700px) {
+  .overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .comparison-overview {
+    padding: 14px;
+  }
+  .view-details .retirement-result dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 500px) {
+  .view-tabs {
+    gap: 2px;
+    padding: 3px;
+  }
+  .view-tabs button {
+    padding: 8px 3px;
+    font-size: 0.72rem;
+  }
+  .view-details {
+    padding: 12px;
   }
 }

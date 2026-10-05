@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { defaultScenario } from '../../src/domain/defaults'
+import { navigate, editHypothesis } from './navigation-009-helpers'
 
 const snapshot = (id: string, name: string, rate: number) => ({
   id,
@@ -19,6 +20,7 @@ test('defaults and reset preserve imported older snapshots', async ({ page }) =>
   await expect(page.getByLabel('Taux journalier', { exact: true })).toHaveValue('500')
   await expect(page.getByLabel('Jours facturés', { exact: true })).toHaveValue('200')
   await expect(page.getByLabel('Salaire brut', { exact: true })).toHaveValue('50000')
+  await navigate(page, 'Scénarios')
   await page.locator('summary').filter({ hasText: 'Scénarios enregistrés' }).click()
   await page.getByLabel('Importer une collection JSON').setInputFiles({
     name: 'old.json',
@@ -27,6 +29,7 @@ test('defaults and reset preserve imported older snapshots', async ({ page }) =>
       JSON.stringify({ schemaVersion: 1, scenarios: [snapshot('old', 'Ancienne offre', 60000)] }),
     ),
   })
+  await navigate(page, 'Scénarios')
   await page.getByRole('button', { name: 'Charger Ancienne offre' }).click()
   await expect(page.getByLabel('Taux journalier', { exact: true })).toHaveValue('600')
   await expect(page.getByLabel('Jours facturés', { exact: true })).toHaveValue('160')
@@ -40,6 +43,7 @@ test('defaults and reset preserve imported older snapshots', async ({ page }) =>
   expect(await page.evaluate(() => localStorage.getItem('tout-compte-fait:scenarios:v1'))).toBe(
     storage,
   )
+  await navigate(page, 'Scénarios')
   await page.getByRole('button', { name: 'Charger Ancienne offre' }).click()
   await expect(page.getByLabel('Taux journalier', { exact: true })).toHaveValue('600')
 })
@@ -48,6 +52,8 @@ test('twenty offers keep stable identities and render HTML-like names as plain t
   page,
 }) => {
   await page.goto('/')
+  await page.getByRole('tab', { name: 'Scénarios' }).click()
+  await navigate(page, 'Scénarios')
   await page.locator('summary').filter({ hasText: 'Scénarios enregistrés' }).click()
   const name = '<img src=x onerror="document.body.dataset.injected=1">'
   const offers = Array.from({ length: 20 }, (_, i) => snapshot(`max-${i}`, name, 40000 + i))
@@ -66,7 +72,9 @@ test('twenty offers keep stable identities and render HTML-like names as plain t
   expect(new Set(identities).size).toBe(21)
   expect(await page.locator('.offers-visual').locator('img').count()).toBe(0)
   expect(await page.evaluate(() => document.body.dataset.injected)).toBeUndefined()
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    page.viewportSize()!.width,
+  )
   const before = await page.evaluate(() => JSON.stringify({ ...localStorage }))
   await page.getByRole('button', { name: 'Prévisualiser le rapport' }).click()
   await expect(page.getByRole('dialog').locator('[data-report-offer]')).toHaveCount(21)
@@ -80,9 +88,11 @@ test('selected offers and print preview remain exact, accessible and local', asy
   context,
 }, testInfo) => {
   await page.goto('/')
+  await navigate(page, 'Exploration')
   await page
     .locator('.robustness-visual')
     .screenshot({ path: testInfo.outputPath('robustness.png') })
+  await navigate(page, 'Scénarios')
   await page.locator('summary').filter({ hasText: 'Scénarios enregistrés' }).click()
   const offers = [
     snapshot('a', 'Offre PDF', 35000),
@@ -101,7 +111,9 @@ test('selected offers and print preview remain exact, accessible and local', asy
   await page.getByLabel('Indicateur des offres').selectOption('netIncome')
   await expect(page.locator('.offers-visual')).toContainText('41')
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    page.viewportSize()!.width,
+  )
   await page.locator('.offers-visual').screenshot({ path: testInfo.outputPath('offers.png') })
   await context.setOffline(true)
   await page.getByRole('button', { name: 'Mensuel', exact: true }).click()
@@ -150,7 +162,7 @@ test('selected offers and print preview remain exact, accessible and local', asy
   expect(await page.locator('#root').evaluate((e) => (e as HTMLElement).inert)).toBe(false)
   await checks.nth(0).uncheck()
   await checks.nth(1).uncheck()
-  await page.getByLabel('Taux journalier', { exact: true }).fill('450')
+  await editHypothesis(page, () => page.getByLabel('Taux journalier', { exact: true }).fill('450'))
   await opener.click()
   await expect(page.getByRole('dialog')).toContainText('TJM : 450,00')
   await expect(page.getByRole('dialog').locator('[data-report-offer]')).toHaveCount(1)

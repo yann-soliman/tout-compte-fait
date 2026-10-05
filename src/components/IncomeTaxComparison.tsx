@@ -1,38 +1,21 @@
 import { useId, useMemo } from 'react'
 import type { ComparisonResult, ComparisonScenario } from '../domain/model'
 import { calculateEiIncome } from '../domain/ei'
-import { calculateAfterTaxComparison, defaultTaxHousehold } from '../domain/income-tax'
+import { calculateAfterTaxComparison } from '../domain/income-tax'
 import { incomeTaxReference } from '../domain/rules/income-tax-reference'
-import { eurosToMoneyCents } from '../domain/money'
 import { formatCents, forPeriod } from '../domain/calculate'
 import { RuleDisclosure } from './ui/RuleDisclosure'
 
-import { type TaxSettings } from '../domain/tax-settings'
+import { parseTaxSettings, type TaxSettings } from '../domain/tax-settings'
 interface InputsProps {
   settings: TaxSettings
   onChange: (value: TaxSettings) => void
-}
-function parse(settings: TaxSettings) {
-  if (settings.otherIncomeEuros.trim() === '')
-    throw new RangeError('Renseigner les autres revenus nets imposables, ou zéro.')
-  return {
-    household: {
-      ...defaultTaxHousehold,
-      status: settings.status,
-      children: settings.children,
-      otherTaxableIncome: eurosToMoneyCents(Number(settings.otherIncomeEuros)),
-    },
-    salaryOverride:
-      settings.salaryNetTaxableEuros.trim() === ''
-        ? undefined
-        : eurosToMoneyCents(Number(settings.salaryNetTaxableEuros)),
-  }
 }
 export function IncomeTaxInputs({ settings, onChange }: InputsProps) {
   const id = useId()
   let error: string | undefined
   try {
-    parse(settings)
+    parseTaxSettings(settings)
   } catch (e) {
     error = e instanceof Error ? e.message : 'Hypothèses invalides.'
   }
@@ -134,7 +117,7 @@ export function IncomeTaxComparison({
   const calculation = useMemo(() => {
     if (!settings.enabled) return undefined
     try {
-      const { household, salaryOverride } = parse(settings)
+      const { household, salaryOverride } = parseTaxSettings(settings)
       let ei
       try {
         ei = calculateEiIncome({

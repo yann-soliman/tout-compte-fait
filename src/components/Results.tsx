@@ -20,9 +20,80 @@ interface ResultsProps {
   result: ComparisonResult
   period: DisplayPeriod
   children?: ReactNode
+  includeRetirement?: boolean
 }
 
-function ResultCard({ result, period }: { result: StatusResult; period: DisplayPeriod }) {
+export function RetirementRights({ result }: { result: StatusResult }) {
+  const employee = result.kind === 'employee'
+  if (!result.retirement) return null
+  return (
+    <section
+      className="retirement-result"
+      aria-label={`Droits retraite 2026 — ${employee ? 'salariat' : 'micro-entreprise'}`}
+    >
+      <h3>Droits retraite 2026</h3>
+      <dl>
+        <div>
+          <dt>Revenu cotisé de base</dt>
+          <dd>{formatCents(result.retirement.base.qualifyingIncome)}</dd>
+        </div>
+        <div>
+          <dt>Trimestres validés</dt>
+          <dd>
+            {result.retirement.base.quarters} / {result.retirement.base.quarterCap}
+          </dd>
+        </div>
+        <div>
+          <dt>Montant retraite de base</dt>
+          <dd>Non calculable sur la seule année 2026</dd>
+        </div>
+        <div>
+          <dt>Régime complémentaire</dt>
+          <dd>{result.retirement.complementary.regime}</dd>
+        </div>
+        <div>
+          <dt>Statut complémentaire</dt>
+          <dd>
+            {result.retirement.complementary.confidence === 'blocked' ? 'Bloqué' : 'Estimatif'}
+          </dd>
+        </div>
+        <div>
+          <dt>Points complémentaires estimés</dt>
+          <dd>
+            {result.retirement.complementary.points === 'unavailable'
+              ? 'Indisponibles — paramètres 2026 non vérifiés'
+              : pointFormat.format(result.retirement.complementary.points)}
+          </dd>
+        </div>
+        <div>
+          <dt>Pension annuelle indicative liée aux points 2026</dt>
+          <dd>
+            {result.retirement.complementary.indicativeAnnualPension === 'unavailable'
+              ? 'Non calculable'
+              : pensionFormat.format(result.retirement.complementary.indicativeAnnualPension / 100)}
+          </dd>
+        </div>
+      </dl>
+      <p className="retirement-warning">{result.retirement.warning}</p>
+      {result.retirement.complementary.limitation && (
+        <p className="retirement-limitation">{result.retirement.complementary.limitation}</p>
+      )}
+      <RuleDisclosure
+        sources={[...result.retirement.base.sources, ...result.retirement.complementary.sources]}
+      />
+    </section>
+  )
+}
+
+function ResultCard({
+  result,
+  period,
+  includeRetirement,
+}: {
+  result: StatusResult
+  period: DisplayPeriod
+  includeRetirement: boolean
+}) {
   const employee = result.kind === 'employee'
   return (
     <article className={`result-card result-card--${result.kind}`}>
@@ -81,68 +152,7 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
           </dd>
         </div>
       </dl>
-      {result.retirement && (
-        <section
-          className="retirement-result"
-          aria-label={`Droits retraite 2026 — ${employee ? 'salariat' : 'micro-entreprise'}`}
-        >
-          <h3>Droits retraite 2026</h3>
-          <dl>
-            <div>
-              <dt>Revenu cotisé de base</dt>
-              <dd>{formatCents(result.retirement.base.qualifyingIncome)}</dd>
-            </div>
-            <div>
-              <dt>Trimestres validés</dt>
-              <dd>
-                {result.retirement.base.quarters} / {result.retirement.base.quarterCap}
-              </dd>
-            </div>
-            <div>
-              <dt>Montant retraite de base</dt>
-              <dd>Non calculable sur la seule année 2026</dd>
-            </div>
-            <div>
-              <dt>Régime complémentaire</dt>
-              <dd>{result.retirement.complementary.regime}</dd>
-            </div>
-            <div>
-              <dt>Statut complémentaire</dt>
-              <dd>
-                {result.retirement.complementary.confidence === 'blocked' ? 'Bloqué' : 'Estimatif'}
-              </dd>
-            </div>
-            <div>
-              <dt>Points complémentaires estimés</dt>
-              <dd>
-                {result.retirement.complementary.points === 'unavailable'
-                  ? 'Indisponibles — paramètres 2026 non vérifiés'
-                  : pointFormat.format(result.retirement.complementary.points)}
-              </dd>
-            </div>
-            <div>
-              <dt>Pension annuelle indicative liée aux points 2026</dt>
-              <dd>
-                {result.retirement.complementary.indicativeAnnualPension === 'unavailable'
-                  ? 'Non calculable'
-                  : pensionFormat.format(
-                      result.retirement.complementary.indicativeAnnualPension / 100,
-                    )}
-              </dd>
-            </div>
-          </dl>
-          <p className="retirement-warning">{result.retirement.warning}</p>
-          {result.retirement.complementary.limitation && (
-            <p className="retirement-limitation">{result.retirement.complementary.limitation}</p>
-          )}
-          <RuleDisclosure
-            sources={[
-              ...result.retirement.base.sources,
-              ...result.retirement.complementary.sources,
-            ]}
-          />
-        </section>
-      )}
+      {includeRetirement && <RetirementRights result={result} />}
       <details className="deduction-details">
         <summary>Détail des prélèvements</summary>
         <dl>
@@ -162,7 +172,7 @@ function ResultCard({ result, period }: { result: StatusResult; period: DisplayP
   )
 }
 
-export function Results({ result, period, children }: ResultsProps) {
+export function Results({ result, period, children, includeRetirement = true }: ResultsProps) {
   const difference = result.economicValueDifference ?? result.difference
   const netDifference = result.netIncomeDifference ?? result.difference
   const leading = difference >= 0 ? 'Micro-entreprise' : 'Salariat'
@@ -178,11 +188,15 @@ export function Results({ result, period, children }: ResultsProps) {
       </header>
       {children}
       <div className="result-grid">
-        <ResultCard result={result.micro} period={period} />
+        <ResultCard result={result.micro} period={period} includeRetirement={includeRetirement} />
         <span className="versus" aria-hidden="true">
           <ArrowRight size={18} />
         </span>
-        <ResultCard result={result.employee} period={period} />
+        <ResultCard
+          result={result.employee}
+          period={period}
+          includeRetirement={includeRetirement}
+        />
       </div>
       <div className="result-summary">
         <div>

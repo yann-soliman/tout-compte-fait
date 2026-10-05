@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from '../../src/App'
+import { navigate, showResults, showScenarios } from './navigation-009-helpers'
 import { EiComparison } from '../../src/components/EiComparison'
 import { defaultScenario } from '../../src/domain/defaults'
 import { calculateComparison } from '../../src/domain/calculate'
@@ -10,14 +11,19 @@ import { rules2026 } from '../../src/domain/rules/2026'
 describe('Comparaison EI dans le simulateur', () => {
   it('garde année pleine et assiette inchangées avec date micro et mutuelle, et expose les sources', () => {
     render(<App />)
+    showResults()
     const region = screen.getByRole('region', { name: 'EI au réel — BNC 2026' })
     const before = within(region).getByText('Cotisations et contributions EI').parentElement
       ?.textContent
+    navigate('Hypothèses')
     fireEvent.change(screen.getByLabelText('Début d’activité micro'), {
       target: { value: '2026-12-01' },
     })
+    showResults()
     expect(within(region).getByTestId('ei-available')).toHaveTextContent('66 559')
+    navigate('Hypothèses')
     fireEvent.change(screen.getByLabelText('Mutuelle'), { target: { value: '0' } })
+    showResults()
     expect(within(region).getByTestId('ei-available')).toHaveTextContent('66 859')
     expect(
       within(region).getByText('Cotisations et contributions EI').parentElement?.textContent,
@@ -41,23 +47,28 @@ describe('Comparaison EI dans le simulateur', () => {
       render(<App />)
       fireEvent.change(screen.getByLabelText('CFE'), { target: { value: '0' } })
       fireEvent.click(screen.getByLabelText('Exonération de CFE confirmée'))
-      fireEvent.click(screen.getByText('Scénarios enregistrés'))
+      showScenarios()
       fireEvent.change(screen.getByLabelText('Nom du scénario'), {
         target: { value: 'Offre sans EI' },
       })
       fireEvent.click(screen.getByRole('button', { name: 'Enregistrer le scénario' }))
+      navigate('Hypothèses')
       const exemption = screen.getByLabelText('Confirmer une exonération CFE pour l’EI')
       fireEvent.click(exemption)
       expect(exemption).toBeChecked()
+      showScenarios()
       fireEvent.click(screen.getByRole('button', { name: 'Charger Offre sans EI' }))
       expect(exemption).not.toBeChecked()
+      showResults()
       expect(
         within(screen.getByRole('region', { name: 'EI au réel — BNC 2026' })).getByText('Bloqué'),
       ).toBeVisible()
+      navigate('Hypothèses')
       fireEvent.click(exemption)
       fireEvent.click(screen.getByRole('button', { name: 'Réinitialiser les entrées' }))
       expect(exemption).not.toBeChecked()
       expect(screen.getByLabelText('Taux journalier')).toHaveValue(500)
+      showResults()
       expect(screen.getByTestId('ei-available')).toHaveTextContent('66 559')
     } finally {
       confirm.mockRestore()
@@ -93,6 +104,8 @@ describe('Comparaison EI dans le simulateur', () => {
   it('place la confirmation CFE EI avant tous les résultats', () => {
     render(<App />)
     const control = screen.getByLabelText('Confirmer une exonération CFE pour l’EI')
+    expect(control).toBeVisible()
+    showResults()
     const results = screen.getByRole('heading', { name: 'Résultat' })
     expect(control.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
@@ -123,16 +136,20 @@ describe('Comparaison EI dans le simulateur', () => {
     render(<App />)
     fireEvent.change(screen.getByLabelText('CFE'), { target: { value: '0' } })
     fireEvent.click(screen.getByLabelText('Exonération de CFE confirmée'))
+    showResults()
     const region = screen.getByRole('region', { name: 'EI au réel — BNC 2026' })
     expect(within(region).getByText('Bloqué')).toBeVisible()
     expect(within(region).queryByTestId('ei-available')).not.toBeInTheDocument()
+    navigate('Hypothèses')
     fireEvent.click(screen.getByLabelText('Confirmer une exonération CFE pour l’EI'))
+    showResults()
     expect(within(region).getByText('Estimatif')).toBeVisible()
     expect(within(region).getByTestId('ei-available')).toBeVisible()
   })
 
   it('affiche le disponible EI après frais et distingue cash et avantages', () => {
     render(<App />)
+    showResults()
     const region = screen.getByRole('region', { name: 'EI au réel — BNC 2026' })
     expect(within(region).getByTestId('ei-available')).toHaveTextContent('66 559')
     expect(within(region).getByText(/Disponible micro après frais/)).toBeVisible()

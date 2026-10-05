@@ -29,6 +29,8 @@ interface DecisionToolsProps {
   onScenarioChange: (scenario: ComparisonScenario) => void
   onReset: () => void
   catalog: RegulatoryCatalog
+  mode?: 'all' | 'exploration' | 'scenarios'
+  scenarioError?: string
 }
 
 const initialStress: StressInput = {
@@ -104,6 +106,8 @@ export function DecisionTools({
   onScenarioChange,
   onReset,
   catalog,
+  mode = 'all',
+  scenarioError,
 }: DecisionToolsProps) {
   const [reportOpen, setReportOpen] = useState(false)
   const [target, setTarget] = useState<BalanceTarget>('netIncome')
@@ -145,12 +149,14 @@ export function DecisionTools({
   let stressResult: ReturnType<typeof calculateStress> | undefined
   let stressError = ''
   try {
+    if (scenarioError) throw new RangeError(scenarioError)
     stressResult = calculateStress(scenario, stress, catalog)
   } catch (error) {
     stressError = error instanceof Error ? error.message : 'Paramètres de sensibilité invalides.'
   }
 
   const comparison = useMemo(() => {
+    if (scenarioError) return { rows: [], error: scenarioError }
     try {
       return {
         rows: [
@@ -167,15 +173,16 @@ export function DecisionTools({
         error: error instanceof Error ? error.message : 'Comparaison des scénarios impossible.',
       }
     }
-  }, [scenario, saved, selectedIds])
+  }, [scenario, saved, selectedIds, scenarioError])
 
   const report = useMemo(() => {
+    if (scenarioError) return { offers: [], error: scenarioError }
     try {
       return { offers: createReportOffers(scenario, saved, selectedIds, catalog), error: '' }
     } catch (error) {
       return { offers: [], error: error instanceof Error ? error.message : 'Rapport indisponible.' }
     }
-  }, [scenario, saved, selectedIds, catalog])
+  }, [scenario, saved, selectedIds, catalog, scenarioError])
 
   function persist(next: NamedScenario[]): boolean {
     try {
@@ -196,6 +203,7 @@ export function DecisionTools({
 
   function saveCurrent(): void {
     try {
+      if (scenarioError) throw new RangeError(scenarioError)
       if (corruptLibrary)
         throw new Error('Effacer la collection locale corrompue avant toute sauvegarde.')
       if (saved.length >= MAX_SAVED_SCENARIOS) {
@@ -283,180 +291,336 @@ export function DecisionTools({
   }
 
   return (
-    <section className="decision-tools" aria-label="Outils de décision">
-      <details className="decision-disclosure">
-        <summary>Taux d’équilibre</summary>
-        <div className="decision-panel" role="group" aria-label="Taux d’équilibre">
-          <p className="decision-intro">
-            Calcul annuel avant impôt, hors retraite. Les variantes de jours sont des hypothèses,
-            pas des prévisions.
-          </p>
-          <label className="decision-field">
-            <span>Cible de comparaison</span>
-            <select
-              aria-label="Cible de comparaison"
-              value={target}
-              onChange={(event) => setTarget(event.target.value as BalanceTarget)}
-            >
-              <option value="netIncome">Revenu net salarié avant impôt</option>
-              <option value="totalValue">Valeur économique avec avantages</option>
-            </select>
-          </label>
-          <p className="decision-status">
-            Résultats calculés automatiquement à chaque modification.
-          </p>
-          <div className="balance-grid" aria-live="polite">
-            {balanceRows.map(({ days, result }) => {
-              const rate = resultValue(result)
-              const currentDays = days === scenario.micro.billedDays
-              const daysDescription =
-                days === 120
-                  ? 'pratique basse'
-                  : days === 160
-                    ? 'pratique centrale'
-                    : days === 200
-                      ? 'pratique haute'
-                      : 'autre hypothèse'
-              return (
-                <article className="balance-card" key={days}>
-                  <h3>
-                    {days} j/an
-                    {' · '}
-                    {daysDescription}
-                    {currentDays ? ' · actuel' : ''}
-                  </h3>
-                  <strong>{rate === undefined ? '—' : `${formatDailyRate(rate)}/j`}</strong>
-                  <span>{result.message}</span>
-                  {result.state === 'target-above-eligible-ceiling' && (
-                    <small>Hors plafond · non éligible · ne pas appliquer</small>
-                  )}
-                  {currentDays && result.state === 'reachable' && (
-                    <button
-                      className="decision-action"
-                      type="button"
-                      onClick={() => onScenarioChange(applyBalanceRate(scenario, result))}
-                    >
-                      Appliquer ce taux
-                    </button>
-                  )}
-                </article>
-              )
-            })}
-          </div>
-          <p className="decision-footnote">
-            Plafond micro 2026 proratisé selon la date de début. Un chiffre d’affaires sous plafond
-            ne confirme pas l’éligibilité, qui dépend également des chiffres d’affaires des années
-            N-1 et N-2. Un taux hors plafond n’est jamais recommandé ni appliqué.
-          </p>
-        </div>
-      </details>
+    <section
+      className="decision-tools"
+      aria-label={mode === 'scenarios' ? 'Bibliothèque et rapport' : 'Outils de décision'}
+    >
+      {mode !== 'scenarios' && (
+        <>
+          <details className="decision-disclosure">
+            <summary>Taux d’équilibre</summary>
+            <div className="decision-panel" role="group" aria-label="Taux d’équilibre">
+              <p className="decision-intro">
+                Calcul annuel avant impôt, hors retraite. Les variantes de jours sont des
+                hypothèses, pas des prévisions.
+              </p>
+              <label className="decision-field">
+                <span>Cible de comparaison</span>
+                <select
+                  aria-label="Cible de comparaison"
+                  value={target}
+                  onChange={(event) => setTarget(event.target.value as BalanceTarget)}
+                >
+                  <option value="netIncome">Revenu net salarié avant impôt</option>
+                  <option value="totalValue">Valeur économique avec avantages</option>
+                </select>
+              </label>
+              <p className="decision-status">
+                Résultats calculés automatiquement à chaque modification.
+              </p>
+              {scenarioError && (
+                <p className="decision-status" role="status">
+                  La saisie courante est invalide. Les taux d’équilibre sont des hypothèses de
+                  remplacement indépendantes du TJM courant. Seule une application explicite
+                  remplace et corrige la saisie rejetée.
+                </p>
+              )}
+              <div className="balance-grid" aria-live="polite">
+                {balanceRows.map(({ days, result }) => {
+                  const rate = resultValue(result)
+                  const currentDays = days === scenario.micro.billedDays
+                  const daysDescription =
+                    days === 120
+                      ? 'pratique basse'
+                      : days === 160
+                        ? 'pratique centrale'
+                        : days === 200
+                          ? 'pratique haute'
+                          : 'autre hypothèse'
+                  return (
+                    <article className="balance-card" key={days}>
+                      <h3>
+                        {days} j/an
+                        {' · '}
+                        {daysDescription}
+                        {currentDays ? ' · actuel' : ''}
+                      </h3>
+                      <strong>{rate === undefined ? '—' : `${formatDailyRate(rate)}/j`}</strong>
+                      <span>{result.message}</span>
+                      {result.state === 'target-above-eligible-ceiling' && (
+                        <small>Hors plafond · non éligible · ne pas appliquer</small>
+                      )}
+                      {currentDays && result.state === 'reachable' && (
+                        <button
+                          className="decision-action"
+                          type="button"
+                          onClick={() => onScenarioChange(applyBalanceRate(scenario, result))}
+                        >
+                          Appliquer ce taux
+                        </button>
+                      )}
+                    </article>
+                  )
+                })}
+              </div>
+              <p className="decision-footnote">
+                Plafond micro 2026 proratisé selon la date de début. Un chiffre d’affaires sous
+                plafond ne confirme pas l’éligibilité, qui dépend également des chiffres d’affaires
+                des années N-1 et N-2. Un taux hors plafond n’est jamais recommandé ni appliqué.
+              </p>
+            </div>
+          </details>
 
-      <details className="decision-disclosure">
-        <summary>Sensibilité et aléas</summary>
-        <div className="decision-panel" role="group" aria-label="Sensibilité et aléas">
-          <p className="decision-intro">
-            Hypothèses annuelles; aucune garantie d’emploi ou de droit au chômage. Retraite exclue,
-            sans double comptage.
-          </p>
-          <div className="decision-presets" aria-label="Hypothèses prédéfinies">
-            {stressPresets.map((preset) => (
-              <button
-                className="decision-action"
-                key={preset.label}
-                type="button"
-                onClick={() => {
-                  setStress(preset.value)
-                  setExtraExpensesInput(String(preset.value.extraAnnualExpenses / 100))
-                }}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-          <div className="decision-input-grid">
-            <label className="decision-field">
-              <span>Jours perdus</span>
-              <input
-                aria-label="Jours perdus"
-                type="number"
-                min={0}
-                max={366}
-                step={1}
-                value={Number.isFinite(stress.daysLost) ? stress.daysLost : ''}
-                onChange={(event) =>
-                  setStress((current) => ({
-                    ...current,
-                    daysLost: event.target.value === '' ? Number.NaN : event.target.valueAsNumber,
-                  }))
-                }
-              />
-            </label>
-            <label className="decision-field">
-              <span>% de baisse du taux</span>
-              <input
-                aria-label="% de baisse du taux"
-                type="number"
-                min={0}
-                max={100}
-                step={0.01}
-                value={
-                  Number.isFinite(stress.rateDecreasePercent) ? stress.rateDecreasePercent : ''
-                }
-                onChange={(event) =>
-                  setStress((current) => ({
-                    ...current,
-                    rateDecreasePercent:
-                      event.target.value === '' ? Number.NaN : event.target.valueAsNumber,
-                  }))
-                }
-              />
-            </label>
-            <label className="decision-field">
-              <span>Frais annuels supplémentaires (€)</span>
-              <input
-                aria-label="Frais annuels supplémentaires"
-                type="number"
-                min={0}
-                max={100_000}
-                step={0.01}
-                value={extraExpensesInput}
-                onChange={(event) => {
-                  const value = event.target.value
-                  setExtraExpensesInput(value)
-                  setStress((current) => ({
-                    ...current,
-                    extraAnnualExpenses: euroInputToCents(value),
-                  }))
-                }}
-              />
-            </label>
-          </div>
-          {stressError ? (
-            <p className="decision-error" role="alert">
-              {stressError}
-            </p>
-          ) : (
-            stressResult && (
-              <>
-                <p aria-live="polite">
-                  {stressResult.remainingDays} jour{stressResult.remainingDays > 1 ? 's' : ''}{' '}
-                  restant{stressResult.remainingDays > 1 ? 's' : ''} · taux stressé{' '}
-                  {formatDailyRate(stressResult.stressedDailyRateCents)}/j · résultats annuels avant
-                  impôt
+          <details className="decision-disclosure">
+            <summary>Sensibilité et aléas</summary>
+            <div className="decision-panel" role="group" aria-label="Sensibilité et aléas">
+              <p className="decision-intro">
+                Hypothèses annuelles; aucune garantie d’emploi ou de droit au chômage. Retraite
+                exclue, sans double comptage.
+              </p>
+              <div className="decision-presets" aria-label="Hypothèses prédéfinies">
+                {stressPresets.map((preset) => (
+                  <button
+                    className="decision-action"
+                    key={preset.label}
+                    type="button"
+                    onClick={() => {
+                      setStress(preset.value)
+                      setExtraExpensesInput(String(preset.value.extraAnnualExpenses / 100))
+                    }}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+              <div className="decision-input-grid">
+                <label className="decision-field">
+                  <span>Jours perdus</span>
+                  <input
+                    aria-label="Jours perdus"
+                    type="number"
+                    min={0}
+                    max={366}
+                    step={1}
+                    value={Number.isFinite(stress.daysLost) ? stress.daysLost : ''}
+                    onChange={(event) =>
+                      setStress((current) => ({
+                        ...current,
+                        daysLost:
+                          event.target.value === '' ? Number.NaN : event.target.valueAsNumber,
+                      }))
+                    }
+                  />
+                </label>
+                <label className="decision-field">
+                  <span>% de baisse du taux</span>
+                  <input
+                    aria-label="% de baisse du taux"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.01}
+                    value={
+                      Number.isFinite(stress.rateDecreasePercent) ? stress.rateDecreasePercent : ''
+                    }
+                    onChange={(event) =>
+                      setStress((current) => ({
+                        ...current,
+                        rateDecreasePercent:
+                          event.target.value === '' ? Number.NaN : event.target.valueAsNumber,
+                      }))
+                    }
+                  />
+                </label>
+                <label className="decision-field">
+                  <span>Frais annuels supplémentaires (€)</span>
+                  <input
+                    aria-label="Frais annuels supplémentaires"
+                    type="number"
+                    min={0}
+                    max={100_000}
+                    step={0.01}
+                    value={extraExpensesInput}
+                    onChange={(event) => {
+                      const value = event.target.value
+                      setExtraExpensesInput(value)
+                      setStress((current) => ({
+                        ...current,
+                        extraAnnualExpenses: euroInputToCents(value),
+                      }))
+                    }}
+                  />
+                </label>
+              </div>
+              {stressError ? (
+                <p className="decision-error" role="alert">
+                  {stressError}
                 </p>
-                <p>
-                  Confiance des valeurs — courant :{' '}
-                  {confidenceLabel(stressResult.currentMicroConfidence)}; stressé :{' '}
-                  {confidenceLabel(stressResult.stressedMicroConfidence)}.
-                </p>
-                {[...stressResult.currentMicroWarnings, ...stressResult.stressedMicroWarnings].map(
-                  (warning, index) => (
-                    <p className="decision-warning" key={`${warning.code}-${index}`}>
-                      {index < stressResult.currentMicroWarnings.length ? 'Courant' : 'Stressé'} :{' '}
-                      {warning.message}
+              ) : (
+                stressResult && (
+                  <>
+                    <p aria-live="polite">
+                      {stressResult.remainingDays} jour{stressResult.remainingDays > 1 ? 's' : ''}{' '}
+                      restant{stressResult.remainingDays > 1 ? 's' : ''} · taux stressé{' '}
+                      {formatDailyRate(stressResult.stressedDailyRateCents)}/j · résultats annuels
+                      avant impôt
                     </p>
-                  ),
-                )}
+                    <p>
+                      Confiance des valeurs — courant :{' '}
+                      {confidenceLabel(stressResult.currentMicroConfidence)}; stressé :{' '}
+                      {confidenceLabel(stressResult.stressedMicroConfidence)}.
+                    </p>
+                    {[
+                      ...stressResult.currentMicroWarnings,
+                      ...stressResult.stressedMicroWarnings,
+                    ].map((warning, index) => (
+                      <p className="decision-warning" key={`${warning.code}-${index}`}>
+                        {index < stressResult.currentMicroWarnings.length ? 'Courant' : 'Stressé'} :{' '}
+                        {warning.message}
+                      </p>
+                    ))}
+                    <div
+                      className="decision-table-wrap"
+                      tabIndex={0}
+                      role="region"
+                      aria-label="Tableau de comparaison annuel"
+                    >
+                      <table className="decision-table">
+                        <caption>Valeurs annuelles, retraite exclue</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">Indicateur</th>
+                            <th scope="col">Courant</th>
+                            <th scope="col">Stressé</th>
+                            <th scope="col">Écart au salariat</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Revenu net</th>
+                            <td>{formatCents(stressResult.currentMicroNetIncomeCents)}</td>
+                            <td>{formatCents(stressResult.stressedMicroNetIncomeCents)}</td>
+                            <td>{formatCents(stressResult.netDifferenceVsEmployeeCents)}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Valeur économique</th>
+                            <td>{formatCents(stressResult.currentMicroEconomicValueCents)}</td>
+                            <td>{formatCents(stressResult.stressedMicroEconomicValueCents)}</td>
+                            <td>{formatCents(stressResult.economicDifferenceVsEmployeeCents)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )
+              )}
+            </div>
+          </details>
+        </>
+      )}
+      {mode !== 'exploration' && (
+        <>
+          <details className="decision-disclosure">
+            <summary>Scénarios enregistrés</summary>
+            <div className="decision-panel" role="group" aria-label="Scénarios enregistrés">
+              <p className="decision-intro">
+                Données conservées dans le stockage local du navigateur. Aucun envoi automatique,
+                télémétrie financière ou partage par URL.
+              </p>
+              <div className="decision-save-row">
+                <label className="decision-field">
+                  <span>Nom du scénario</span>
+                  <input
+                    aria-label="Nom du scénario"
+                    type="text"
+                    maxLength={80}
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                  />
+                </label>
+                <button
+                  className="decision-action"
+                  type="button"
+                  disabled={!name.trim() || saved.length >= MAX_SAVED_SCENARIOS || corruptLibrary}
+                  onClick={saveCurrent}
+                >
+                  Enregistrer le scénario
+                </button>
+              </div>
+              <p>
+                {saved.length}/{MAX_SAVED_SCENARIOS} scénarios enregistrés · chargement manuel
+              </p>
+              {corruptLibrary && (
+                <p className="decision-warning">
+                  Collection locale invalide. L’effacer ou importer un fichier valide avant
+                  l’enregistrement.
+                </p>
+              )}
+              {saved.length > 0 && (
+                <ul className="decision-scenario-list">
+                  {saved.map((offer) => (
+                    <li key={offer.id}>
+                      <span>{offer.name}</span>
+                      <span className="decision-scenario-actions">
+                        <button type="button" onClick={() => loadOffer(offer)}>
+                          Charger {offer.name}
+                        </button>
+                        <label>
+                          <input
+                            type="checkbox"
+                            aria-label={`Comparer ${offer.name}`}
+                            checked={selectedIds.includes(offer.id)}
+                            onChange={(event) =>
+                              setSelectedIds((current) =>
+                                event.target.checked
+                                  ? [...current, offer.id]
+                                  : current.filter((id) => id !== offer.id),
+                              )
+                            }
+                          />
+                          Comparer
+                        </label>
+                        <button type="button" onClick={() => deleteOffer(offer)}>
+                          Supprimer {offer.name}
+                        </button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="decision-presets">
+                <label className="decision-field">
+                  <span>Importer une collection JSON</span>
+                  <input
+                    aria-label="Importer une collection JSON"
+                    type="file"
+                    accept="application/json,.json"
+                    onChange={(event) => void importFile(event)}
+                  />
+                </label>
+                <button className="decision-action" type="button" onClick={exportJson}>
+                  Exporter JSON
+                </button>
+                <button className="decision-action" type="button" onClick={exportCsv}>
+                  Exporter CSV
+                </button>
+                <button
+                  className="decision-action decision-action--secondary"
+                  type="button"
+                  onClick={clearLibrary}
+                >
+                  Effacer la collection enregistrée
+                </button>
+              </div>
+              {comparison.error && (
+                <p className="decision-error" role="alert" aria-live="polite">
+                  {comparison.error}
+                </p>
+              )}
+              {selectedIds.length > 0 && !report.error && (
+                <OfferComparison offers={report.offers} />
+              )}
+              {selectedIds.length > 0 && !comparison.error && (
                 <div
                   className="decision-table-wrap"
                   tabIndex={0}
@@ -464,205 +628,75 @@ export function DecisionTools({
                   aria-label="Tableau de comparaison annuel"
                 >
                   <table className="decision-table">
-                    <caption>Valeurs annuelles, retraite exclue</caption>
+                    <caption>Comparaison annuelle avant impôt, retraite exclue</caption>
                     <thead>
                       <tr>
-                        <th scope="col">Indicateur</th>
-                        <th scope="col">Courant</th>
-                        <th scope="col">Stressé</th>
-                        <th scope="col">Écart au salariat</th>
+                        <th scope="col">Scénario</th>
+                        <th scope="col">Année</th>
+                        <th scope="col">Jours micro</th>
+                        <th scope="col">Jours salariat</th>
+                        <th scope="col">Micro net</th>
+                        <th scope="col">Salariat net</th>
+                        <th scope="col">Micro valeur</th>
+                        <th scope="col">Salariat valeur</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">Revenu net</th>
-                        <td>{formatCents(stressResult.currentMicroNetIncomeCents)}</td>
-                        <td>{formatCents(stressResult.stressedMicroNetIncomeCents)}</td>
-                        <td>{formatCents(stressResult.netDifferenceVsEmployeeCents)}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Valeur économique</th>
-                        <td>{formatCents(stressResult.currentMicroEconomicValueCents)}</td>
-                        <td>{formatCents(stressResult.stressedMicroEconomicValueCents)}</td>
-                        <td>{formatCents(stressResult.economicDifferenceVsEmployeeCents)}</td>
-                      </tr>
+                      {comparison.rows.map((row, index) => (
+                        <tr
+                          key={
+                            index === 0
+                              ? 'current'
+                              : saved.filter((offer) => selectedIds.includes(offer.id))[index - 1]!
+                                  .id
+                          }
+                        >
+                          <th scope="row">{row.name}</th>
+                          <td>{row.referenceYear}</td>
+                          <td>{row.microWorkedDays}</td>
+                          <td>{row.employeeWorkedDays}</td>
+                          <td>{formatCents(row.microAnnualNetIncomeCents)}</td>
+                          <td>{formatCents(row.employeeAnnualNetIncomeCents)}</td>
+                          <td>{formatCents(row.microAnnualEconomicValueCents)}</td>
+                          <td>{formatCents(row.employeeAnnualEconomicValueCents)}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
-              </>
-            )
-          )}
-        </div>
-      </details>
+              )}
+              {libraryError && (
+                <p className="decision-error" role="alert" aria-live="polite">
+                  {libraryError}
+                </p>
+              )}
+            </div>
+          </details>
 
-      <details className="decision-disclosure">
-        <summary>Scénarios enregistrés</summary>
-        <div className="decision-panel" role="group" aria-label="Scénarios enregistrés">
-          <p className="decision-intro">
-            Données conservées dans le stockage local du navigateur. Aucun envoi automatique,
-            télémétrie financière ou partage par URL.
-          </p>
-          <div className="decision-save-row">
-            <label className="decision-field">
-              <span>Nom du scénario</span>
-              <input
-                aria-label="Nom du scénario"
-                type="text"
-                maxLength={80}
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-              />
-            </label>
+          <div className="report-launch">
             <button
               className="decision-action"
               type="button"
-              disabled={!name.trim() || saved.length >= MAX_SAVED_SCENARIOS || corruptLibrary}
-              onClick={saveCurrent}
+              disabled={!!report.error}
+              onClick={() => setReportOpen(true)}
             >
-              Enregistrer le scénario
+              Prévisualiser le rapport
             </button>
+            <span>Scénario courant et offres cochées · impression / PDF local</span>
+            {report.error && (
+              <p className="decision-error">Rapport indisponible : {report.error}</p>
+            )}
           </div>
-          <p>
-            {saved.length}/{MAX_SAVED_SCENARIOS} scénarios enregistrés · chargement manuel
-          </p>
-          {corruptLibrary && (
-            <p className="decision-warning">
-              Collection locale invalide. L’effacer ou importer un fichier valide avant
-              l’enregistrement.
-            </p>
+          {reportOpen && !report.error && (
+            <DecisionReport offers={report.offers} onClose={() => setReportOpen(false)} />
           )}
-          {saved.length > 0 && (
-            <ul className="decision-scenario-list">
-              {saved.map((offer) => (
-                <li key={offer.id}>
-                  <span>{offer.name}</span>
-                  <span className="decision-scenario-actions">
-                    <button type="button" onClick={() => loadOffer(offer)}>
-                      Charger {offer.name}
-                    </button>
-                    <label>
-                      <input
-                        type="checkbox"
-                        aria-label={`Comparer ${offer.name}`}
-                        checked={selectedIds.includes(offer.id)}
-                        onChange={(event) =>
-                          setSelectedIds((current) =>
-                            event.target.checked
-                              ? [...current, offer.id]
-                              : current.filter((id) => id !== offer.id),
-                          )
-                        }
-                      />
-                      Comparer
-                    </label>
-                    <button type="button" onClick={() => deleteOffer(offer)}>
-                      Supprimer {offer.name}
-                    </button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="decision-presets">
-            <label className="decision-field">
-              <span>Importer une collection JSON</span>
-              <input
-                aria-label="Importer une collection JSON"
-                type="file"
-                accept="application/json,.json"
-                onChange={(event) => void importFile(event)}
-              />
-            </label>
-            <button className="decision-action" type="button" onClick={exportJson}>
-              Exporter JSON
-            </button>
-            <button className="decision-action" type="button" onClick={exportCsv}>
-              Exporter CSV
-            </button>
-            <button
-              className="decision-action decision-action--secondary"
-              type="button"
-              onClick={clearLibrary}
-            >
-              Effacer la collection enregistrée
-            </button>
-          </div>
-          {comparison.error && (
-            <p className="decision-error" role="alert" aria-live="polite">
-              {comparison.error}
-            </p>
-          )}
-          {selectedIds.length > 0 && !report.error && <OfferComparison offers={report.offers} />}
-          {selectedIds.length > 0 && !comparison.error && (
-            <div
-              className="decision-table-wrap"
-              tabIndex={0}
-              role="region"
-              aria-label="Tableau de comparaison annuel"
-            >
-              <table className="decision-table">
-                <caption>Comparaison annuelle avant impôt, retraite exclue</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Scénario</th>
-                    <th scope="col">Année</th>
-                    <th scope="col">Jours micro</th>
-                    <th scope="col">Jours salariat</th>
-                    <th scope="col">Micro net</th>
-                    <th scope="col">Salariat net</th>
-                    <th scope="col">Micro valeur</th>
-                    <th scope="col">Salariat valeur</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.rows.map((row, index) => (
-                    <tr
-                      key={
-                        index === 0
-                          ? 'current'
-                          : saved.filter((offer) => selectedIds.includes(offer.id))[index - 1]!.id
-                      }
-                    >
-                      <th scope="row">{row.name}</th>
-                      <td>{row.referenceYear}</td>
-                      <td>{row.microWorkedDays}</td>
-                      <td>{row.employeeWorkedDays}</td>
-                      <td>{formatCents(row.microAnnualNetIncomeCents)}</td>
-                      <td>{formatCents(row.employeeAnnualNetIncomeCents)}</td>
-                      <td>{formatCents(row.microAnnualEconomicValueCents)}</td>
-                      <td>{formatCents(row.employeeAnnualEconomicValueCents)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {libraryError && (
-            <p className="decision-error" role="alert" aria-live="polite">
-              {libraryError}
-            </p>
-          )}
-        </div>
-      </details>
-
-      <div className="report-launch">
-        <button
-          className="decision-action"
-          type="button"
-          disabled={!!report.error}
-          onClick={() => setReportOpen(true)}
-        >
-          Prévisualiser le rapport
-        </button>
-        <span>Scénario courant et offres cochées · impression / PDF local</span>
-        {report.error && <p className="decision-error">Rapport indisponible : {report.error}</p>}
-      </div>
-      {reportOpen && !report.error && (
-        <DecisionReport offers={report.offers} onClose={() => setReportOpen(false)} />
+        </>
       )}
-      <button className="decision-action decision-reset" type="button" onClick={onReset}>
-        Réinitialiser les entrées
-      </button>
+      {mode === 'all' && (
+        <button className="decision-action decision-reset" type="button" onClick={onReset}>
+          Réinitialiser les entrées
+        </button>
+      )}
     </section>
   )
 }
