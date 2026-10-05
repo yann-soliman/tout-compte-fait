@@ -1416,6 +1416,58 @@ main {
   background: rgba(255, 255, 255, 0.055);
 }
 
+.ei-comparison {
+  margin-top: 12px;
+  color: #ececf1;
+  background: #252733;
+  border-color: #454957;
+  overflow-wrap: anywhere;
+}
+
+.ei-comparison h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #ececf1;
+}
+
+.ei-comparison h3 {
+  margin: 18px 0 8px;
+  font-size: 0.85rem;
+}
+
+.ei-comparison p {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #c5c8d5;
+}
+
+.ei-comparison .result-main {
+  margin-top: 16px;
+}
+
+.ei-comparison .result-main > span,
+.ei-comparison .result-main small,
+.ei-comparison .result-metrics dt {
+  color: #c5c8d5;
+}
+
+.ei-comparison .result-main strong {
+  color: #ffd58f;
+}
+
+.ei-comparison .toggle-card {
+  color: #252733;
+}
+
+.ei-comparison .result-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+.ei-comparison .deduction-details dd {
+  margin: 0;
+  white-space: nowrap;
+}
+
 .result-card__topline {
   display: flex;
   align-items: center;

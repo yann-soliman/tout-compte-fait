@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { lazy, Suspense, useCallback, useMemo, useState } from 'react'
 import { Results } from './components/Results'
+import { EiComparison } from './components/EiComparison'
 import { ResultVisuals } from './components/ResultVisuals'
 import { DecisionTools } from './components/DecisionTools'
 import { ResultNotice } from './components/ui/ResultNotice'
@@ -31,6 +32,7 @@ export function App() {
   const [view, setView] = useState<AppView>('simulator')
   const [scenario, setScenario] = useState<ComparisonScenario>(defaultScenario)
   const [dailyRateError, setDailyRateError] = useState<string>()
+  const [eiCfeExemptionConfirmed, setEiCfeExemptionConfirmed] = useState(false)
   const calculation = useMemo(() => {
     try {
       return { result: calculateComparison(scenario, rules2026), error: undefined }
@@ -70,7 +72,7 @@ export function App() {
           </span>
           <span>
             <strong>Tout compte fait</strong>
-            <small>Comparer micro-entreprise et salariat</small>
+            <small>Comparer micro, EI au réel et salariat</small>
           </span>
         </a>
         <div className="header-controls">
@@ -241,7 +243,19 @@ export function App() {
                       />
                       <span className="switch" aria-hidden="true" />
                     </label>
+                    <label className="toggle-card toggle-card--compact">
+                      <span>Confirmer une exonération CFE pour l’EI</span>
+                      <input
+                        type="checkbox"
+                        checked={eiCfeExemptionConfirmed}
+                        onChange={(event) => setEiCfeExemptionConfirmed(event.target.checked)}
+                      />
+                      <span className="switch" aria-hidden="true" />
+                    </label>
                   </div>
+                  <p className="field__hint">
+                    TJM, jours, frais et montant CFE communs à la micro et à l’EI.
+                  </p>
                 </article>
 
                 <article className="status-panel status-panel--employee">
@@ -375,16 +389,22 @@ export function App() {
               </div>
             </Section>
 
+            <p className="projection-caveat">
+              Carte TJM, seuils, projection, droits retraite, offres sauvegardées et rapport :
+              micro-entreprise et salariat uniquement. EI comparée séparément ci-dessous.
+            </p>
             <DecisionTools
               scenario={scenario}
               onScenarioChange={(next) => {
                 setScenario(next)
                 setDailyRateError(undefined)
+                setEiCfeExemptionConfirmed(false)
               }}
               onReset={() => {
                 if (window.confirm('Réinitialiser les entrées du simulateur ?')) {
                   setScenario(defaultScenario)
                   setDailyRateError(undefined)
+                  setEiCfeExemptionConfirmed(false)
                 }
               }}
               catalog={rules2026}
@@ -394,18 +414,28 @@ export function App() {
               <ResultNotice warning={{ code: 'invalid-scenario', message: calculation.error }} />
             )}
             {calculation.result && (
-              <Results result={calculation.result} period={scenario.displayPeriod}>
-                <ResultVisuals
+              <>
+                <Results result={calculation.result} period={scenario.displayPeriod}>
+                  <ResultVisuals
+                    scenario={scenario}
+                    result={calculation.result}
+                    catalog={rules2026}
+                    onApply={applyHypothesis}
+                  />
+                </Results>
+                <EiComparison
                   scenario={scenario}
-                  result={calculation.result}
-                  catalog={rules2026}
-                  onApply={applyHypothesis}
+                  comparison={calculation.result}
+                  cfeExemptionConfirmed={eiCfeExemptionConfirmed}
                 />
-              </Results>
+              </>
             )}
           </div>
         ) : (
           <div id="panel-projection" role="tabpanel" aria-labelledby="tab-projection">
+            <p className="projection-caveat">
+              Projection micro-entreprise et salariat uniquement — EI non incluse.
+            </p>
             <Suspense fallback={<div className="loading-panel">Charger la projection…</div>}>
               <ProjectionView
                 result={calculation.result ?? calculateComparison(defaultScenario, rules2026)}

@@ -1,7 +1,26 @@
 # Tout compte fait
 
-Comparer en 2026 une activité libérale BNC non réglementée en micro-entreprise avec un emploi
-salarié privé de droit commun, dans une interface compacte, puis projeter leur valeur économique.
+Comparer en 2026 une activité libérale BNC non réglementée en micro-entreprise ou en EI au réel
+avec un emploi salarié privé de droit commun, dans une interface compacte. La projection
+économique reste limitée à la micro et au salariat.
+
+## EI au réel
+
+Le calcul EI à IR estime le disponible après frais professionnels, CFE, neuf postes sociaux
+et mutuelle personnelle, avant impôt du foyer. CA et frais sont communs à la micro ; une
+confirmation d’exonération CFE EI distincte est nécessaire si aucun montant positif n’est saisi.
+Les déficits et cotisations minimales restent visibles. Les règles officielles publiées
+`modele-ti` 0.1.0 servent de référence sans moteur ni dépendance ajoutée au navigateur.
+
+Périmètre : France métropolitaine, BNC non réglementé hors Cipav, année pleine 2026, hors ACRE,
+Madelin et situations particulières. Les montants sociaux sont arrondis à l’euro selon le modèle
+et le cash conserve les centimes saisis : estimation non opposable, non décompte réglementaire.
+La période mensuelle est une moyenne annuelle, pas un échéancier.
+
+Carte TJM, seuils, projection, retraite, offres et rapport restent micro/salariat uniquement.
+La confirmation CFE EI du calcul courant n’est pas sauvegardée et se réinitialise au chargement
+ou à la remise à zéro. Les anciens instantanés schema 1 restent compatibles.
+La spécification et les preuves de validation figurent dans `specs/007-ei-real/`.
 
 ## État du projet
 
