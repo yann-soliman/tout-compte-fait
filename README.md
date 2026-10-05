@@ -22,6 +22,29 @@ La confirmation CFE EI du calcul courant n’est pas sauvegardée et se réiniti
 ou à la remise à zéro. Les anciens instantanés schema 1 restent compatibles.
 La spécification et les preuves de validation figurent dans `specs/007-ei-real/`.
 
+## Disponible après impôt — projection
+
+Une option désactivée par défaut compare le cash après IR du salariat, de la micro et de
+l’EI au réel. Le foyer simple peut être célibataire ou marié/pacsé imposé en commun, avec
+0 à 6 enfants à charge exclusive et d’autres revenus déjà nets imposables au barème.
+Le net salarial imposable de paie peut remplacer l’estimation CSG/CRDS ; les bases
+fiscales sont distinctes du cash et des avantages.
+
+Projection des revenus **2026** au barème de référence **2026 sur revenus 2025**, pas impôt
+définitif ni barème 2027 adopté. Le calcul comprend tranches, quotient familial plafonné,
+décote et seuil de recouvrement. Seul l’IR supplémentaire de l’activité est soustrait :
+impôt du foyer avec activité moins impôt du même foyer sans activité. Ni cash du conjoint,
+ni avantages salariés, ni seconde soustraction du prélèvement à la source.
+
+CFE inconnue, déficit EI non traité, plage numérique dépassée ou hauts revenus bloquent
+le résultat concerné ; une erreur dans la conversion commune des bases peut bloquer
+les trois projections fiscales sans toucher aux résultats avant IR. Hors parent isolé,
+garde alternée, réductions/crédits, versement libératoire, PER, CEHR/CDHR et autres
+situations particulières. Le mensuel reste une moyenne annuelle, pas la trésorerie fiscale.
+Les paramètres fiscaux ne sont ni enregistrés dans les offres schema 1 ni exportés ;
+chargement/reset les réinitialisent. Carte, seuils, projection économique, offres et rapport
+restent avant IR. Sources et vérifications : `specs/008-income-tax/`.
+
 ## État du projet
 
 L’application statique calcule localement les cotisations, le revenu net avant impôt, la valeur
@@ -75,9 +98,9 @@ Comparaisons et téléchargements sont locaux, avant impôt et hors retraite. Le
 jours ne sont pas des prévisions, et ni mission, emploi ni indemnisation chômage ne sont
 garantis. La remise à zéro des entrées ne supprime pas les scénarios enregistrés.
 
-L'impôt sur le revenu, une comparaison après impôt et les règles de SASU/EURL restent différés
-tant que des règles 2026 officielles et validées ne sont pas intégrées. Aucun modèle fiscal
-fictif n'est appliqué.
+Une projection après IR optionnelle et séparée est décrite ci-dessus ; les outils de décision
+ne l’utilisent pas. La fiscalité définitive des revenus 2026 et les règles SASU/EURL restent
+hors périmètre. Aucun futur barème fictif n’est appliqué.
 
 ## Robustesse, offres et rapport
 

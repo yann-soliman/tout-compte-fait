@@ -12,6 +12,7 @@ import {
 import { lazy, Suspense, useCallback, useMemo, useState } from 'react'
 import { Results } from './components/Results'
 import { EiComparison } from './components/EiComparison'
+import { IncomeTaxInputs, IncomeTaxComparison } from './components/IncomeTaxComparison'
 import { ResultVisuals } from './components/ResultVisuals'
 import { DecisionTools } from './components/DecisionTools'
 import { ResultNotice } from './components/ui/ResultNotice'
@@ -23,6 +24,7 @@ import { defaultScenario } from './domain/defaults'
 import type { AppView, ComparisonScenario, EmployeeScenario, MicroScenario } from './domain/model'
 import { assertMoneyCents, eurosToMoneyCents } from './domain/money'
 import { rules2026 } from './domain/rules/2026'
+import { defaultTaxSettings } from './domain/tax-settings'
 
 const ProjectionView = lazy(() =>
   import('./components/ProjectionView').then((module) => ({ default: module.ProjectionView })),
@@ -33,6 +35,7 @@ export function App() {
   const [scenario, setScenario] = useState<ComparisonScenario>(defaultScenario)
   const [dailyRateError, setDailyRateError] = useState<string>()
   const [eiCfeExemptionConfirmed, setEiCfeExemptionConfirmed] = useState(false)
+  const [taxSettings, setTaxSettings] = useState(defaultTaxSettings)
   const calculation = useMemo(() => {
     try {
       return { result: calculateComparison(scenario, rules2026), error: undefined }
@@ -389,8 +392,10 @@ export function App() {
               </div>
             </Section>
 
+            <IncomeTaxInputs settings={taxSettings} onChange={setTaxSettings} />
             <p className="projection-caveat">
-              Carte TJM, seuils, projection, droits retraite, offres sauvegardées et rapport :
+              Outils, carte, projection, offres, exports et rapport : avant IR uniquement. Carte
+              TJM, seuils, projection, droits retraite, offres sauvegardées et rapport :
               micro-entreprise et salariat uniquement. EI comparée séparément ci-dessous.
             </p>
             <DecisionTools
@@ -399,12 +404,14 @@ export function App() {
                 setScenario(next)
                 setDailyRateError(undefined)
                 setEiCfeExemptionConfirmed(false)
+                setTaxSettings(defaultTaxSettings)
               }}
               onReset={() => {
                 if (window.confirm('Réinitialiser les entrées du simulateur ?')) {
                   setScenario(defaultScenario)
                   setDailyRateError(undefined)
                   setEiCfeExemptionConfirmed(false)
+                  setTaxSettings(defaultTaxSettings)
                 }
               }}
               catalog={rules2026}
@@ -427,6 +434,12 @@ export function App() {
                   scenario={scenario}
                   comparison={calculation.result}
                   cfeExemptionConfirmed={eiCfeExemptionConfirmed}
+                />
+                <IncomeTaxComparison
+                  settings={taxSettings}
+                  scenario={scenario}
+                  comparison={calculation.result}
+                  eiCfeExemptionConfirmed={eiCfeExemptionConfirmed}
                 />
               </>
             )}
