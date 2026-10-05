@@ -1,7 +1,7 @@
 import type { MoneyCents, RatePpm, RoundingMode } from './money'
 
 export type DisplayPeriod = 'annual' | 'monthly'
-export type AppView = 'simulator' | 'projection'
+export type AppView = 'hypotheses' | 'results' | 'exploration' | 'scenarios'
 export type StatusKind = 'micro' | 'employee'
 export type Confidence = 'established' | 'estimated' | 'blocked'
 export type RuleStatus = 'known' | 'provisional' | 'estimated'

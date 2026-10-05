@@ -4,6 +4,27 @@ Comparer en 2026 une activité libérale BNC non réglementée en micro-entrepri
 avec un emploi salarié privé de droit commun, dans une interface compacte. La projection
 économique reste limitée à la micro et au salariat.
 
+## Navigation
+
+Quatre vues séparent la saisie de la décision :
+
+- **Hypothèses** : cadre commun, activité indépendante/salariat et fiscalité optionnelle ;
+  paramètres retraite avancés repliés. « Voir la comparaison » ouvre les résultats.
+- **Résultats** : synthèse des trois cash avant IR et, sur activation, après IR ; avantages
+  salariés hors cash, hypothèses résumées, détails sociaux/fiscaux et retraite repliables.
+- **Exploration** : équilibre, aléas, décomposition, carte TJM × jours, robustesse et projection
+  pluriannuelle. Ces outils restent avant IR et micro/salariat uniquement.
+- **Scénarios** : sauvegarde, comparaison d’offres, import/export et rapport annuel local.
+
+Navigation libre, clavier/flèches/Home/End et tactile ; les vues cachées conservent les
+saisies, fiscalité, confirmation CFE EI, réglages et sélections. Charger une offre revient aux
+hypothèses et réinitialise fiscalité/CFE EI comme auparavant ; la remise à zéro ne supprime
+pas la bibliothèque. Appliquer une hypothèse d’exploration ne remet pas la fiscalité à zéro.
+Une saisie invalide bloque ses résultats/rapport/sauvegarde, sans substituer l’ancien exemple.
+La projection est incluse dans le code initial pour rester disponible lors de sa première
+ouverture hors ligne après chargement. Aucun calcul ni format d’export n’est modifié.
+Spécification et validation : `specs/009-navigation/`.
+
 ## EI au réel
 
 Le calcul EI à IR estime le disponible après frais professionnels, CFE, neuf postes sociaux
@@ -84,7 +105,7 @@ de retraite n’est ajouté à cette comparaison.
 
 ## Outils de décision
 
-Après les entrées du simulateur, trois volets repliables proposent le taux journalier minimum
+Dans Exploration et Scénarios, trois volets repliables proposent le taux journalier minimum
 pour rejoindre le revenu net salarié annuel avant impôt ou sa valeur économique (avantages
 inclus), une sensibilité hypothétique aux jours perdus/baisse de taux/frais supplémentaires,
 et une bibliothèque de scénarios nommés conservée dans le stockage local du navigateur. Le taux

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from '../../src/App'
+import { navigate, showResults } from './navigation-009-helpers'
 import { OpportunityMap } from '../../src/components/OpportunityMap'
 import { MoneyFlowChart } from '../../src/components/MoneyFlowChart'
 import { calculateComparison } from '../../src/domain/calculate'
@@ -8,18 +9,28 @@ import { defaultScenario } from '../../src/domain/defaults'
 import { rules2026 } from '../../src/domain/rules/2026'
 
 describe('integrated visuals', () => {
-  it('keeps visuals after inputs and before numeric cards, applying the paired selection', () => {
+  // 009 moves exploratory visuals out of results; applying a pair must not change the tab.
+  it('separates exploratory visuals from numeric cards, applying the paired selection', () => {
     render(<App />)
     const income = screen.getByRole('heading', { name: 'Revenus à comparer' })
+    expect(income).toBeVisible()
+    navigate('Exploration')
     const visual = screen.getByRole('heading', { name: 'Du brut à la valeur économique' })
     expect(income.compareDocumentPosition(visual)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
-    const card = document.querySelector('.result-card')!
-    expect(visual.compareDocumentPosition(card)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    expect(visual).toBeVisible()
+    expect(document.querySelector('.result-card')).not.toBeVisible()
     fireEvent.change(screen.getByLabelText('Jours à explorer'), { target: { value: '100' } })
     fireEvent.change(screen.getByLabelText('TJM à explorer'), { target: { value: '350.58' } })
     fireEvent.click(screen.getByRole('button', { name: 'Appliquer cette hypothèse' }))
+    expect(screen.getByRole('tab', { name: 'Exploration' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    navigate('Hypothèses')
     expect(screen.getByLabelText('Taux journalier')).toHaveValue(350.58)
     expect(screen.getByLabelText('Jours facturés')).toHaveValue(100)
+    showResults()
+    expect(document.querySelector('.result-card')).toBeVisible()
   })
 })
 

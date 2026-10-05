@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, it, vi } from 'vitest'
 import { App } from '../../src/App'
+import { navigate, showScenarios } from './navigation-009-helpers'
 import { defaultScenario } from '../../src/domain/defaults'
 import { rules2026 } from '../../src/domain/rules/2026'
 import { calculateRobustness } from '../../src/domain/robustness'
@@ -11,9 +12,7 @@ import { createReportOffers } from '../../src/domain/decision-report'
 
 it('uses the current selection for chart and report, returning focus on close', () => {
   render(<App />)
-  const library = screen.getByText('Scénarios enregistrés', { selector: 'summary' })
-    .parentElement as HTMLDetailsElement
-  library.open = true
+  showScenarios()
   fireEvent.change(screen.getByLabelText('Nom du scénario'), {
     target: { value: 'Offre conservée' },
   })
@@ -74,11 +73,16 @@ it('compares both statuses on a signed common scale with annual text and metric 
   expect(screen.getAllByText(/74.*200,00/, { selector: 'dd' })).toHaveLength(1)
 })
 
-it('integrates robustness after inputs and updates unavailable CFE immediately', () => {
+it('integrates robustness in Exploration and updates unavailable CFE immediately', () => {
   render(<App />)
+  navigate('Exploration')
   expect(screen.getByRole('heading', { name: 'Marge avant bascule' })).toBeVisible()
+  navigate('Hypothèses')
   fireEvent.change(screen.getByLabelText('CFE'), { target: { value: '0' } })
-  expect(screen.getAllByText('Indisponible')).toHaveLength(3)
+  navigate('Exploration')
+  expect(
+    screen.getAllByText('Indisponible').filter((element) => element.closest('#panel-exploration')),
+  ).toHaveLength(3)
 })
 
 it('shows labelled independent margins and theoretical ceiling caveat as text', () => {

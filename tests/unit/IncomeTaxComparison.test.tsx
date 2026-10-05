@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from '../../src/App'
+import { navigate, openDetail, showResults, showScenarios } from './navigation-009-helpers'
 import { SCENARIO_STORAGE_KEY } from '../../src/domain/scenario-storage'
 
 describe('Disponible après IR', () => {
@@ -11,10 +12,16 @@ describe('Disponible après IR', () => {
     const salary = screen.getByLabelText(/Net imposable salarial réel/)
     for (const field of [other, salary]) {
       fireEvent.change(field, { target: { value: '-1' } })
+      showResults()
+      openDetail('Détails fiscaux')
       expect(screen.queryByTestId('tax-employee-cash')).not.toBeInTheDocument()
       expect(screen.getAllByRole('alert').length).toBeGreaterThan(0)
+      navigate('Hypothèses')
       fireEvent.change(field, { target: { value: field === other ? '0' : '' } })
-      expect(screen.getByTestId('tax-employee-cash')).toBeInTheDocument()
+      showResults()
+      openDetail('Détails fiscaux')
+      expect(screen.getByTestId('tax-employee-cash')).toBeVisible()
+      navigate('Hypothèses')
     }
   })
   it('réinitialise les hypothèses fiscales au chargement d’offre et au reset, sans les exporter', () => {
@@ -22,9 +29,10 @@ describe('Disponible après IR', () => {
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true)
     try {
       render(<App />)
-      fireEvent.click(screen.getByText('Scénarios enregistrés'))
+      showScenarios()
       fireEvent.change(screen.getByLabelText('Nom du scénario'), { target: { value: 'Avant IR' } })
       fireEvent.click(screen.getByRole('button', { name: 'Enregistrer le scénario' }))
+      navigate('Hypothèses')
       fireEvent.click(screen.getByLabelText('Estimer le disponible après impôt'))
       fireEvent.change(screen.getByLabelText('Situation du foyer fiscal'), {
         target: { value: 'couple' },
@@ -32,6 +40,7 @@ describe('Disponible après IR', () => {
       fireEvent.change(screen.getByLabelText(/Autres revenus nets imposables au barème/), {
         target: { value: '50000' },
       })
+      showScenarios()
       fireEvent.click(screen.getByRole('button', { name: 'Charger Avant IR' }))
       expect(screen.getByLabelText('Estimer le disponible après impôt')).not.toBeChecked()
       fireEvent.click(screen.getByLabelText('Estimer le disponible après impôt'))
@@ -52,11 +61,15 @@ describe('Disponible après IR', () => {
     ).not.toBeInTheDocument()
     const activation = screen.getByLabelText('Estimer le disponible après impôt')
     expect(activation).not.toBeChecked()
+    showResults()
     expect(
       activation.compareDocumentPosition(screen.getByRole('heading', { name: 'Résultat' })) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy()
+    navigate('Hypothèses')
     fireEvent.click(activation)
+    showResults()
+    openDetail('Détails fiscaux')
     const region = screen.getByRole('region', { name: 'Disponible après impôt — projection' })
     expect(within(region).getByTestId('tax-micro-cash')).toBeVisible()
     expect(within(region).getByText(/barème 2026 sur revenus 2025/)).toBeVisible()
