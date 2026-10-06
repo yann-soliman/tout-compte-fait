@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { ReportOffer } from '../domain/decision-report'
 import { preciseEuro } from '../domain/result-visuals'
 import { Robustness } from './Robustness'
+import { MicroCycleNotice } from './MicroCycleNotice'
 
 const money = (n: number) => preciseEuro.format(n / 100)
 export function DecisionReport({
@@ -123,6 +124,11 @@ export function DecisionReport({
               </section>
               <section className="report-results">
                 <h4>Résultats annuels</h4>
+                <MicroCycleNotice
+                  result={offer.result}
+                  id={`report-cycle-${index}`}
+                  details={false}
+                />
                 <table>
                   <thead>
                     <tr>

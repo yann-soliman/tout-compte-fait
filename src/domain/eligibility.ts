@@ -11,8 +11,18 @@ export function assessMicroEligibility(
   micro: MicroScenario,
   activityStartDate: string | undefined,
   catalog: RegulatoryCatalog,
+  turnoverOverride?: number,
+  activityDaysOverride?: number,
 ): EligibilityAssessment {
-  const turnover = assertMoneyCents(micro.dailyRate * micro.billedDays)
+  if (
+    activityDaysOverride !== undefined &&
+    (!Number.isInteger(activityDaysOverride) ||
+      activityDaysOverride < 1 ||
+      activityDaysOverride > 365)
+  ) {
+    throw new RangeError('Durée d’activité hors plage 1 à 365 jours.')
+  }
+  const turnover = assertMoneyCents(turnoverOverride ?? micro.dailyRate * micro.billedDays)
   const fullCeiling = catalog.microTurnoverCeiling.value
 
   if (micro.activity !== 'non-regulated-liberal-bnc') {
@@ -24,7 +34,9 @@ export function assessMicroEligibility(
     }
   }
 
-  const activityDays = activityStartDate === undefined ? 365 : daysInActivity(activityStartDate)
+  const activityDays =
+    activityDaysOverride ??
+    (activityStartDate === undefined ? 365 : daysInActivity(activityStartDate))
   const applicableCeiling = assertMoneyCents(Math.floor((fullCeiling * activityDays) / 365))
   const exceeds = turnover * 365 > fullCeiling * activityDays
   return {

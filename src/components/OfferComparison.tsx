@@ -37,6 +37,12 @@ export function OfferComparison({ offers }: { offers: ReportOffer[] }) {
       {offers.map((offer) => (
         <article className="offer-chart-group" key={offer.id} data-offer-id={offer.id}>
           <h4>{offer.name}</h4>
+          {offer.result.microCycle && (
+            <p className="visual-footnote">
+              Micro : moyennes sur deux ans arrondies indépendamment au centime, pas des montants de
+              déclaration annuelle ; écarts d’un centime possibles entre totaux et composantes.
+            </p>
+          )}
           <dl>
             {(['micro', 'employee'] as const).map((kind) => {
               const r = offer.result[kind]

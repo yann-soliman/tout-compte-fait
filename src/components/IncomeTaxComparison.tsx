@@ -158,6 +158,15 @@ export function IncomeTaxComparison({
         cash des autres revenus et les avantages salariés ne sont pas inclus. Aucun prélèvement à la
         source soustrait en plus.
       </p>
+      {comparison.microCycle && (
+        <p>
+          Moyennes micro sur les deux années du cycle : abattement et IR calculés séparément sur
+          chaque CA annuel avant lissage, pas un impôt calculé sur le CA moyen. Bases et impôts
+          ci-dessous sont des moyennes, non des montants de déclaration. Cash, IR et bases sont
+          moyennés et arrondis indépendamment au centime : écarts d’arrondi possibles entre totaux
+          et composantes, notamment d’un centime.
+        </p>
+      )}
       {calculation.error ? (
         <p role="alert">{calculation.error}</p>
       ) : (

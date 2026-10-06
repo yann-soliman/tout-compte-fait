@@ -186,6 +186,12 @@ export function Results({ result, period, children, includeRetirement = true }: 
           <p>Règles générales 2026 · avant impôt sur le revenu</p>
         </div>
       </header>
+      {result.microCycle && (
+        <p className="projection-caveat">
+          Micro : moyennes sur deux ans arrondies indépendamment au centime, pas des montants de
+          déclaration annuelle ; écarts d’un centime possibles entre totaux et composantes.
+        </p>
+      )}
       {children}
       <div className="result-grid">
         <ResultCard result={result.micro} period={period} includeRetirement={includeRetirement} />

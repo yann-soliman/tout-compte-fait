@@ -70,7 +70,7 @@ it('compares both statuses on a signed common scale with annual text and metric 
   fireEvent.change(screen.getByLabelText('Indicateur des offres'), {
     target: { value: 'netIncome' },
   })
-  expect(screen.getAllByText(/74.*200,00/, { selector: 'dd' })).toHaveLength(1)
+  expect(screen.getAllByText(/68.*115,60/, { selector: 'dd' })).toHaveLength(1)
 })
 
 it('integrates robustness in Exploration and updates unavailable CFE immediately', () => {

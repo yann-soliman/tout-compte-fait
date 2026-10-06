@@ -61,20 +61,31 @@ export function CumulativeChart({ points }: { points: ProjectionPoint[] }) {
       </div>
       <details className="chart-data">
         <summary>Afficher les valeurs annuelles du graphique</summary>
-        <div className="chart-table-scroll">
+        <div
+          className="chart-table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Tableau défilant des montants annuels"
+        >
           <table>
-            <caption>Valeur cumulée par statut et par année</caption>
+            <caption>Recettes, disponible annuel et valeur cumulée par statut</caption>
             <thead>
               <tr>
                 <th scope="col">Année</th>
-                <th scope="col">Micro-entreprise</th>
-                <th scope="col">Salariat</th>
+                <th scope="col">CA micro HT</th>
+                <th scope="col">Disponible micro annuel</th>
+                <th scope="col">Salariat annuel, avantages inclus</th>
+                <th scope="col">Micro cumulée</th>
+                <th scope="col">Salariat cumulé</th>
               </tr>
             </thead>
             <tbody>
               {points.map((point) => (
                 <tr key={point.year}>
                   <th scope="row">{point.year}</th>
+                  <td>{formatCents(point.microTurnover)}</td>
+                  <td>{formatCents(point.microAnnual)}</td>
+                  <td>{formatCents(point.employeeAnnual)}</td>
                   <td>{formatCents(point.microCumulative)}</td>
                   <td>{formatCents(point.employeeCumulative)}</td>
                 </tr>

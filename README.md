@@ -142,6 +142,29 @@ Le chiffre d’affaires de cet exemple dépasse le plafond micro 2026: l’avert
 conservé et ne constitue pas une recommandation d’éligibilité. Les sauvegardes antérieures
 conservent leurs propres valeurs.
 
+## Cycle micro et projection pluriannuelle
+
+En cas de dépassement du plafond applicable, les comparatifs micro utilisent la moyenne
+d’un cycle de deux années : CA saisi puis CA limité au plafond annuel plein (83 600 € sous
+les règles 2026). Un CA inférieur au plafond n’est jamais augmenté. L’exemple 100 000 € /
+83 600 € donne 70 900 € / 58 731,20 € disponibles avant IR, soit 64 815,60 €/an en moyenne.
+Les frais/CFE/mutuelle et jours d’effort restent constants ; les encaissements réels ne sont
+pas lissés par le calcul. Cotisations et IR éventuel sont calculés sur chaque année avant
+moyenne, sans imposer le CA moyen. Les moyennes au centime sont arrondies indépendamment :
+des écarts d’arrondi entre composantes et totaux sont possibles.
+
+La règle est la sortie après deux dépassements consécutifs, pas un plafond légal sur la
+moyenne. L’historique N−1/N−2 reste nécessaire, les droits retraite affichés sont ceux de
+l’année au CA saisi, et le plafond micro est distinct des seuils de TVA. Toutes les recettes
+sont HT. Sources : [Service Public, régime fiscal micro](https://entreprendre.service-public.gouv.fr/vosdroits/F23267).
+
+La projection n’est plus une multiplication du net initial : croissance sur le CA potentiel
+et le salaire brut/avantages, charges recalculées annuellement à règles 2026 constantes,
+année de limitation après chaque dépassement et somme des années réalisées (durées impaires
+incluses). Frais fixes constants, seuil plein après l’année de création, avant IR et hors EI.
+Le badge « Estimation à règles constantes » remplace « Démonstration ». La table accessible
+donne CA micro, disponibles annuels et cumuls. Le JSON de sauvegarde schema 1 est inchangé.
+
 ## Développer
 
 Prérequis : Node.js 24 et npm.

@@ -186,6 +186,7 @@ export function calculateEmployeeRetirement(
 function microComplementary(
   micro: MicroScenario,
   catalog: RegulatoryCatalog,
+  turnoverOverride?: number,
 ): RetirementRegimeResult {
   const rules = catalog.complementaryRetirement?.micro
   if (
@@ -195,7 +196,10 @@ function microComplementary(
   ) {
     return blockedComplementary('RCI — libéral BNC non réglementé hors Cipav')
   }
-  const turnover = BigInt(micro.dailyRate) * BigInt(micro.billedDays)
+  const turnover =
+    turnoverOverride !== undefined
+      ? BigInt(assertMoneyCents(turnoverOverride))
+      : BigInt(micro.dailyRate) * BigInt(micro.billedDays)
   const numerator =
     turnover * BigInt(catalog.microSocial.value) * BigInt(rules.allocationRate!.value)
   return valuedComplementary(rules, numerator, 1_000_000n * 1_000_000n, [
@@ -209,6 +213,7 @@ function microComplementary(
 export function calculateMicroRetirement(
   micro: MicroScenario,
   catalog: RegulatoryCatalog,
+  turnoverOverride?: number,
 ): RetirementResult {
   if (micro.activity !== 'non-regulated-liberal-bnc') {
     throw new RangeError('Affiliation retraite hors périmètre, notamment Cipav.')
@@ -221,7 +226,10 @@ export function calculateMicroRetirement(
   if (!allocation || !qualifyingRate || !threshold || !cap) {
     throw new Error('Règles de retraite micro 2026 absentes.')
   }
-  const turnover = BigInt(micro.dailyRate) * BigInt(micro.billedDays)
+  const turnover =
+    turnoverOverride !== undefined
+      ? BigInt(assertMoneyCents(turnoverOverride))
+      : BigInt(micro.dailyRate) * BigInt(micro.billedDays)
   const numerator = turnover * BigInt(catalog.microSocial.value) * BigInt(allocation.value)
   const denominator = 1_000_000n * BigInt(qualifyingRate.value)
   const exactQualifyingIncome = numerator / denominator
@@ -246,7 +254,7 @@ export function calculateMicroRetirement(
       confidence: 'established',
       sources,
     },
-    complementary: microComplementary(micro, catalog),
+    complementary: microComplementary(micro, catalog, turnoverOverride),
     warning: CAREER_WARNING,
   }
 }

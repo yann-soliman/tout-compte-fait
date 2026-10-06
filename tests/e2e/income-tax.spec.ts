@@ -19,7 +19,7 @@ test('after-tax projection is explicit, annual/monthly, accessible and offline a
   }
   await showTax(page)
   const region = page.getByRole('region', { name: 'Disponible après impôt — projection' })
-  await expect(region.getByTestId('tax-micro-cash')).toHaveText(/57\s996/)
+  await expect(region.getByTestId('tax-micro-cash')).toHaveText(/53\s535/)
   await expect(region.getByText(/barème 2026 sur revenus 2025/).first()).toBeVisible()
   await expect(page.getByTestId('ei-available')).toHaveText(/66\s559/)
   await page.getByRole('button', { name: 'Mensuel', exact: true }).click()
