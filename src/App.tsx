@@ -477,6 +477,12 @@ export function App() {
                     Droits annuels estimés, micro/salariat uniquement ; pas une pension de carrière
                     ni du disponible.
                   </p>
+                  {calculation.result.microCycle && (
+                    <p className="projection-caveat">
+                      Droits micro de l’année au CA saisi uniquement, pas la moyenne du cycle. Les
+                      droits de la seconde année doivent être évalués sur son CA propre.
+                    </p>
+                  )}
                   <RetirementRights result={calculation.result.employee} />
                   <RetirementRights result={calculation.result.micro} />
                 </details>
@@ -506,6 +512,8 @@ export function App() {
           </h1>
           <p className="projection-caveat">
             Exploration avant IR, micro-entreprise et salariat uniquement — EI non incluse.
+            Comparatifs micro lissés sur deux ans en cas de dépassement ; projection annuelle
+            distincte, année au CA potentiel puis année limitée au plafond.
           </p>
           {calculation.error && (
             <p className="decision-error" role="alert">
@@ -560,6 +568,8 @@ export function App() {
                   <>
                     <ProjectionView
                       result={calculation.result}
+                      scenario={scenario}
+                      catalog={rules2026}
                       projection={scenario.projection}
                       onChange={(projection) =>
                         setScenario((current) => ({ ...current, projection }))
@@ -582,7 +592,8 @@ export function App() {
           </h1>
           <p className="projection-caveat">
             Scénarios, offres, exports et rapport : avant IR, micro-entreprise et salariat
-            uniquement.
+            uniquement. Les résultats micro des offres et rapports utilisent la moyenne sur deux ans
+            en cas de dépassement ; le CA saisi reste intact dans les sauvegardes.
           </p>
           <h2>Bibliothèque et comparaison</h2>
           <DecisionTools

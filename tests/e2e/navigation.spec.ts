@@ -16,8 +16,8 @@ test('guided comparison, free tabs, actual viewport and offline keep the same hy
   await page.getByLabel('Estimer le disponible après impôt').check()
   await page.getByRole('button', { name: 'Voir la comparaison' }).click()
   await expect(page.getByRole('heading', { name: 'Comparer les trois statuts' })).toBeFocused()
-  await expect(page.getByTestId('overview-micro-before')).toContainText(/70\s900/)
-  await expect(page.getByTestId('overview-micro-after')).toContainText(/57\s996/)
+  await expect(page.getByTestId('overview-micro-before')).toContainText(/64\s816/)
+  await expect(page.getByTestId('overview-micro-after')).toContainText(/53\s535/)
   await expect(page.getByTestId('overview-ei-before')).toContainText(/66\s559/)
   await expect(page.getByRole('spinbutton', { name: 'Taux journalier', exact: true })).toHaveCount(
     0,

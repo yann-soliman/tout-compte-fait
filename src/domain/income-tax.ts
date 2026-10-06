@@ -50,6 +50,7 @@ export function calculateTaxBases(
   comparison: ComparisonResult,
   ei: EiResult,
   salaryOverride?: number,
+  microGrossIncomeOverride?: number,
 ) {
   const employeeLines = comparison.employee.statutoryDeductions ?? []
   const nonDeductible = employeeLines.reduce((total, line) => {
@@ -70,7 +71,7 @@ export function calculateTaxBases(
     employee: categoryBase(salaryDeclared, 10n, 509n, 14555n),
     employeeDeclared: salaryDeclared,
     micro: categoryBase(
-      safe(BigInt(scenario.micro.dailyRate) * BigInt(scenario.micro.billedDays)),
+      safe(BigInt(microGrossIncomeOverride ?? comparison.micro.grossIncome ?? 0)),
       34n,
       305n,
     ),
@@ -143,13 +144,68 @@ export function calculateAfterTaxComparison(
       return { status: 'blocked', reason: error.message }
     }
   }
+  const halfUpMean = (a: number, b: number): number => {
+    const n = BigInt(a) + BigInt(b)
+    const q = n / 2n
+    const r = n % 2n
+    const rounded = r * 2n >= 2n ? q + 1n : q
+    const value = Number(rounded)
+    if (!Number.isSafeInteger(value)) throw new RangeError('Moyenne monétaire hors plage.')
+    return value
+  }
+  const computeMicroAlt = (gross: number, cash: number): AfterTaxAlternative => {
+    try {
+      const b = calculateTaxBases(scenario, comparison, ei, salaryOverride, gross)
+      return alternative(b.micro, cash)
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error
+      return { status: 'blocked', reason: (error as Error).message }
+    }
+  }
+  const microKnown =
+    scenario.micro.cfeExemptionConfirmed ||
+    (scenario.micro.cfeAnnual !== undefined && scenario.micro.cfeAnnual > 0)
+  const microResult: AfterTaxAlternative = !microKnown
+    ? { status: 'blocked', reason: 'CFE micro inconnue : disponible après IR indisponible.' }
+    : comparison.microCycle
+      ? (() => {
+          const firstAlt = computeMicroAlt(
+            comparison.microCycle!.first.grossIncome ?? 0,
+            comparison.microCycle!.first.totalValue,
+          )
+          const secondAlt = computeMicroAlt(
+            comparison.microCycle!.second.grossIncome ?? 0,
+            comparison.microCycle!.second.totalValue,
+          )
+          if (firstAlt.status === 'blocked' || secondAlt.status === 'blocked') {
+            return {
+              status: 'blocked',
+              reason:
+                (firstAlt.status === 'blocked'
+                  ? (firstAlt as { status: 'blocked'; reason: string }).reason
+                  : (secondAlt as { status: 'blocked'; reason: string }).reason) ??
+                'Calcul fiscal bloqué sur un cycle du cycle micro.',
+            }
+          }
+          return {
+            status: 'estimated',
+            taxableIncome: halfUpMean(firstAlt.taxableIncome, secondAlt.taxableIncome),
+            cashBefore: halfUpMean(firstAlt.cashBefore, secondAlt.cashBefore),
+            householdTax: halfUpMean(firstAlt.householdTax, secondAlt.householdTax),
+            baselineTax: firstAlt.baselineTax,
+            additionalTax: halfUpMean(firstAlt.additionalTax, secondAlt.additionalTax),
+            cashAfter: halfUpMean(firstAlt.cashAfter, secondAlt.cashAfter),
+            parts: firstAlt.parts,
+          }
+        })()
+      : scenario.micro.cfeExemptionConfirmed ||
+          (scenario.micro.cfeAnnual !== undefined && scenario.micro.cfeAnnual > 0)
+        ? alternative(bases.micro, comparison.micro.totalValue)
+        : { status: 'blocked', reason: 'CFE micro inconnue : disponible après IR indisponible.' }
+
   return {
     employee: alternative(bases.employee, comparison.employee.netIncome),
-    micro:
-      scenario.micro.cfeExemptionConfirmed ||
-      (scenario.micro.cfeAnnual !== undefined && scenario.micro.cfeAnnual > 0)
-        ? alternative(bases.micro, comparison.micro.totalValue)
-        : { status: 'blocked', reason: 'CFE micro inconnue : disponible après IR indisponible.' },
+    micro: microResult,
     ei: alternative(bases.ei, ei.status === 'estimated' ? ei.availableBeforeIncomeTax : undefined),
   }
 }

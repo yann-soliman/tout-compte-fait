@@ -22,12 +22,13 @@ export interface MicroIncomeResult {
   eligibility: EligibilityAssessment
 }
 
-export function calculateMicroIncome(
+/** Core calculation shared by public API and override variants. */
+function computeMicroIncomeGivenTurnover(
   scenario: MicroScenario,
   catalog: RegulatoryCatalog,
+  turnover: MoneyCents,
   eligibility: EligibilityAssessment,
 ): MicroIncomeResult {
-  const turnover = assertMoneyCents(scenario.dailyRate * scenario.billedDays)
   const deductions: DeductionLine[] = [catalog.microSocial, catalog.professionalTraining].map(
     (rule) => ({
       id: rule.id,
@@ -84,4 +85,17 @@ export function calculateMicroIncome(
     sources: [catalog.microSocial.source, catalog.professionalTraining.source, catalog.cfe.source],
     eligibility,
   }
+}
+
+export function calculateMicroIncome(
+  scenario: MicroScenario,
+  catalog: RegulatoryCatalog,
+  eligibility: EligibilityAssessment,
+  turnoverOverride?: MoneyCents,
+): MicroIncomeResult {
+  const turnover =
+    turnoverOverride !== undefined
+      ? assertMoneyCents(turnoverOverride)
+      : assertMoneyCents(scenario.dailyRate * scenario.billedDays)
+  return computeMicroIncomeGivenTurnover(scenario, catalog, turnover, eligibility)
 }

@@ -33,6 +33,12 @@ export function MoneyFlowChart({
           Montants {period === 'annual' ? 'annuels' : 'mensuels'}
         </span>
       </header>
+      {result.microCycle && (
+        <p className="visual-footnote">
+          Micro : moyennes sur deux ans arrondies indépendamment au centime, pas des montants de
+          déclaration annuelle ; écarts d’un centime possibles entre totaux et composantes.
+        </p>
+      )}
       <div className="flow-grid">
         {flows.items.map((flow) => (
           <article

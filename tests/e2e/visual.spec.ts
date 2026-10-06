@@ -44,7 +44,7 @@ test('preserve accessible results, traceability and responsive layout', async ({
   await showProjection(page)
   await page.getByText('Afficher les valeurs annuelles du graphique').click()
   await expect(
-    page.getByRole('table', { name: 'Valeur cumulée par statut et par année' }),
+    page.getByRole('table', { name: 'Recettes, disponible annuel et valeur cumulée par statut' }),
   ).toBeVisible()
   await expect(page.getByText(/Valeur annuelle totale/)).toHaveCount(2)
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(

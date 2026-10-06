@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import * as tax from '../../src/domain/income-tax'
 import { defaultScenario } from '../../src/domain/defaults'
-import { calculateComparison } from '../../src/domain/calculate'
+// Statutory annual IR fixtures remain independent of the derived cycle.
+import { calculateAnnualComparison as calculateComparison } from '../../src/domain/calculate'
 import { calculateEiIncome } from '../../src/domain/ei'
 import { rules2026 } from '../../src/domain/rules/2026'
 

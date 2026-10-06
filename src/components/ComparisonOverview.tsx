@@ -3,6 +3,7 @@ import { formatCents, forPeriod } from '../domain/calculate'
 import { calculateEiIncome, type EiResult } from '../domain/ei'
 import { calculateAfterTaxComparison, type AfterTaxAlternative } from '../domain/income-tax'
 import { parseTaxSettings, type TaxSettings } from '../domain/tax-settings'
+import { MicroCycleNotice } from './MicroCycleNotice'
 
 interface Props {
   scenario: ComparisonScenario
@@ -74,6 +75,7 @@ export function ComparisonOverview({
         Disponible après frais, CFE et mutuelle ; avantages salariés séparés du cash. Estimations
         2026, hors situations particulières.
       </p>
+      <MicroCycleNotice result={comparison} />
       <div className="overview-grid">
         {cards.map((card) => {
           const tax = after?.[card.kind]

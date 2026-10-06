@@ -169,9 +169,19 @@ export interface ComparisonResult {
   warnings?: ResultWarning[]
   netIncomeDifference?: number
   economicValueDifference?: number
+  microCycle?: {
+    first: StatusResult
+    second: StatusResult
+    firstTurnover: number
+    secondTurnover: number
+    annualAverageTurnover: number
+  }
 }
 export interface ProjectionPoint {
   year: number
+  microTurnover: number
+  microAnnual: number
+  employeeAnnual: number
   microCumulative: number
   employeeCumulative: number
 }
